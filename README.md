@@ -30,6 +30,12 @@ Run the automated checks (mapping accuracy, gate consistency, style, coverage):
 python tests/run_tests.py
 ```
 
+Run the pytest suite:
+
+```bash
+pytest
+```
+
 ## Human-in-the-loop gates
 
 Planning, architecture, and release gates are blocking. Conditional gates apply to implementation review, test failures, and security risk acceptance. See methodology/unified_method_specification.md.
@@ -38,6 +44,20 @@ Planning, architecture, and release gates are blocking. Conditional gates apply 
 
 - Config uses JSON syntax in runtime.yaml to avoid external YAML dependencies.
 - Run manifests and approvals are stored under runs/<run_id>/ when executing workflows.
+
+## Versioning
+
+This repository follows SemVer (see docs/versioning.md). The source of truth is the root VERSION file.
+
+## Developer tooling
+
+Install dev tools and hooks:
+
+```bash
+pip install -r requirements-dev.txt
+npm install
+npx husky install
+```
 
 ## Notes
 

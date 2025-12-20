@@ -4,6 +4,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 CHECK_PATHS = [
+    ROOT / ".github" / "workflows" / "ci.yml",
+    ROOT / ".husky" / "pre-commit",
+    ROOT / "VERSION",
+    ROOT / "docs" / "versioning.md",
+    ROOT / "package.json",
+    ROOT / "pytest.ini",
+    ROOT / "requirements-dev.txt",
     ROOT / "config" / "runtime.yaml",
     ROOT / "methodology" / "tools" / "mapping.py",
     ROOT / "methodology" / "tools" / "generate_mapping.py",

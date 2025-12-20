@@ -1,0 +1,13 @@
+{
+  "name": "bquat",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "prepare": "husky install",
+    "test:python": "python tests/run_tests.py",
+    "test:pytest": "pytest"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11"
+  }
+}
