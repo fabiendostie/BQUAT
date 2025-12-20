@@ -1,0 +1,122 @@
+{
+  "task": {
+    "type": "agentic_framework_development",
+    "mode": "autonomous",
+    "objective": "Create unified multi-agent framework integrating three methodologies"
+  },
+  "source_methodologies": {
+    "primary": {
+      "name": "BMAD-METHOD",
+      "repository": "https://github.com/bmad-code-org/BMAD-METHOD/tree/main",
+      "compliance_level": "strict",
+      "components_required": ["all_agents", "all_workflows"],
+      "role": "foundational_framework"
+    },
+    "augmentation_1": {
+      "name": "Quint-code",
+      "repository": "https://github.com/m0n0x41d/quint-code",
+      "installation": "https://raw.githubusercontent.com/m0n0x41d/quint-code/main/install.sh",
+      "integration_type": "seamless",
+      "role": "code_quality_patterns"
+    },
+    "augmentation_2": {
+      "name": "TELIS",
+      "source": "docs/Token-Efficient_Language_Intelligence_System_TELIS.md",
+      "integration_type": "seamless",
+      "role": "token_optimization"
+    }
+  },
+  "reference_materials": [
+    {
+      "type": "guide",
+      "path": "docs/a-practical-guide-to-building-agents.pdf",
+      "purpose": "agent_architecture_patterns"
+    }
+  ],
+  "execution_phases": {
+    "phase_1": {
+      "name": "methodology_fusion",
+      "inputs": ["BMAD-METHOD", "Quint-code", "TELIS"],
+      "output": "unified_super_method_specification",
+      "requirements": [
+        "preserve_all_bmad_agents",
+        "preserve_all_bmad_workflows",
+        "integrate_quint_patterns",
+        "integrate_telis_optimization",
+        "document_integration_mappings"
+      ]
+    },
+    "phase_2": {
+      "name": "autonomous_agent_deployment",
+      "trigger": "phase_1_completion",
+      "agent_domains": [
+        {
+          "name": "ux_ui_agent",
+          "responsibilities": ["interface_design", "user_experience", "accessibility"],
+          "methodology": "unified_super_method"
+        },
+        {
+          "name": "development_agent",
+          "responsibilities": ["code_generation", "implementation", "refactoring"],
+          "methodology": "unified_super_method",
+          "standards": ["quint_code_patterns"]
+        },
+        {
+          "name": "testing_agent",
+          "responsibilities": ["unit_tests", "integration_tests", "e2e_tests"],
+          "methodology": "unified_super_method"
+        },
+        {
+          "name": "cicd_agent",
+          "responsibilities": ["pipeline_config", "deployment_automation", "monitoring"],
+          "methodology": "unified_super_method"
+        },
+        {
+          "name": "security_agent",
+          "responsibilities": ["vulnerability_scanning", "security_auditing", "compliance_validation"],
+          "methodology": "unified_super_method"
+        }
+      ],
+      "orchestration": {
+        "type": "autonomous",
+        "coordination_pattern": "event_driven",
+        "communication": "telis_optimized_context"
+      }
+    }
+  },
+  "constraints": {
+    "bmad_adherence": "mandatory",
+    "quint_integration": "complete",
+    "telis_integration": "complete",
+    "workflow_mode": "fully_autonomous",
+    "agent_coordination": "sub_agent_hierarchy"
+  },
+  "success_criteria": {
+    "methodology_fusion": "single_unified_framework_document",
+    "bmad_coverage": "100_percent_agents_and_workflows",
+    "quint_adoption": "all_code_following_patterns",
+    "telis_optimization": "measurable_token_efficiency",
+    "autonomous_execution": "zero_human_intervention_required",
+    "deliverables": [
+      "unified_method_specification",
+      "deployed_agent_system",
+      "working_cicd_pipeline",
+      "security_audit_report",
+      "complete_documentation"
+    ]
+  },
+  "output_structure": {
+    "root": "project_directory",
+    "subdirectories": [
+      "/agents",
+      "/workflows", 
+      "/methodology",
+      "/tests",
+      "/cicd",
+      "/security",
+      "/docs"
+    ],
+    "naming_convention": "bmad_standard"
+  },
+  "execution_directive": "READ_ALL_SOURCES_THEN_SYNTHESIZE_THEN_BUILD_AUTONOMOUSLY"
+}
