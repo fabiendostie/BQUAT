@@ -152,6 +152,8 @@ Components:
 - Context manager for LSP calls, shard retrieval, and negotiation.
 - Evidence store for Quint L0-L2 claims, WLNK, and DRRs.
 - Executor that runs BMAD workflows and tasks.
+- Control plane for configuration, policy, and registry management.
+- Data plane for execution, tool calls, and artifact IO.
 
 Lifecycle:
 
@@ -188,6 +190,24 @@ Event payloads are normalized for tooling and traceability.
 - ValidationFailed: workflow id, rule id, diagnostics, retry count.
 - EvidenceRecorded: claim id, level, source, congruence, validity.
 - HumanGateRequired: gate id, reason, required evidence, status.
+
+### 7.6 Kong-Inspired Runtime Patterns
+
+The runtime adopts patterns proven in Kong-like gateway architectures and maps them to agentic execution.
+
+- Control plane / data plane split:
+  - Control plane: registry, policy, configuration, and orchestration decisions.
+  - Data plane: workflow execution, tool calls, LLM requests, and artifact IO.
+- Plugin pipeline:
+  - Policy plugins: validation gates, HITL enforcement, risk classification.
+  - Adapter plugins: provider clients (Ollama/LiteLLM/OpenAI/Claude/Gemini/Groq), tool bindings.
+  - Observability plugins: structured logs, metrics, and trace emission.
+- Declarative config and drift control:
+  - Runtime config is declarative and versioned; changes are audited and tracked.
+  - Runtime state snapshots support replay and drift detection.
+- Failure isolation:
+  - Circuit-breaker style safeguards around provider calls and tool adapters.
+  - Bounded retries and explicit backoff rules defined in policy.
 
 ## 8) Evidence and Decision Protocol (Quint)
 
