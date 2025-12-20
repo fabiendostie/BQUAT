@@ -1,0 +1,6 @@
+[submodule "BMAD-METHOD"]
+	path = BMAD-METHOD
+	url = https://github.com/bmad-code-org/BMAD-METHOD.git
+[submodule "quint-code"]
+	path = quint-code
+	url = https://github.com/m0n0x41d/quint-code.git

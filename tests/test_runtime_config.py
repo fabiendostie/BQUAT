@@ -23,9 +23,10 @@ class RuntimeConfigTests(unittest.TestCase):
 
     def test_storage_root_resolution(self) -> None:
         cfg = {"runtime": {"storage_root": "runs"}}
-        root = Path("C:/tmp")
-        resolved = runtime_config.storage_root(cfg, root=root)
-        self.assertEqual(resolved.as_posix(), "C:/tmp/runs")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            resolved = runtime_config.storage_root(cfg, root=root)
+            self.assertEqual(resolved, (root / "runs").resolve())
 
 
 if __name__ == "__main__":
