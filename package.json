@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
+    "test": "python tests/run_tests.py && pytest",
     "test:python": "python tests/run_tests.py",
     "test:pytest": "pytest"
   },

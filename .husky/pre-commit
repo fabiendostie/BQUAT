@@ -1,5 +1,1 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-python tests/run_tests.py
-pytest
+npm test

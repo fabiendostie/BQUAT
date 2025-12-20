@@ -56,8 +56,10 @@ Install dev tools and hooks:
 ```bash
 pip install -r requirements-dev.txt
 npm install
-npx husky install
+npm run prepare
 ```
+
+`npm install` runs the Husky prepare script automatically; use `npm run prepare` if hooks are missing.
 
 ## Notes
 
