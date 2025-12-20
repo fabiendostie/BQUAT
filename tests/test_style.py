@@ -5,6 +5,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 CHECK_PATHS = [
     ROOT / ".github" / "workflows" / "ci.yml",
+    ROOT / ".husky" / "commit-msg",
+    ROOT / ".husky" / "pre-push",
     ROOT / ".husky" / "pre-commit",
     ROOT / "VERSION",
     ROOT / "docs" / "versioning.md",
