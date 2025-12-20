@@ -12,6 +12,10 @@
   },
   "providers": {
     "default": "ollama",
+    "mock": {
+      "type": "mock",
+      "model": "mock"
+    },
     "ollama": {
       "type": "ollama",
       "base_url": "http://localhost:11434",

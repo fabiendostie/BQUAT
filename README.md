@@ -36,6 +36,17 @@ Run the pytest suite:
 pytest
 ```
 
+## CLI
+
+Examples:
+
+```bash
+python -m cli.main validate
+python -m cli.main run bmm prd --agent bmad --provider mock
+python -m cli.main approve <run-id> --by you
+python -m cli.main status <run-id>
+```
+
 ## Human-in-the-loop gates
 
 Planning, architecture, and release gates are blocking. Conditional gates apply to implementation review, test failures, and security risk acceptance. See methodology/unified_method_specification.md.

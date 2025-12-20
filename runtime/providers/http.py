@@ -1,0 +1,22 @@
+from __future__ import annotations
+
+import json
+from typing import Any, Dict, Optional
+from urllib import request
+
+
+def post_json(
+    url: str,
+    payload: Dict[str, Any],
+    headers: Optional[Dict[str, str]] = None,
+    timeout_seconds: int = 60,
+) -> Dict[str, Any]:
+    body = json.dumps(payload).encode("utf-8")
+    req = request.Request(url, data=body, method="POST")
+    req.add_header("Content-Type", "application/json")
+    if headers:
+        for key, value in headers.items():
+            req.add_header(key, value)
+    with request.urlopen(req, timeout=timeout_seconds) as resp:
+        data = resp.read().decode("utf-8")
+    return json.loads(data)

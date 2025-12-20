@@ -9,10 +9,17 @@ TARGETS = [
     ROOT / "runtime" / "agents.py",
     ROOT / "runtime" / "config.py",
     ROOT / "runtime" / "engine.py",
+    ROOT / "runtime" / "execution.py",
     ROOT / "runtime" / "gates.py",
     ROOT / "runtime" / "models.py",
     ROOT / "runtime" / "prompts.py",
     ROOT / "runtime" / "storage.py",
+    ROOT / "runtime" / "providers" / "base.py",
+    ROOT / "runtime" / "providers" / "http.py",
+    ROOT / "runtime" / "providers" / "registry.py",
+    ROOT / "runtime" / "plugins" / "base.py",
+    ROOT / "runtime" / "plugins" / "manager.py",
+    ROOT / "cli" / "main.py",
 ]
 COVERAGE_THRESHOLD = 85.0
 

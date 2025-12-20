@@ -11,6 +11,7 @@ from runtime import config as runtime_config
 from runtime import gates
 from runtime import models
 from runtime import storage
+from runtime.plugins.manager import PluginManager
 
 
 class StepExecutor:
@@ -77,10 +78,12 @@ class WorkflowEngine:
         config: Dict[str, Any],
         mapping_records: List[models.WorkflowSpec],
         storage_root: Optional[Path] = None,
+        plugins: Optional[PluginManager] = None,
     ) -> None:
         self.config = config
         self.mapping = {(rec.module, rec.workflow): rec for rec in mapping_records}
         self.storage_root = storage_root or runtime_config.storage_root(config)
+        self.plugins = plugins
 
     def get_workflow_spec(self, module: str, workflow: str) -> models.WorkflowSpec:
         key = (module, workflow)
@@ -157,7 +160,12 @@ class WorkflowEngine:
             manifest["status"] = "blocked"
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            if self.plugins:
+                self.plugins.on_validation(manifest, "blocked")
             return manifest
+
+        if self.plugins:
+            self.plugins.before_run(manifest)
 
         manifest["status"] = "running"
         manifest["updated_at"] = utc_now()
@@ -179,7 +187,12 @@ class WorkflowEngine:
             manifest["status"] = "blocked"
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            if self.plugins:
+                self.plugins.on_validation(manifest, "blocked")
             return manifest
+
+        if self.plugins:
+            self.plugins.before_run(manifest)
 
         manifest["status"] = "running"
         manifest["updated_at"] = utc_now()
@@ -212,6 +225,8 @@ class WorkflowEngine:
                 storage.write_manifest(run_dir, manifest)
 
                 try:
+                    if self.plugins:
+                        self.plugins.before_step(step, manifest)
                     started = time.time()
                     executor.execute(step, {"run_dir": run_dir, "manifest": manifest})
                     elapsed = time.time() - started
@@ -220,15 +235,23 @@ class WorkflowEngine:
                     step["status"] = "completed"
                     step["ended_at"] = utc_now()
                     step["error"] = None
+                    if self.plugins:
+                        self.plugins.after_step(step, manifest)
                     break
                 except Exception as exc:  # noqa: BLE001
                     step["status"] = "failed"
                     step["ended_at"] = utc_now()
                     step["error"] = str(exc)
+                    if self.plugins:
+                        self.plugins.on_error(step, manifest, step["error"] or "error")
                     if attempts > max_retries:
                         manifest["status"] = "failed"
                         manifest["updated_at"] = utc_now()
                         storage.write_manifest(run_dir, manifest)
+                        if self.plugins:
+                            self.plugins.on_validation(manifest, "failed")
+                        if self.plugins:
+                            self.plugins.after_run(manifest)
                         return manifest
 
             storage.write_manifest(run_dir, manifest)
@@ -236,4 +259,8 @@ class WorkflowEngine:
         manifest["status"] = "completed"
         manifest["updated_at"] = utc_now()
         storage.write_manifest(run_dir, manifest)
+        if self.plugins:
+            self.plugins.on_validation(manifest, "completed")
+        if self.plugins:
+            self.plugins.after_run(manifest)
         return manifest
