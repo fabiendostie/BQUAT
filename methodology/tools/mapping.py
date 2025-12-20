@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 from pathlib import Path
 import re
 from typing import Iterable, List
@@ -16,7 +17,7 @@ class WorkflowRecord:
     validation: str
     human: str
     evidence: str
-    artifacts: str
+    artifacts: List[str]
     scope: str
     path: str
 
@@ -379,7 +380,6 @@ def generate_mapping_records(bmad_root: Path) -> List[WorkflowRecord]:
         if scope != "production":
             continue
         artifacts = artifacts_from_workflow_dir(workflow_dir)
-        artifact_field = "; ".join(artifacts) if artifacts else "none"
         records.append(
             WorkflowRecord(
                 module=module,
@@ -390,7 +390,7 @@ def generate_mapping_records(bmad_root: Path) -> List[WorkflowRecord]:
                 validation=validation_gate(phase),
                 human=human_gate(phase, workflow_name),
                 evidence=evidence_required(phase),
-                artifacts=artifact_field,
+                artifacts=artifacts,
                 scope=scope,
                 path=rel,
             )
@@ -437,6 +437,7 @@ def write_mapping(records: Iterable[WorkflowRecord], path: Path) -> None:
     )
     lines.append("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |")
     for row in records:
+        artifacts_text = "; ".join(row.artifacts) if row.artifacts else "none"
         lines.append(
             "| "
             + " | ".join(
@@ -449,7 +450,7 @@ def write_mapping(records: Iterable[WorkflowRecord], path: Path) -> None:
                     row.validation,
                     row.human,
                     row.evidence,
-                    row.artifacts,
+                    artifacts_text,
                     row.scope,
                     row.path,
                 ]
@@ -457,6 +458,22 @@ def write_mapping(records: Iterable[WorkflowRecord], path: Path) -> None:
             + " |"
         )
     path.write_bytes("\n".join(lines).encode("ascii", "ignore"))
+
+
+def mapping_record_to_dict(record: WorkflowRecord) -> dict:
+    return {
+        "module": record.module,
+        "workflow": record.workflow,
+        "phase": record.phase,
+        "quint": record.quint,
+        "telis": record.telis,
+        "validation": record.validation,
+        "human": record.human,
+        "evidence": record.evidence,
+        "artifacts": record.artifacts,
+        "scope": record.scope,
+        "path": record.path,
+    }
 
 
 def write_registry_workflows(records: Iterable[WorkflowRegistryRecord], path: Path) -> None:
@@ -484,6 +501,27 @@ def write_registry_workflows(records: Iterable[WorkflowRegistryRecord], path: Pa
             + " |"
         )
     path.write_bytes("\n".join(lines).encode("ascii", "ignore"))
+
+
+def registry_record_to_dict(record: WorkflowRegistryRecord) -> dict:
+    return {
+        "module": record.module,
+        "workflow": record.workflow,
+        "phase": record.phase,
+        "definition": record.definition,
+        "scope": record.scope,
+        "path": record.path,
+    }
+
+
+def write_mapping_json(records: Iterable[WorkflowRecord], path: Path) -> None:
+    payload = {"records": [mapping_record_to_dict(record) for record in records]}
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="ascii")
+
+
+def write_registry_workflows_json(records: Iterable[WorkflowRegistryRecord], path: Path) -> None:
+    payload = {"records": [registry_record_to_dict(record) for record in records]}
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="ascii")
 
 
 def project_root_from_here() -> Path:

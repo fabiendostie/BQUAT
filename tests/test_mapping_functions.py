@@ -197,7 +197,7 @@ outputs:
                     validation="N/A",
                     human="none",
                     evidence="L1",
-                    artifacts="none",
+                    artifacts=[],
                     scope="production",
                     path="src/core/workflows/workflow-status/workflow.yaml",
                 )
@@ -217,6 +217,12 @@ outputs:
             ]
             mapping.write_registry_workflows(reg_records, tmp / "registry.md")
             self.assertTrue((tmp / "registry.md").exists())
+
+            mapping.write_mapping_json(records, tmp / "mapping.json")
+            self.assertTrue((tmp / "mapping.json").exists())
+
+            mapping.write_registry_workflows_json(reg_records, tmp / "registry.json")
+            self.assertTrue((tmp / "registry.json").exists())
 
 
 if __name__ == "__main__":

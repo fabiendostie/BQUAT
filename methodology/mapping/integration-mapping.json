@@ -1,0 +1,1118 @@
+{
+  "records": [
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "core",
+      "path": "src/core/workflows/brainstorming/workflow.md",
+      "phase": "Core",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "brainstorming"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "none",
+      "module": "core",
+      "path": "src/core/workflows/party-mode/workflow.md",
+      "phase": "Meta",
+      "quint": "Audit/Decision",
+      "scope": "production",
+      "telis": "Tier 1 minimal",
+      "validation": "N/A",
+      "workflow": "party-mode"
+    },
+    {
+      "artifacts": [
+        "template:step-01-init-continuable-template.md",
+        "template:step-1b-template.md",
+        "template:step-template.md",
+        "template:workflow-template.md"
+      ],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/docs/workflows/templates/workflow.md",
+      "phase": "Builder",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "templates"
+    },
+    {
+      "artifacts": [
+        "template:templates/agent-plan.template.md",
+        "template:templates/expert-agent.template.md",
+        "template:templates/simple-agent.template.md",
+        "{bmb_creations_output_folder}/agent-validation-{project_name}.md",
+        "{output_folder}/agent-completion-{project_name}.md"
+      ],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/create-agent/workflow.md",
+      "phase": "Builder",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-agent"
+    },
+    {
+      "artifacts": [
+        "prompt: 'Where should {module_name} save outputs?",
+        "template:templates/agent.template.md",
+        "template:templates/installer.template.js",
+        "template:templates/module-plan.template.md",
+        "template:templates/module.template.yaml",
+        "template:templates/workflow-plan-template.md"
+      ],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/create-module/workflow.md",
+      "phase": "Builder",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-module"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/create-workflow/workflow.md",
+      "phase": "Builder",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-workflow"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/edit-agent/workflow.md",
+      "phase": "Builder",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "edit-agent"
+    },
+    {
+      "artifacts": [
+        "{output_folder}/workflow-edit-{target_workflow_name}.md"
+      ],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/edit-workflow/workflow.md",
+      "phase": "Builder",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "edit-workflow"
+    },
+    {
+      "artifacts": [
+        "[if appropriate for workflow type]"
+      ],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/workflow-compliance-check/workflow.md",
+      "phase": "Builder",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "workflow-compliance-check"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows-legacy/edit-module/workflow.yaml",
+      "phase": "Builder Legacy",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "edit-module"
+    },
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows-legacy/module-brief/workflow.yaml",
+      "phase": "Builder Legacy",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "module-brief"
+    },
+    {
+      "artifacts": [
+        "{output_folder}/brainstorming-session-{date}.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/brainstorm-game/workflow.md",
+      "phase": "Phase 1 Preproduction",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "brainstorm-game"
+    },
+    {
+      "artifacts": [
+        "{output_folder}/brainstorming-session-{date}.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/brainstorm-game/workflow.yaml",
+      "phase": "Phase 1 Preproduction",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "brainstorm-game"
+    },
+    {
+      "artifacts": [
+        "template:templates/game-brief-template.md",
+        "{output_folder}/game-brief.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/game-brief/workflow.md",
+      "phase": "Phase 1 Preproduction",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "game-brief"
+    },
+    {
+      "artifacts": [
+        "template:templates/game-brief-template.md",
+        "{output_folder}/game-brief.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/game-brief/workflow.yaml",
+      "phase": "Phase 1 Preproduction",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "game-brief"
+    },
+    {
+      "artifacts": [
+        "template:templates/gdd-template.md",
+        "{output_folder}/gdd.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/gdd/workflow.md",
+      "phase": "Phase 2 Design",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "gdd"
+    },
+    {
+      "artifacts": [
+        "template:templates/gdd-template.md",
+        "{output_folder}/gdd.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/gdd/workflow.yaml",
+      "phase": "Phase 2 Design",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "gdd"
+    },
+    {
+      "artifacts": [
+        "template:templates/narrative-template.md",
+        "{output_folder}/narrative-design.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/narrative/workflow.md",
+      "phase": "Phase 2 Design",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "narrative"
+    },
+    {
+      "artifacts": [
+        "template:templates/narrative-template.md",
+        "{output_folder}/narrative-design.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/narrative/workflow.yaml",
+      "phase": "Phase 2 Design",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "narrative"
+    },
+    {
+      "artifacts": [
+        "template:templates/architecture-template.md",
+        "{output_folder}/game-architecture.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/3-technical/game-architecture/workflow.md",
+      "phase": "Phase 3 Technical",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "game-architecture"
+    },
+    {
+      "artifacts": [
+        "template:templates/architecture-template.md",
+        "{output_folder}/game-architecture.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/3-technical/game-architecture/workflow.yaml",
+      "phase": "Phase 3 Technical",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "game-architecture"
+    },
+    {
+      "artifacts": [
+        "template:project-context-template.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/3-technical/generate-project-context/workflow.md",
+      "phase": "Phase 3 Technical",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "generate-project-context"
+    },
+    {
+      "artifacts": [
+        "template:backlog-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/code-review/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "code-review"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/correct-course/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "correct-course"
+    },
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/create-story/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "create-story"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/dev-story/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "dev-story"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "optional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/retrospective/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "retrospective"
+    },
+    {
+      "artifacts": [
+        "template:sprint-status-template.yaml"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/sprint-planning/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "sprint-planning"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "optional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/sprint-status/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "sprint-status"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1/L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/bmgd-quick-flow/create-tech-spec/workflow.yaml",
+      "phase": "Quick Flow",
+      "quint": "Mixed (ADI compressed)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "create-tech-spec"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1/L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/bmgd-quick-flow/quick-dev/workflow.yaml",
+      "phase": "Quick Flow",
+      "quint": "Mixed (ADI compressed)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "quick-dev"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1/L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/bmgd-quick-flow/quick-prototype/workflow.yaml",
+      "phase": "Quick Flow",
+      "quint": "Mixed (ADI compressed)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "quick-prototype"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/automate/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "automate"
+    },
+    {
+      "artifacts": [
+        "template:performance-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/performance/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "performance"
+    },
+    {
+      "artifacts": [
+        "template:playtest-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/playtest-plan/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "playtest-plan"
+    },
+    {
+      "artifacts": [
+        "template:test-design-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/test-design/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "test-design"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/test-framework/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "test-framework"
+    },
+    {
+      "artifacts": [
+        "template:test-review-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/test-review/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "test-review"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "none",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/workflow-status/init/workflow.yaml",
+      "phase": "Meta",
+      "quint": "Audit/Decision",
+      "scope": "production",
+      "telis": "Tier 1 minimal",
+      "validation": "N/A",
+      "workflow": "init"
+    },
+    {
+      "artifacts": [
+        "template:workflow-status-template.yaml"
+      ],
+      "evidence": "L1",
+      "human": "none",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/workflow-status/workflow.yaml",
+      "phase": "Meta",
+      "quint": "Audit/Decision",
+      "scope": "production",
+      "telis": "Tier 1 minimal",
+      "validation": "N/A",
+      "workflow": "workflow-status"
+    },
+    {
+      "artifacts": [
+        "template:product-brief.template.md",
+        "{output_folder}/analysis/product-brief-{{project_name}}-{{date}}.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/1-analysis/create-product-brief/workflow.md",
+      "phase": "Phase 1 Analysis",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "create-product-brief"
+    },
+    {
+      "artifacts": [
+        "template:research.template.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/1-analysis/research/workflow.md",
+      "phase": "Phase 1 Analysis",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "research"
+    },
+    {
+      "artifacts": [
+        "template:ux-design-template.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/2-plan-workflows/create-ux-design/workflow.md",
+      "phase": "Phase 2 Planning",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-ux-design"
+    },
+    {
+      "artifacts": [
+        "template:prd-template.md",
+        "{output_folder}/prd.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/2-plan-workflows/prd/workflow.md",
+      "phase": "Phase 2 Planning",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "prd"
+    },
+    {
+      "artifacts": [
+        "template:templates/readiness-report-template.md",
+        "{output_folder}/implementation-readiness-report-{{date}}.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/3-solutioning/check-implementation-readiness/workflow.md",
+      "phase": "Phase 3 Solutioning",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "check-implementation-readiness"
+    },
+    {
+      "artifacts": [
+        "template:architecture-decision-template.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/3-solutioning/create-architecture/workflow.md",
+      "phase": "Phase 3 Solutioning",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-architecture"
+    },
+    {
+      "artifacts": [
+        "template:templates/epics-template.md",
+        "{output_folder}/epics.md"
+      ],
+      "evidence": "L1",
+      "human": "required",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/3-solutioning/create-epics-and-stories/workflow.md",
+      "phase": "Phase 3 Solutioning",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-epics-and-stories"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/code-review/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "code-review"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/correct-course/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "correct-course"
+    },
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/create-story/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "create-story"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/dev-story/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "dev-story"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/retrospective/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "retrospective"
+    },
+    {
+      "artifacts": [
+        "template:sprint-status-template.yaml"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/sprint-planning/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "sprint-planning"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/sprint-status/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "sprint-status"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1/L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/bmad-quick-flow/create-tech-spec/workflow.yaml",
+      "phase": "Quick Flow",
+      "quint": "Mixed (ADI compressed)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "create-tech-spec"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1/L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/bmad-quick-flow/quick-dev/workflow.yaml",
+      "phase": "Quick Flow",
+      "quint": "Mixed (ADI compressed)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "quick-dev"
+    },
+    {
+      "artifacts": [
+        "template:templates/deep-dive-template.md",
+        "template:templates/index-template.md",
+        "template:templates/project-overview-template.md",
+        "template:templates/source-tree-template.md"
+      ],
+      "evidence": "L0",
+      "human": "recommended",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/document-project/workflow.yaml",
+      "phase": "Phase 0 Documentation",
+      "quint": "Observation (L0)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "document-project"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-dataflow/workflow.yaml",
+      "phase": "Diagramming",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-dataflow"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-diagram/workflow.yaml",
+      "phase": "Diagramming",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-diagram"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-flowchart/workflow.yaml",
+      "phase": "Diagramming",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-flowchart"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-wireframe/workflow.yaml",
+      "phase": "Diagramming",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "create-wireframe"
+    },
+    {
+      "artifacts": [
+        "template:project-context-template.md"
+      ],
+      "evidence": "L1",
+      "human": "optional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/generate-project-context/workflow.md",
+      "phase": "Context Generation",
+      "quint": "Deduction (L1)",
+      "scope": "production",
+      "telis": "Tier 2 shards + progressive negotiation",
+      "validation": "Template/schema validation",
+      "workflow": "generate-project-context"
+    },
+    {
+      "artifacts": [
+        "template:atdd-checklist-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/atdd/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "atdd"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/automate/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "automate"
+    },
+    {
+      "artifacts": [
+        "template:github-actions-template.yaml",
+        "template:gitlab-ci-template.yaml"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/ci/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "ci"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/framework/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "framework"
+    },
+    {
+      "artifacts": [
+        "template:nfr-report-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/nfr-assess/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "nfr-assess"
+    },
+    {
+      "artifacts": [
+        "id: epic-level",
+        "id: system-level",
+        "template:test-design-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/test-design/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "test-design"
+    },
+    {
+      "artifacts": [
+        "template:test-review-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/test-review/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "test-review"
+    },
+    {
+      "artifacts": [
+        "template:trace-template.md"
+      ],
+      "evidence": "L2",
+      "human": "conditional",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/trace/workflow.yaml",
+      "phase": "Testing/QA",
+      "quint": "Induction (L2)",
+      "scope": "production",
+      "telis": "LSP-first + Tier 2 + validation gate",
+      "validation": "AST + type + lint (as applicable)",
+      "workflow": "trace"
+    },
+    {
+      "artifacts": [],
+      "evidence": "L1",
+      "human": "none",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/workflow-status/init/workflow.yaml",
+      "phase": "Meta",
+      "quint": "Audit/Decision",
+      "scope": "production",
+      "telis": "Tier 1 minimal",
+      "validation": "N/A",
+      "workflow": "init"
+    },
+    {
+      "artifacts": [
+        "template:workflow-status-template.yaml"
+      ],
+      "evidence": "L1",
+      "human": "none",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/workflow-status/workflow.yaml",
+      "phase": "Meta",
+      "quint": "Audit/Decision",
+      "scope": "production",
+      "telis": "Tier 1 minimal",
+      "validation": "N/A",
+      "workflow": "workflow-status"
+    },
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/design-thinking/workflow.yaml",
+      "phase": "CIS",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "design-thinking"
+    },
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/innovation-strategy/workflow.yaml",
+      "phase": "CIS",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "innovation-strategy"
+    },
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/problem-solving/workflow.yaml",
+      "phase": "CIS",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "problem-solving"
+    },
+    {
+      "artifacts": [
+        "template:template.md"
+      ],
+      "evidence": "L0",
+      "human": "optional",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/storytelling/workflow.yaml",
+      "phase": "CIS",
+      "quint": "Abduction (L0)",
+      "scope": "production",
+      "telis": "Tier 1 minimal, Tier 2 on demand",
+      "validation": "Format validation",
+      "workflow": "storytelling"
+    }
+  ]
+}

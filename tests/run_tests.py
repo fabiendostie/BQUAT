@@ -4,7 +4,16 @@ import trace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGET = ROOT / "methodology" / "tools" / "mapping.py"
+TARGETS = [
+    ROOT / "methodology" / "tools" / "mapping.py",
+    ROOT / "runtime" / "agents.py",
+    ROOT / "runtime" / "config.py",
+    ROOT / "runtime" / "engine.py",
+    ROOT / "runtime" / "gates.py",
+    ROOT / "runtime" / "models.py",
+    ROOT / "runtime" / "prompts.py",
+    ROOT / "runtime" / "storage.py",
+]
 COVERAGE_THRESHOLD = 85.0
 
 
@@ -46,24 +55,40 @@ def main() -> int:
     counts = results.counts
 
     executed = set()
-    target_resolved = TARGET.resolve()
+    target_resolved = {target.resolve() for target in TARGETS}
     for (filename, lineno), count in counts.items():
         if count <= 0:
             continue
         try:
-            if Path(filename).resolve() == target_resolved:
-                executed.add(lineno)
+            resolved = Path(filename).resolve()
+            if resolved in target_resolved:
+                executed.add((resolved, lineno))
         except Exception:
             continue
 
-    total = executable_lines(TARGET)
+    total = set()
+    per_file_totals = {}
+    for target in TARGETS:
+        lines = executable_lines(target)
+        per_file_totals[target.resolve()] = lines
+        total.update({(target.resolve(), line) for line in lines})
+
     if not total:
         print("No executable lines found for coverage")
         return 1
 
     covered = total.intersection(executed)
     coverage = (len(covered) / len(total)) * 100.0
-    print(f"Coverage for {TARGET.name}: {coverage:.2f}%")
+    print(f"Coverage overall: {coverage:.2f}%")
+
+    for target in TARGETS:
+        target_lines = per_file_totals.get(target.resolve(), set())
+        if not target_lines:
+            continue
+        target_total = {(target.resolve(), line) for line in target_lines}
+        target_covered = target_total.intersection(executed)
+        target_coverage = (len(target_covered) / len(target_total)) * 100.0
+        print(f"Coverage for {target.name}: {target_coverage:.2f}%")
 
     if coverage < COVERAGE_THRESHOLD:
         print(f"Coverage below threshold: {coverage:.2f}% < {COVERAGE_THRESHOLD}%")

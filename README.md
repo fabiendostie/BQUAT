@@ -11,12 +11,16 @@ This repository consolidates BMAD-METHOD with Quint-code (FPF reasoning) and TEL
 - CI/CD blueprint: cicd/ci-cd-blueprint.md
 - Security audit template: security/security-audit-report-template.md
 - Documentation index: docs/unified-framework-documentation-index.md
+- Runtime configuration: config/runtime.yaml
+- Runtime engine scaffolding: runtime/
 
 ## Regenerate registries and mappings
 
 ```bash
 python methodology/tools/generate_mapping.py
 ```
+
+Generated machine-readable outputs are written to methodology/mapping/.
 
 ## Tests
 
@@ -29,6 +33,11 @@ python tests/run_tests.py
 ## Human-in-the-loop gates
 
 Planning, architecture, and release gates are blocking. Conditional gates apply to implementation review, test failures, and security risk acceptance. See methodology/unified_method_specification.md.
+
+## Runtime notes
+
+- Config uses JSON syntax in runtime.yaml to avoid external YAML dependencies.
+- Run manifests and approvals are stored under runs/<run_id>/ when executing workflows.
 
 ## Notes
 

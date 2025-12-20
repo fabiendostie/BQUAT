@@ -1,0 +1,612 @@
+{
+  "records": [
+    {
+      "definition": "workflow.md",
+      "module": "core",
+      "path": "src/core/workflows/brainstorming/workflow.md",
+      "phase": "Core",
+      "scope": "production",
+      "workflow": "brainstorming"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "core",
+      "path": "src/core/workflows/party-mode/workflow.md",
+      "phase": "Meta",
+      "scope": "production",
+      "workflow": "party-mode"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmb",
+      "path": "src/modules/bmb/docs/workflows/templates/workflow.md",
+      "phase": "Builder",
+      "scope": "production",
+      "workflow": "templates"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/create-agent/workflow.md",
+      "phase": "Builder",
+      "scope": "production",
+      "workflow": "create-agent"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/create-module/workflow.md",
+      "phase": "Builder",
+      "scope": "production",
+      "workflow": "create-module"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/create-workflow/workflow.md",
+      "phase": "Builder",
+      "scope": "production",
+      "workflow": "create-workflow"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/edit-agent/workflow.md",
+      "phase": "Builder",
+      "scope": "production",
+      "workflow": "edit-agent"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/edit-workflow/workflow.md",
+      "phase": "Builder",
+      "scope": "production",
+      "workflow": "edit-workflow"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows/workflow-compliance-check/workflow.md",
+      "phase": "Builder",
+      "scope": "production",
+      "workflow": "workflow-compliance-check"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows-legacy/edit-module/workflow.yaml",
+      "phase": "Builder Legacy",
+      "scope": "production",
+      "workflow": "edit-module"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmb",
+      "path": "src/modules/bmb/workflows-legacy/module-brief/workflow.yaml",
+      "phase": "Builder Legacy",
+      "scope": "production",
+      "workflow": "module-brief"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/brainstorm-game/workflow.md",
+      "phase": "Phase 1 Preproduction",
+      "scope": "production",
+      "workflow": "brainstorm-game"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/brainstorm-game/workflow.yaml",
+      "phase": "Phase 1 Preproduction",
+      "scope": "production",
+      "workflow": "brainstorm-game"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/game-brief/workflow.md",
+      "phase": "Phase 1 Preproduction",
+      "scope": "production",
+      "workflow": "game-brief"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/1-preproduction/game-brief/workflow.yaml",
+      "phase": "Phase 1 Preproduction",
+      "scope": "production",
+      "workflow": "game-brief"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/gdd/workflow.md",
+      "phase": "Phase 2 Design",
+      "scope": "production",
+      "workflow": "gdd"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/gdd/workflow.yaml",
+      "phase": "Phase 2 Design",
+      "scope": "production",
+      "workflow": "gdd"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/narrative/workflow.md",
+      "phase": "Phase 2 Design",
+      "scope": "production",
+      "workflow": "narrative"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/2-design/narrative/workflow.yaml",
+      "phase": "Phase 2 Design",
+      "scope": "production",
+      "workflow": "narrative"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/3-technical/game-architecture/workflow.md",
+      "phase": "Phase 3 Technical",
+      "scope": "production",
+      "workflow": "game-architecture"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/3-technical/game-architecture/workflow.yaml",
+      "phase": "Phase 3 Technical",
+      "scope": "production",
+      "workflow": "game-architecture"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/3-technical/generate-project-context/workflow.md",
+      "phase": "Phase 3 Technical",
+      "scope": "production",
+      "workflow": "generate-project-context"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/code-review/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "scope": "production",
+      "workflow": "code-review"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/correct-course/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "scope": "production",
+      "workflow": "correct-course"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/create-story/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "scope": "production",
+      "workflow": "create-story"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/dev-story/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "scope": "production",
+      "workflow": "dev-story"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/retrospective/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "scope": "production",
+      "workflow": "retrospective"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/sprint-planning/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "scope": "production",
+      "workflow": "sprint-planning"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/4-production/sprint-status/workflow.yaml",
+      "phase": "Phase 4 Production",
+      "scope": "production",
+      "workflow": "sprint-status"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/bmgd-quick-flow/create-tech-spec/workflow.yaml",
+      "phase": "Quick Flow",
+      "scope": "production",
+      "workflow": "create-tech-spec"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/bmgd-quick-flow/quick-dev/workflow.yaml",
+      "phase": "Quick Flow",
+      "scope": "production",
+      "workflow": "quick-dev"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/bmgd-quick-flow/quick-prototype/workflow.yaml",
+      "phase": "Quick Flow",
+      "scope": "production",
+      "workflow": "quick-prototype"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/automate/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "automate"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/performance/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "performance"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/playtest-plan/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "playtest-plan"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/test-design/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "test-design"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/test-framework/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "test-framework"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/gametest/test-review/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "test-review"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/workflow-status/init/workflow.yaml",
+      "phase": "Meta",
+      "scope": "production",
+      "workflow": "init"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmgd",
+      "path": "src/modules/bmgd/workflows/workflow-status/workflow.yaml",
+      "phase": "Meta",
+      "scope": "production",
+      "workflow": "workflow-status"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/1-analysis/create-product-brief/workflow.md",
+      "phase": "Phase 1 Analysis",
+      "scope": "production",
+      "workflow": "create-product-brief"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/1-analysis/research/workflow.md",
+      "phase": "Phase 1 Analysis",
+      "scope": "production",
+      "workflow": "research"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/2-plan-workflows/create-ux-design/workflow.md",
+      "phase": "Phase 2 Planning",
+      "scope": "production",
+      "workflow": "create-ux-design"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/2-plan-workflows/prd/workflow.md",
+      "phase": "Phase 2 Planning",
+      "scope": "production",
+      "workflow": "prd"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/3-solutioning/check-implementation-readiness/workflow.md",
+      "phase": "Phase 3 Solutioning",
+      "scope": "production",
+      "workflow": "check-implementation-readiness"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/3-solutioning/create-architecture/workflow.md",
+      "phase": "Phase 3 Solutioning",
+      "scope": "production",
+      "workflow": "create-architecture"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/3-solutioning/create-epics-and-stories/workflow.md",
+      "phase": "Phase 3 Solutioning",
+      "scope": "production",
+      "workflow": "create-epics-and-stories"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/code-review/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "scope": "production",
+      "workflow": "code-review"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/correct-course/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "scope": "production",
+      "workflow": "correct-course"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/create-story/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "scope": "production",
+      "workflow": "create-story"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/dev-story/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "scope": "production",
+      "workflow": "dev-story"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/retrospective/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "scope": "production",
+      "workflow": "retrospective"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/sprint-planning/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "scope": "production",
+      "workflow": "sprint-planning"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/4-implementation/sprint-status/workflow.yaml",
+      "phase": "Phase 4 Implementation",
+      "scope": "production",
+      "workflow": "sprint-status"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/bmad-quick-flow/create-tech-spec/workflow.yaml",
+      "phase": "Quick Flow",
+      "scope": "production",
+      "workflow": "create-tech-spec"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/bmad-quick-flow/quick-dev/workflow.yaml",
+      "phase": "Quick Flow",
+      "scope": "production",
+      "workflow": "quick-dev"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/document-project/workflow.yaml",
+      "phase": "Phase 0 Documentation",
+      "scope": "production",
+      "workflow": "document-project"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-dataflow/workflow.yaml",
+      "phase": "Diagramming",
+      "scope": "production",
+      "workflow": "create-dataflow"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-diagram/workflow.yaml",
+      "phase": "Diagramming",
+      "scope": "production",
+      "workflow": "create-diagram"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-flowchart/workflow.yaml",
+      "phase": "Diagramming",
+      "scope": "production",
+      "workflow": "create-flowchart"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/excalidraw-diagrams/create-wireframe/workflow.yaml",
+      "phase": "Diagramming",
+      "scope": "production",
+      "workflow": "create-wireframe"
+    },
+    {
+      "definition": "workflow.md",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/generate-project-context/workflow.md",
+      "phase": "Context Generation",
+      "scope": "production",
+      "workflow": "generate-project-context"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/atdd/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "atdd"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/automate/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "automate"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/ci/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "ci"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/framework/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "framework"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/nfr-assess/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "nfr-assess"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/test-design/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "test-design"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/test-review/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "test-review"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/testarch/trace/workflow.yaml",
+      "phase": "Testing/QA",
+      "scope": "production",
+      "workflow": "trace"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/workflow-status/init/workflow.yaml",
+      "phase": "Meta",
+      "scope": "production",
+      "workflow": "init"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "bmm",
+      "path": "src/modules/bmm/workflows/workflow-status/workflow.yaml",
+      "phase": "Meta",
+      "scope": "production",
+      "workflow": "workflow-status"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/design-thinking/workflow.yaml",
+      "phase": "CIS",
+      "scope": "production",
+      "workflow": "design-thinking"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/innovation-strategy/workflow.yaml",
+      "phase": "CIS",
+      "scope": "production",
+      "workflow": "innovation-strategy"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/problem-solving/workflow.yaml",
+      "phase": "CIS",
+      "scope": "production",
+      "workflow": "problem-solving"
+    },
+    {
+      "definition": "workflow.yaml",
+      "module": "cis",
+      "path": "src/modules/cis/workflows/storytelling/workflow.yaml",
+      "phase": "CIS",
+      "scope": "production",
+      "workflow": "storytelling"
+    }
+  ]
+}

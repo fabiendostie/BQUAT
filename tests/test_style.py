@@ -4,10 +4,24 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 CHECK_PATHS = [
+    ROOT / "config" / "runtime.yaml",
     ROOT / "methodology" / "tools" / "mapping.py",
     ROOT / "methodology" / "tools" / "generate_mapping.py",
+    ROOT / "runtime" / "__init__.py",
+    ROOT / "runtime" / "agents.py",
+    ROOT / "runtime" / "config.py",
+    ROOT / "runtime" / "engine.py",
+    ROOT / "runtime" / "gates.py",
+    ROOT / "runtime" / "models.py",
+    ROOT / "runtime" / "prompts.py",
+    ROOT / "runtime" / "storage.py",
     ROOT / "tests" / "test_mapping.py",
     ROOT / "tests" / "test_style.py",
+    ROOT / "tests" / "test_runtime_agents.py",
+    ROOT / "tests" / "test_runtime_config.py",
+    ROOT / "tests" / "test_runtime_engine.py",
+    ROOT / "tests" / "test_runtime_gates.py",
+    ROOT / "tests" / "test_runtime_storage.py",
     ROOT / "tests" / "run_tests.py",
 ]
 

@@ -23,10 +23,11 @@ class MappingTests(unittest.TestCase):
 
     def test_artifacts_only_explicit_or_templates(self) -> None:
         for record in self.records:
-            if record.artifacts == "none":
+            if not record.artifacts:
                 continue
-            self.assertNotIn("implicit:", record.artifacts)
-            self.assertNotIn("schema:", record.artifacts)
+            for artifact in record.artifacts:
+                self.assertFalse(artifact.startswith("implicit:"))
+                self.assertFalse(artifact.startswith("schema:"))
 
     def test_prd_output_present(self) -> None:
         target = None
@@ -35,7 +36,7 @@ class MappingTests(unittest.TestCase):
                 target = record
                 break
         self.assertIsNotNone(target, "PRD workflow mapping not found")
-        self.assertIn("prd.md", target.artifacts)
+        self.assertTrue(any("prd.md" in artifact for artifact in target.artifacts))
 
     def test_human_gate_planning_required(self) -> None:
         target = None
