@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: TBD
+Last updated: 2025-12-21T00:09:32Z
 
 ## Purpose
 

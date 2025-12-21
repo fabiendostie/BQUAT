@@ -10,6 +10,8 @@ CHECK_PATHS = [
     ROOT / ".husky" / "pre-commit",
     ROOT / "VERSION",
     ROOT / "docs" / "versioning.md",
+    ROOT / "docs" / "v1-plan.md",
+    ROOT / "docs" / "traceability-audit.md",
     ROOT / "package.json",
     ROOT / "pytest.ini",
     ROOT / "requirements-dev.txt",
@@ -42,9 +44,11 @@ CHECK_PATHS = [
     ROOT / "tests" / "test_runtime_engine.py",
     ROOT / "tests" / "test_runtime_gates.py",
     ROOT / "tests" / "test_runtime_http.py",
+    ROOT / "tests" / "test_runtime_models.py",
     ROOT / "tests" / "test_runtime_plugins.py",
     ROOT / "tests" / "test_runtime_providers.py",
     ROOT / "tests" / "test_runtime_storage.py",
+    ROOT / "tests" / "test_versioning.py",
     ROOT / "tests" / "run_tests.py",
 ]
 

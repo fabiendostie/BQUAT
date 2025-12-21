@@ -27,6 +27,19 @@ class RuntimeStorageTests(unittest.TestCase):
             approvals = storage.read_approvals(run_dir)
             self.assertEqual(approvals, {"approvals": []})
 
+    def test_schema_defaults(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            run_dir = storage.init_run_dir(tmp, "run-3")
+            artifacts = storage.read_artifact_index(run_dir)
+            evidence = storage.read_evidence_links(run_dir)
+            gates = storage.read_human_gates(run_dir)
+            events = storage.read_events(run_dir)
+            self.assertEqual(artifacts["artifacts"], [])
+            self.assertEqual(evidence, {"evidence": []})
+            self.assertEqual(gates, {"gates": []})
+            self.assertEqual(events, {"events": []})
+
 
 if __name__ == "__main__":
     unittest.main()

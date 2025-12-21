@@ -45,3 +45,55 @@ def read_approvals(run_dir: Path) -> Dict[str, Any]:
     if not target.exists():
         return {"approvals": []}
     return read_json(target)
+
+
+def write_artifact_index(run_dir: Path, index: Dict[str, Any]) -> Path:
+    target = run_dir / "artifacts.json"
+    write_json(target, index)
+    return target
+
+
+def read_artifact_index(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "artifacts.json"
+    if not target.exists():
+        return {"run_id": run_dir.name, "artifacts": [], "updated_at": ""}
+    return read_json(target)
+
+
+def write_evidence_links(run_dir: Path, evidence: Dict[str, Any]) -> Path:
+    target = run_dir / "evidence.json"
+    write_json(target, evidence)
+    return target
+
+
+def read_evidence_links(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "evidence.json"
+    if not target.exists():
+        return {"evidence": []}
+    return read_json(target)
+
+
+def write_human_gates(run_dir: Path, gates: Dict[str, Any]) -> Path:
+    target = run_dir / "gates.json"
+    write_json(target, gates)
+    return target
+
+
+def read_human_gates(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "gates.json"
+    if not target.exists():
+        return {"gates": []}
+    return read_json(target)
+
+
+def write_events(run_dir: Path, events: Dict[str, Any]) -> Path:
+    target = run_dir / "events.json"
+    write_json(target, events)
+    return target
+
+
+def read_events(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "events.json"
+    if not target.exists():
+        return {"events": []}
+    return read_json(target)

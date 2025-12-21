@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: TBD
+Last updated: 2025-12-21T00:09:32Z
 
 ## Purpose
 
@@ -261,8 +261,8 @@ Deliverables:
 
 ## Master Checklist (v1.0)
 
-- [ ] Confirm plan is the source of truth and update README link
-- [ ] Complete runtime data model and schemas
+- [x] Confirm plan is the source of truth and update README link
+- [x] Complete runtime data model and schemas
 - [ ] Implement BMAD workflow parsing and canonical registry
 - [ ] Build step execution state machine
 - [ ] Implement tool adapters and risk policy

@@ -20,6 +20,10 @@ This repository consolidates BMAD-METHOD with Quint-code (FPF reasoning) and TEL
 
 The authoritative plan and checklist live at docs/v1-plan.md. Update that file to track progress and keep scope locked.
 
+## Change control and branch policy
+
+Scope changes must be recorded in docs/v1-plan.md with an owner and rationale. The development branch is primary; main is release only.
+
 ## Regenerate registries and mappings
 
 ```bash
