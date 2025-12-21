@@ -5,14 +5,74 @@
 ![SemVer](https://img.shields.io/badge/semver-2.0.0-blue)
 ![HITL](https://img.shields.io/badge/HITL-blocking-orange)
 
-BQUAT consolidates BMAD-METHOD with Quint-code (FPF reasoning) and TELIS (token optimization) into a single, fully automated framework with blocking human-in-the-loop gates.
+Build production-grade agent workflows by unifying BMAD-METHOD, TELIS, and QUINT under one runtime with blocking human-in-the-loop (HITL) gates. BQUAT preserves the original workflows and artifacts while adding enforceable guardrails, runtime approvals, and a reproducible execution model.
 
-## Highlights
+## At a glance
 
-- Preserves BMAD workflows and output conventions.
-- Enforces TELIS context policy and validation gates.
-- Applies QUINT evidence, ADI checkpoints, and DRR discipline.
-- CLI-first approvals with blocking HITL gates.
+- Objective: one operational framework, many workflows, consistent outputs.
+- Approach: workflow-to-runtime mapping plus provider and guardrail adapters.
+- Control: hard-stop HITL gates with explicit approvals and resumable runs.
+- Source of truth: docs/v1-plan.md, methodology/unified_method_specification.md.
+
+## Project status
+
+- Last refreshed: 2025-12-21 (America/Toronto)
+- Primary branch: development
+- Release branch: main
+- Release target: v1.0 (see docs/v1-plan.md)
+
+## Contents
+
+- What it is
+- Architecture at a glance
+- Providers
+- Workflow and gates
+- Quick start
+- Quality gates
+- CLI
+- Docs and registries
+- Runtime layout
+- Timezone and timestamps
+- Change control and branch policy
+- Versioning
+- Notes
+
+## What it is
+
+BQUAT is a unification layer that keeps BMAD workflow structure intact, applies TELIS context discipline, and embeds QUINT evidence practices. It focuses on deterministic execution, explicit outputs, and auditable approvals without changing the authored intent of existing workflows.
+
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+  A[Workflow Sources] --> B[Unified Mapping]
+  B --> C[Runtime Engine]
+  C --> D[HITL Gates]
+  C --> E[Provider Registry]
+  D --> F[Approvals Ledger]
+  E --> G[LLM Providers]
+  C --> H[Artifacts + Outputs]
+```
+
+## Providers
+
+Configured in config/runtime.yaml. The runtime ships with a registry abstraction and provider adapters.
+
+| Provider  | Type      | Default Base URL                                 | Env Key         |
+| --------- | --------- | ------------------------------------------------ | --------------- |
+| Mock      | mock      | n/a                                              | n/a             |
+| Ollama    | ollama    | http://localhost:11434                           | n/a             |
+| LiteLLM   | litellm   | http://localhost:4000                            | API key env var |
+| OpenAI    | openai    | https://api.openai.com                           | API key env var |
+| Anthropic | anthropic | https://api.anthropic.com                        | API key env var |
+| Gemini    | gemini    | https://generativelanguage.googleapis.com/v1beta | API key env var |
+| Groq      | groq      | https://api.groq.com/openai/v1                   | API key env var |
+
+## Workflow and gates
+
+- Workflows are mapped into runtime steps with explicit outputs and artifact templates.
+- HITL gates are blocking by default; approval is required to proceed.
+- Gate decisions are recorded for resumable execution.
 
 ## Quick start
 
@@ -26,36 +86,18 @@ python tests/run_tests.py
 pytest
 ```
 
-## Quality checks
+## Quality gates
 
 ```bash
 npm run lint
 npm run format:check
+npm run typecheck
 npm test
 ```
 
-Linting uses Ruff for Python, ESLint JSON rules for duplicate keys, markdownlint-cli2 for Markdown, and Prettier for formatting.
-
-## Core docs
-
-- Unified method specification: methodology/unified_method_specification.md
-- v1.0 release plan and checklist: docs/v1-plan.md
-- Traceability audit and requirement coverage: docs/traceability-audit.md
-- Runtime step contract: docs/runtime-step-contract.md
-- Documentation index: docs/unified-framework-documentation-index.md
-
-## Registries and mappings
-
-- Agent and workflow registries: methodology/registry-agents.md, methodology/registry-workflows.md
-- Agent menu bindings: methodology/registry-agent-menus.md
-- Workflow to Quint/TELIS mapping: methodology/integration-mapping.md
-
-## Runtime and tooling
-
-- Runtime configuration: config/runtime.yaml
-- Runtime engine scaffolding: runtime/
-- CI/CD blueprint: cicd/ci-cd-blueprint.md
-- Security audit template: security/security-audit-report-template.md
+- Lint: Ruff (Python), ESLint JSON (duplicate keys), markdownlint-cli2.
+- Format: Ruff formatter for Python and Prettier for Markdown, JSON, YAML.
+- Typecheck: mypy and pyright (pre-commit only, not CI).
 
 ## CLI
 
@@ -65,6 +107,27 @@ python -m cli.main run bmm prd --agent bmad --provider mock
 python -m cli.main approve <run-id> --by you
 python -m cli.main status <run-id>
 ```
+
+## Docs and registries
+
+- Unified method specification: methodology/unified_method_specification.md
+- v1.0 release plan and checklist: docs/v1-plan.md
+- Traceability audit and requirement coverage: docs/traceability-audit.md
+- Runtime step contract: docs/runtime-step-contract.md
+- Documentation index: docs/unified-framework-documentation-index.md
+- Agent and workflow registries: methodology/registry-agents.md, methodology/registry-workflows.md
+- Agent menu bindings: methodology/registry-agent-menus.md
+- Workflow to Quint/TELIS mapping: methodology/integration-mapping.md
+
+## Runtime layout
+
+| Path         | Purpose                           |
+| ------------ | --------------------------------- |
+| runtime/     | engine, gates, providers, tools   |
+| methodology/ | unified spec, registries, mapping |
+| config/      | runtime configuration             |
+| cli/         | CLI entrypoints                   |
+| docs/        | plans, audits, reference docs     |
 
 ## Timezone and timestamps
 

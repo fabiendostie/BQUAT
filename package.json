@@ -10,6 +10,7 @@
     "lint:json": "eslint \"**/*.json\" \"**/*.jsonc\" --max-warnings=0",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "lint:py": "python -m ruff check .",
+    "typecheck": "python -m mypy runtime cli methodology/tools && pyright",
     "test": "python tests/run_tests.py && pytest",
     "test:python": "python tests/run_tests.py",
     "test:pytest": "pytest"
@@ -19,6 +20,7 @@
     "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "markdownlint-cli2": "^0.20.0",
+    "pyright": "^1.1.407",
     "prettier": "^3.7.4"
   }
 }

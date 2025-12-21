@@ -3,6 +3,8 @@ __pycache__/
 runs/
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.pyright/
 coverage/
 node_modules/
 .husky/_/

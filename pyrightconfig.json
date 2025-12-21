@@ -1,0 +1,8 @@
+{
+  "include": ["runtime", "cli", "methodology/tools"],
+  "exclude": ["BMAD-METHOD", "quint-code", "node_modules", "runs", ".pytest_cache", ".ruff_cache"],
+  "typeCheckingMode": "basic",
+  "pythonVersion": "3.11",
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": "none"
+}
