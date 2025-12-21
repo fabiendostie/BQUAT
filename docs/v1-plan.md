@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-21T05:20:48Z
+Last updated: 2025-12-21T06:54:30Z
 
 ## Purpose
 
@@ -140,6 +140,7 @@ Deliverables:
 Deliverables:
 - runtime/engine.py execution path
 - runtime/execution.py step execution contract
+- docs/runtime-step-contract.md
 - tests/test_runtime_engine.py
 
 ### WS5: Tool adapter layer

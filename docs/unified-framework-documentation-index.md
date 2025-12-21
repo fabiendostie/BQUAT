@@ -5,6 +5,7 @@
 - methodology/unified_method_specification.md
 - docs/v1-plan.md
 - docs/traceability-audit.md
+- docs/runtime-step-contract.md
 
 ## Registries and Mappings
 

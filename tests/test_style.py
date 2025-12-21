@@ -12,6 +12,7 @@ CHECK_PATHS = [
     ROOT / "docs" / "versioning.md",
     ROOT / "docs" / "v1-plan.md",
     ROOT / "docs" / "traceability-audit.md",
+    ROOT / "docs" / "runtime-step-contract.md",
     ROOT / "package.json",
     ROOT / "pytest.ini",
     ROOT / "requirements-dev.txt",
