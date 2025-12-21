@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-21T06:53:41Z
+Last updated: 2025-12-21T14:50:54-05:00
 
 ## Purpose
 
@@ -52,7 +52,7 @@ Fields:
   "tools": [
     {
       "name": "getCurrentTime",
-      "args": {"timezone": "UTC"},
+      "args": { "timezone": "UTC" },
       "required": false,
       "risk": "low"
     }
@@ -100,18 +100,20 @@ The runtime must expose a getCurrentTime tool to return the current time from th
 - Definition: runtime/tools/time_tool.py
 - Purpose: ensure all timestamps are real-time and not from model memory
 - Parameters:
-  - timezone: IANA name (default UTC)
+  - timezone: IANA name (default America/Toronto)
 
 ## Validation Gate Contract
 
 Validation gates execute after tool calls and before outputs are accepted. Validation policies are defined in TELIS.
 
 Examples:
+
 - Format validation
 - Template/schema validation
 - AST + type + lint (as applicable)
 
 Validation failures:
+
 - add error details to step.error
 - retry if allowed by retries.max
 - if retries exhausted, mark step failed and run failed
@@ -131,6 +133,7 @@ Approvals are stored in approvals.json with audit metadata.
 Steps with evidence requirements must emit evidence records. The evidence schema is defined in methodology/evidence-schema.yaml.
 
 Minimum fields:
+
 - id, claim, level, source, date, valid_until, congruence, reliability, wlnk, carrier_ref
 
 Evidence links are stored in evidence.json and cross-linked to artifacts.

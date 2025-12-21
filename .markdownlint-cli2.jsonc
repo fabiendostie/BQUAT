@@ -1,0 +1,13 @@
+{
+  "config": {
+    "MD013": false
+  },
+  "ignores": [
+    "BMAD-METHOD/**",
+    "quint-code/**",
+    "node_modules/**",
+    "runs/**",
+    ".pytest_cache/**",
+    "coverage/**"
+  ]
+}

@@ -1,11 +1,11 @@
 import io
 import json
+import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
-
-import sys
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -85,6 +85,15 @@ class CliTests(unittest.TestCase):
                 cli_main.cmd_status(status_args)
             manifest = json.loads(buf.getvalue())
             self.assertEqual(manifest["run_id"], payload["run_id"])
+
+    def test_main_validate(self) -> None:
+        with patch.object(sys, "argv", ["bquat", "validate"]):
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                result = cli_main.main()
+            payload = json.loads(buf.getvalue())
+            self.assertEqual(result, 0)
+            self.assertGreater(payload["records"], 0)
 
 
 if __name__ == "__main__":

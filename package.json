@@ -4,11 +4,21 @@
   "version": "0.1.0",
   "scripts": {
     "prepare": "husky",
+    "format": "python -m ruff format . && prettier --write \"**/*.{md,json,yml,yaml}\"",
+    "format:check": "python -m ruff format --check . && prettier --check \"**/*.{md,json,yml,yaml}\"",
+    "lint": "npm run lint:py && npm run lint:md && npm run lint:json",
+    "lint:json": "eslint \"**/*.json\" \"**/*.jsonc\" --max-warnings=0",
+    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "lint:py": "python -m ruff check .",
     "test": "python tests/run_tests.py && pytest",
     "test:python": "python tests/run_tests.py",
     "test:pytest": "pytest"
   },
   "devDependencies": {
-    "husky": "^9.0.11"
+    "@eslint/json": "^0.14.0",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "markdownlint-cli2": "^0.20.0",
+    "prettier": "^3.7.4"
   }
 }

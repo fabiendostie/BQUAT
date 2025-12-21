@@ -1,15 +1,19 @@
 import json
+import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
-
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from runtime import engine  # noqa: E402
-from runtime import models  # noqa: E402
+from runtime import (
+    engine,  # noqa: E402
+    models,  # noqa: E402
+    storage,  # noqa: E402
+)
+from runtime.plugins.base import Plugin  # noqa: E402
 
 
 class FlakyExecutor(engine.StepExecutor):
@@ -25,6 +29,34 @@ class FlakyExecutor(engine.StepExecutor):
 class FailingExecutor(engine.StepExecutor):
     def execute(self, step: dict, context: dict) -> None:
         raise RuntimeError("nope")
+
+
+class RecordingPlugin(Plugin):
+    def __init__(self) -> None:
+        self.events = []
+
+    def before_run(self, manifest: dict) -> None:
+        self.events.append("before_run")
+
+    def after_run(self, manifest: dict) -> None:
+        self.events.append("after_run")
+
+    def before_step(self, step: dict, manifest: dict) -> None:
+        self.events.append("before_step")
+
+    def after_step(self, step: dict, manifest: dict) -> None:
+        self.events.append("after_step")
+
+    def on_error(self, step: dict, manifest: dict, error: str) -> None:
+        self.events.append("on_error")
+
+    def on_validation(self, manifest: dict, status: str) -> None:
+        self.events.append(f"validation:{status}")
+
+
+class TimeoutExecutor(engine.StepExecutor):
+    def execute(self, step: dict, context: dict) -> None:
+        time.sleep(0.01)
 
 
 class RuntimeEngineTests(unittest.TestCase):
@@ -124,6 +156,72 @@ class RuntimeEngineTests(unittest.TestCase):
         self.assertTrue(path.name == "integration-mapping.json")
         records = engine.load_mapping_records(path)
         self.assertTrue(len(records) >= 1)
+
+    def test_workflow_spec_missing(self) -> None:
+        spec = self._spec(human_gate="optional")
+        eng = engine.WorkflowEngine(self._config(), [spec])
+        with self.assertRaises(KeyError):
+            eng.get_workflow_spec("bmm", "missing")
+
+    def test_run_with_existing_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            spec = self._spec(human_gate="optional")
+            eng = engine.WorkflowEngine(self._config(), [spec], storage_root=tmp)
+            created = eng.create_run("bmm", "prd")
+            run_dir = tmp / created["run_id"]
+            manifest = storage.read_manifest(run_dir)
+            manifest["steps"] = []
+            storage.write_manifest(run_dir, manifest)
+            result = eng.run("bmm", "prd", run_id=created["run_id"])
+            self.assertEqual(result["status"], "completed")
+            self.assertTrue(result["steps"])
+
+    def test_plugin_hooks_success(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            spec = self._spec(human_gate="optional")
+            plugin = RecordingPlugin()
+            manager = engine.PluginManager([plugin])
+            eng = engine.WorkflowEngine(self._config(), [spec], storage_root=tmp, plugins=manager)
+            manifest = eng.run("bmm", "prd")
+            self.assertEqual(manifest["status"], "completed")
+            self.assertEqual(
+                plugin.events,
+                [
+                    "before_run",
+                    "before_step",
+                    "after_step",
+                    "validation:completed",
+                    "after_run",
+                ],
+            )
+
+    def test_plugin_hooks_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            spec = self._spec(human_gate="optional")
+            plugin = RecordingPlugin()
+            manager = engine.PluginManager([plugin])
+            eng = engine.WorkflowEngine(
+                self._config(max_retries=0), [spec], storage_root=tmp, plugins=manager
+            )
+            manifest = eng.run("bmm", "prd", executor=FailingExecutor())
+            self.assertEqual(manifest["status"], "failed")
+            self.assertIn("on_error", plugin.events)
+            self.assertIn("validation:failed", plugin.events)
+            self.assertIn("after_run", plugin.events)
+
+    def test_timeout_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            spec = self._spec(human_gate="optional")
+            config = self._config(max_retries=0)
+            config["runtime"]["step_timeout_seconds"] = 0
+            eng = engine.WorkflowEngine(config, [spec], storage_root=tmp)
+            manifest = eng.run("bmm", "prd", executor=TimeoutExecutor())
+            self.assertEqual(manifest["status"], "failed")
+            self.assertEqual(manifest["steps"][0]["error"], "step timeout")
 
 
 if __name__ == "__main__":

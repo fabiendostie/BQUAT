@@ -1,15 +1,16 @@
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-import sys
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from runtime import execution  # noqa: E402
-from runtime import models  # noqa: E402
-from runtime import storage  # noqa: E402
+from runtime import (
+    execution,  # noqa: E402
+    models,  # noqa: E402
+    storage,  # noqa: E402
+)
 from runtime.providers.registry import MockProvider  # noqa: E402
 
 

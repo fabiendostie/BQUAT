@@ -16,10 +16,10 @@
 
 ## Options Considered
 
-1) Option A
+1. Option A
    - Pros:
    - Cons:
-2) Option B
+2. Option B
    - Pros:
    - Cons:
 

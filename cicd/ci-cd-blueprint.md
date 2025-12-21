@@ -6,28 +6,28 @@ Define a CI/CD pipeline that enforces BMAD quality gates, TELIS validation, and 
 
 ## Pipeline Stages
 
-1) Pre-merge checks
+1. Pre-merge checks
    - Formatting and linting
    - Type checks where applicable
    - Unit tests and fast integration tests
    - Security baseline scan (static analysis)
 
-2) Build and package
+2. Build and package
    - Build artifacts
    - Generate checksums
    - Produce release notes stubs
 
-3) Integration and E2E
+3. Integration and E2E
    - ATDD or integration test suite
    - E2E tests when required
    - Performance smoke checks for critical paths
 
-4) Release preparation
+4. Release preparation
    - Version bump (if required)
    - SBOM and dependency report
    - Signed artifacts
 
-5) Deployment
+5. Deployment
    - Environment promotion (dev -> staging -> prod)
    - Health checks and rollback hooks
 

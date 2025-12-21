@@ -1,8 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+import os
+
+from runtime.tools.time_tool import get_current_time as tool_current_time
+
+DEFAULT_TIMEZONE = os.environ.get("BQUAT_TIMEZONE", "America/Toronto")
 
 
 def get_current_time() -> str:
-    """Return current UTC time in ISO 8601 format."""
-    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    """Return current time in ISO 8601 format using the configured timezone."""
+    return tool_current_time(DEFAULT_TIMEZONE)

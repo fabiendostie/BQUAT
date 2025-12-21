@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Iterable, List
 
 
@@ -342,7 +342,11 @@ def extract_outputs(text: str) -> List[str]:
 def artifacts_from_workflow_dir(workflow_dir: Path) -> List[str]:
     artifacts = set()
 
-    for wf in [workflow_dir / "workflow.yaml", workflow_dir / "workflow.yml", workflow_dir / "workflow.md"]:
+    for wf in [
+        workflow_dir / "workflow.yaml",
+        workflow_dir / "workflow.yml",
+        workflow_dir / "workflow.md",
+    ]:
         if wf.exists():
             artifacts.update(extract_outputs(safe_text(wf)))
 

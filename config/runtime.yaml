@@ -1,50 +1,16 @@
 {
-  "runtime": {
-    "storage_root": "runs",
-    "log_level": "info",
-    "max_retries": 1,
-    "step_timeout_seconds": 1800
-  },
-  "hitl": {
-    "mode": "blocking",
-    "require_conditional": false,
-    "approval_interface": "cli"
-  },
-  "providers": {
-    "default": "ollama",
-    "mock": {
-      "type": "mock",
-      "model": "mock"
+  "runtime":
+    { "storage_root": "runs", "log_level": "info", "max_retries": 1, "step_timeout_seconds": 1800 },
+  "hitl": { "mode": "blocking", "require_conditional": false, "approval_interface": "cli" },
+  "providers":
+    {
+      "default": "ollama",
+      "mock": { "type": "mock", "model": "mock" },
+      "ollama": { "type": "ollama", "base_url": "http://localhost:11434", "model": "llama3" },
+      "litellm": { "type": "litellm", "base_url": "http://localhost:4000", "model": "gpt-4" },
+      "openai": { "type": "openai", "model": "gpt5", "api_key_env": "OPENAI_API_KEY" },
+      "claude": { "type": "anthropic", "model": "claude-4", "api_key_env": "ANTHROPIC_API_KEY" },
+      "gemini": { "type": "gemini", "model": "gemini-3", "api_key_env": "GEMINI_API_KEY" },
+      "groq": { "type": "groq", "model": "llama3-70b", "api_key_env": "GROQ_API_KEY" },
     },
-    "ollama": {
-      "type": "ollama",
-      "base_url": "http://localhost:11434",
-      "model": "llama3"
-    },
-    "litellm": {
-      "type": "litellm",
-      "base_url": "http://localhost:4000",
-      "model": "gpt-4"
-    },
-    "openai": {
-      "type": "openai",
-      "model": "gpt5",
-      "api_key_env": "OPENAI_API_KEY"
-    },
-    "claude": {
-      "type": "anthropic",
-      "model": "claude-4",
-      "api_key_env": "ANTHROPIC_API_KEY"
-    },
-    "gemini": {
-      "type": "gemini",
-      "model": "gemini-3",
-      "api_key_env": "GEMINI_API_KEY"
-    },
-    "groq": {
-      "type": "groq",
-      "model": "llama3-70b",
-      "api_key_env": "GROQ_API_KEY"
-    }
-  }
 }

@@ -9,7 +9,7 @@ valid_until: "YYYY-MM-DD"
 congruence: "CL1|CL2|CL3"
 reliability: 0.0
 wlnk: 0.0
-carrier_ref: ""  # file path or artifact id
+carrier_ref: "" # file path or artifact id
 artifacts:
   - ""
 notes: ""

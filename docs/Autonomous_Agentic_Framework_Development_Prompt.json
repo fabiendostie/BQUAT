@@ -73,7 +73,11 @@
         },
         {
           "name": "security_agent",
-          "responsibilities": ["vulnerability_scanning", "security_auditing", "compliance_validation"],
+          "responsibilities": [
+            "vulnerability_scanning",
+            "security_auditing",
+            "compliance_validation"
+          ],
           "methodology": "unified_super_method"
         }
       ],
@@ -109,7 +113,7 @@
     "root": "project_directory",
     "subdirectories": [
       "/agents",
-      "/workflows", 
+      "/workflows",
       "/methodology",
       "/tests",
       "/cicd",

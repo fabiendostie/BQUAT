@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Tuple
 
-from runtime import models
-from runtime import prompts
+from runtime import models, prompts
 
 
 def split_artifacts(artifacts: List[str]) -> Tuple[List[str], List[str]]:

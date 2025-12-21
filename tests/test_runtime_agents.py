@@ -1,14 +1,15 @@
+import sys
 import unittest
 from pathlib import Path
-
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from runtime import agents  # noqa: E402
-from runtime import models  # noqa: E402
-from runtime import prompts  # noqa: E402
+from runtime import (
+    agents,  # noqa: E402
+    models,  # noqa: E402
+    prompts,  # noqa: E402
+)
 
 
 class RuntimeAgentTests(unittest.TestCase):
@@ -28,9 +29,7 @@ class RuntimeAgentTests(unittest.TestCase):
         )
 
     def test_split_artifacts(self) -> None:
-        outputs, templates = agents.split_artifacts(
-            ["{output_folder}/a.md", "template:tmpl.md"]
-        )
+        outputs, templates = agents.split_artifacts(["{output_folder}/a.md", "template:tmpl.md"])
         self.assertEqual(outputs, ["{output_folder}/a.md"])
         self.assertEqual(templates, ["tmpl.md"])
 

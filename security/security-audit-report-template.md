@@ -29,8 +29,8 @@
 
 ## 5) Findings
 
-| ID | Severity | Description | Evidence | Impact | Remediation | Owner | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| ID  | Severity | Description | Evidence | Impact | Remediation | Owner | Status |
+| --- | -------- | ----------- | -------- | ------ | ----------- | ----- | ------ |
 
 ## 6) Risk Summary
 

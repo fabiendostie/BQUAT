@@ -1,6 +1,5 @@
-import sys
-import unittest
 import trace
+import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,17 +38,25 @@ def run_tests() -> unittest.TestResult:
 def executable_lines(path: Path) -> set[int]:
     lines = path.read_text(encoding="ascii", errors="ignore").splitlines()
     exec_lines = set()
+    open_brackets = 0
     for idx, line in enumerate(lines, 1):
         stripped = line.strip()
         if not stripped:
             continue
         if stripped.startswith("#"):
             continue
-        if stripped.startswith(("\"", "'")):
+        if stripped.startswith(('"', "'")):
             continue
         if stripped in {"]", ")", "}", "]:", "],", "})", "):"}:
+            open_brackets = max(0, open_brackets - 1)
             continue
-        exec_lines.add(idx)
+        in_continuation = open_brackets > 0
+        if not in_continuation:
+            exec_lines.add(idx)
+        open_brackets += line.count("(") + line.count("[") + line.count("{")
+        open_brackets -= line.count(")") + line.count("]") + line.count("}")
+        if open_brackets < 0:
+            open_brackets = 0
     return exec_lines
 
 

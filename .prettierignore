@@ -1,0 +1,7 @@
+BMAD-METHOD/
+quint-code/
+node_modules/
+.husky/_/
+runs/
+.pytest_cache/
+coverage/

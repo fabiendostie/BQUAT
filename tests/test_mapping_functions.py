@@ -1,8 +1,7 @@
+import sys
 import tempfile
 import unittest
 from pathlib import Path
-
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "methodology" / "tools"
@@ -118,12 +117,20 @@ class MappingFunctionTests(unittest.TestCase):
         self.assertEqual(mapping.quint_checkpoint("Meta"), "Audit/Decision")
         self.assertEqual(mapping.quint_checkpoint("Quick Flow"), "Mixed (ADI compressed)")
 
-        self.assertEqual(mapping.telis_policy("Phase 1 Analysis"), "Tier 1 minimal, Tier 2 on demand")
-        self.assertEqual(mapping.telis_policy("Phase 2 Planning"), "Tier 2 shards + progressive negotiation")
-        self.assertEqual(mapping.telis_policy("Phase 4 Implementation"), "LSP-first + Tier 2 + validation gate")
+        self.assertEqual(
+            mapping.telis_policy("Phase 1 Analysis"), "Tier 1 minimal, Tier 2 on demand"
+        )
+        self.assertEqual(
+            mapping.telis_policy("Phase 2 Planning"), "Tier 2 shards + progressive negotiation"
+        )
+        self.assertEqual(
+            mapping.telis_policy("Phase 4 Implementation"), "LSP-first + Tier 2 + validation gate"
+        )
         self.assertEqual(mapping.telis_policy("Meta"), "Tier 1 minimal")
 
-        self.assertEqual(mapping.validation_gate("Phase 4 Implementation"), "AST + type + lint (as applicable)")
+        self.assertEqual(
+            mapping.validation_gate("Phase 4 Implementation"), "AST + type + lint (as applicable)"
+        )
         self.assertEqual(mapping.validation_gate("Phase 2 Planning"), "Template/schema validation")
         self.assertEqual(mapping.validation_gate("Phase 1 Analysis"), "Format validation")
         self.assertEqual(mapping.validation_gate("Meta"), "N/A")
@@ -139,24 +146,56 @@ class MappingFunctionTests(unittest.TestCase):
         self.assertEqual(mapping.human_gate("Phase 2 Planning", "prd"), "required")
         self.assertEqual(mapping.human_gate("Phase 4 Implementation", "dev-story"), "conditional")
         self.assertEqual(mapping.human_gate("Phase 4 Implementation", "other"), "optional")
-        self.assertEqual(mapping.human_gate("Phase 0 Documentation", "document-project"), "recommended")
+        self.assertEqual(
+            mapping.human_gate("Phase 0 Documentation", "document-project"), "recommended"
+        )
         self.assertEqual(mapping.human_gate("Quick Flow", "quick-dev"), "conditional")
 
     def test_artifact_heuristics(self) -> None:
         self.assertEqual(mapping.artifact_from_workflow("Phase 2 Planning", "prd"), "PRD")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 2 Planning", "tech-spec"), "Tech Spec")
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 2 Planning", "tech-spec"), "Tech Spec"
+        )
         self.assertEqual(mapping.artifact_from_workflow("Phase 2 Planning", "gdd"), "GDD")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 3 Solutioning", "create-architecture"), "Architecture")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 2 Planning", "create-ux-design"), "UX/Design Artifacts")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 4 Implementation", "create-story"), "Story")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 4 Implementation", "sprint-planning"), "Sprint Plan/Status")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 0 Documentation", "document-project"), "Project Documentation")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 1 Analysis", "research"), "Research Brief")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 1 Analysis", "brainstorm"), "Idea Set")
-        self.assertEqual(mapping.artifact_from_workflow("Testing/QA", "test-design"), "Test Artifacts")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 4 Implementation", "code-review"), "Code Review")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 4 Implementation", "retrospective"), "Retrospective")
-        self.assertEqual(mapping.artifact_from_workflow("Phase 4 Implementation", "correct-course"), "Course Correction Plan")
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 3 Solutioning", "create-architecture"),
+            "Architecture",
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 2 Planning", "create-ux-design"),
+            "UX/Design Artifacts",
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 4 Implementation", "create-story"), "Story"
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 4 Implementation", "sprint-planning"),
+            "Sprint Plan/Status",
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 0 Documentation", "document-project"),
+            "Project Documentation",
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 1 Analysis", "research"), "Research Brief"
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 1 Analysis", "brainstorm"), "Idea Set"
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Testing/QA", "test-design"), "Test Artifacts"
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 4 Implementation", "code-review"), "Code Review"
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 4 Implementation", "retrospective"),
+            "Retrospective",
+        )
+        self.assertEqual(
+            mapping.artifact_from_workflow("Phase 4 Implementation", "correct-course"),
+            "Course Correction Plan",
+        )
 
     def test_extract_outputs_and_artifacts(self) -> None:
         text = """
@@ -172,7 +211,9 @@ outputs:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             wf_dir = Path(tmpdir)
-            (wf_dir / "workflow.yaml").write_text("outputFile: '{output_folder}/foo.md'", encoding="ascii")
+            (wf_dir / "workflow.yaml").write_text(
+                "outputFile: '{output_folder}/foo.md'", encoding="ascii"
+            )
             (wf_dir / "steps").mkdir()
             (wf_dir / "steps" / "step-01-init.md").write_text(
                 "outputFile: '{output_folder}/bar.md'",

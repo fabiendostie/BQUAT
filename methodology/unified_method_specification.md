@@ -45,13 +45,13 @@ Create a single unified multi-agent framework that strictly preserves BMAD-METHO
 
 ### 4.1 Layers
 
-1) BMAD Execution Layer
+1. BMAD Execution Layer
    - Agents, workflows, tasks, tools, and installers (BMAD core + modules).
-2) Quint Reasoning Layer
+2. Quint Reasoning Layer
    - Evidence capture, ADI cycle checkpoints, assurance scoring, DRRs.
-3) TELIS Context Layer
+3. TELIS Context Layer
    - LSP calls, shard retrieval, progressive context negotiation, AST validation, cache.
-4) Tooling and Guardrails
+4. Tooling and Guardrails
    - Risk classification, tool safeguards, input/output validation, retry policy.
 
 ### 4.2 Design Principles
@@ -355,6 +355,7 @@ See security/security-audit-report-template.md
 ### 19.6 Documentation Index
 
 See docs/unified-framework-documentation-index.md
+
 ### 19.7 Agent Menu Registry
 
 See methodology/registry-agent-menus.md

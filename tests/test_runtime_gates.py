@@ -1,7 +1,6 @@
+import sys
 import unittest
 from pathlib import Path
-
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -27,6 +26,9 @@ class RuntimeGateTests(unittest.TestCase):
 
         cfg = {"hitl": {"mode": "disabled", "require_conditional": True}}
         decision = gates.gate_required("required", cfg)
+        self.assertFalse(decision.required)
+
+        decision = gates.gate_required("unknown", {})
         self.assertFalse(decision.required)
 
     def test_approvals_tracking(self) -> None:

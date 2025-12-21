@@ -1,7 +1,6 @@
+import sys
 import unittest
 from pathlib import Path
-
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -31,10 +30,12 @@ class RuntimeModelTests(unittest.TestCase):
             artifact_type="output",
             checksum="abc123",
             workflow="bmm/prd",
-            created_at="2025-12-21T05:20:48Z",
+            created_at="2025-12-21T11:45:11-05:00",
             step="step-1",
         )
-        index = models.ArtifactIndex(run_id="run-1", artifacts=[record], updated_at="2025-12-21T05:20:48Z")
+        index = models.ArtifactIndex(
+            run_id="run-1", artifacts=[record], updated_at="2025-12-21T11:45:11-05:00"
+        )
         data = index.to_dict()
         loaded = models.ArtifactIndex.from_dict(data)
         self.assertEqual(loaded.to_dict(), data)
@@ -45,8 +46,8 @@ class RuntimeModelTests(unittest.TestCase):
             claim="Claim",
             level="L1",
             source="test",
-            date="2025-12-21T05:20:48Z",
-            valid_until="2025-12-21T05:20:48Z",
+            date="2025-12-21T11:45:11-05:00",
+            valid_until="2025-12-21T11:45:11-05:00",
             congruence="CL2",
             reliability=0.9,
             wlnk=0.9,
@@ -64,7 +65,7 @@ class RuntimeModelTests(unittest.TestCase):
             status="approved",
             required=True,
             approved_by="tester",
-            approved_at="2025-12-21T05:20:48Z",
+            approved_at="2025-12-21T11:45:11-05:00",
             notes="ok",
         )
         data = gate.to_dict()
@@ -75,7 +76,7 @@ class RuntimeModelTests(unittest.TestCase):
         event = models.EventRecord(
             event_type="WorkflowStarted",
             run_id="run-1",
-            timestamp="2025-12-21T05:20:48Z",
+            timestamp="2025-12-21T11:45:11-05:00",
             payload={"workflow": "bmm/prd"},
             step_id=None,
         )
@@ -103,8 +104,8 @@ class RuntimeModelTests(unittest.TestCase):
             status="pending",
             steps=[models.RunStep(name="execute")],
             current_step=0,
-            created_at="2025-12-21T05:20:48Z",
-            updated_at="2025-12-21T05:20:48Z",
+            created_at="2025-12-21T11:45:11-05:00",
+            updated_at="2025-12-21T11:45:11-05:00",
         )
         data = manifest.to_dict()
         loaded = models.RunManifest.from_dict(data)

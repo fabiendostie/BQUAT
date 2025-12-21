@@ -1,9 +1,7 @@
 {
   "records": [
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "core",
@@ -112,9 +110,7 @@
       "workflow": "edit-agent"
     },
     {
-      "artifacts": [
-        "{output_folder}/workflow-edit-{target_workflow_name}.md"
-      ],
+      "artifacts": ["{output_folder}/workflow-edit-{target_workflow_name}.md"],
       "evidence": "L1",
       "human": "optional",
       "module": "bmb",
@@ -127,9 +123,7 @@
       "workflow": "edit-workflow"
     },
     {
-      "artifacts": [
-        "[if appropriate for workflow type]"
-      ],
+      "artifacts": ["[if appropriate for workflow type]"],
       "evidence": "L1",
       "human": "optional",
       "module": "bmb",
@@ -155,9 +149,7 @@
       "workflow": "edit-module"
     },
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L1",
       "human": "optional",
       "module": "bmb",
@@ -170,9 +162,7 @@
       "workflow": "module-brief"
     },
     {
-      "artifacts": [
-        "{output_folder}/brainstorming-session-{date}.md"
-      ],
+      "artifacts": ["{output_folder}/brainstorming-session-{date}.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "bmgd",
@@ -185,9 +175,7 @@
       "workflow": "brainstorm-game"
     },
     {
-      "artifacts": [
-        "{output_folder}/brainstorming-session-{date}.md"
-      ],
+      "artifacts": ["{output_folder}/brainstorming-session-{date}.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "bmgd",
@@ -200,10 +188,7 @@
       "workflow": "brainstorm-game"
     },
     {
-      "artifacts": [
-        "template:templates/game-brief-template.md",
-        "{output_folder}/game-brief.md"
-      ],
+      "artifacts": ["template:templates/game-brief-template.md", "{output_folder}/game-brief.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "bmgd",
@@ -216,10 +201,7 @@
       "workflow": "game-brief"
     },
     {
-      "artifacts": [
-        "template:templates/game-brief-template.md",
-        "{output_folder}/game-brief.md"
-      ],
+      "artifacts": ["template:templates/game-brief-template.md", "{output_folder}/game-brief.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "bmgd",
@@ -232,10 +214,7 @@
       "workflow": "game-brief"
     },
     {
-      "artifacts": [
-        "template:templates/gdd-template.md",
-        "{output_folder}/gdd.md"
-      ],
+      "artifacts": ["template:templates/gdd-template.md", "{output_folder}/gdd.md"],
       "evidence": "L1",
       "human": "required",
       "module": "bmgd",
@@ -248,10 +227,7 @@
       "workflow": "gdd"
     },
     {
-      "artifacts": [
-        "template:templates/gdd-template.md",
-        "{output_folder}/gdd.md"
-      ],
+      "artifacts": ["template:templates/gdd-template.md", "{output_folder}/gdd.md"],
       "evidence": "L1",
       "human": "required",
       "module": "bmgd",
@@ -328,9 +304,7 @@
       "workflow": "game-architecture"
     },
     {
-      "artifacts": [
-        "template:project-context-template.md"
-      ],
+      "artifacts": ["template:project-context-template.md"],
       "evidence": "L1",
       "human": "required",
       "module": "bmgd",
@@ -343,9 +317,7 @@
       "workflow": "generate-project-context"
     },
     {
-      "artifacts": [
-        "template:backlog-template.md"
-      ],
+      "artifacts": ["template:backlog-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmgd",
@@ -371,9 +343,7 @@
       "workflow": "correct-course"
     },
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmgd",
@@ -412,9 +382,7 @@
       "workflow": "retrospective"
     },
     {
-      "artifacts": [
-        "template:sprint-status-template.yaml"
-      ],
+      "artifacts": ["template:sprint-status-template.yaml"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmgd",
@@ -492,9 +460,7 @@
       "workflow": "automate"
     },
     {
-      "artifacts": [
-        "template:performance-template.md"
-      ],
+      "artifacts": ["template:performance-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmgd",
@@ -507,9 +473,7 @@
       "workflow": "performance"
     },
     {
-      "artifacts": [
-        "template:playtest-template.md"
-      ],
+      "artifacts": ["template:playtest-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmgd",
@@ -522,9 +486,7 @@
       "workflow": "playtest-plan"
     },
     {
-      "artifacts": [
-        "template:test-design-template.md"
-      ],
+      "artifacts": ["template:test-design-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmgd",
@@ -550,9 +512,7 @@
       "workflow": "test-framework"
     },
     {
-      "artifacts": [
-        "template:test-review-template.md"
-      ],
+      "artifacts": ["template:test-review-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmgd",
@@ -578,9 +538,7 @@
       "workflow": "init"
     },
     {
-      "artifacts": [
-        "template:workflow-status-template.yaml"
-      ],
+      "artifacts": ["template:workflow-status-template.yaml"],
       "evidence": "L1",
       "human": "none",
       "module": "bmgd",
@@ -609,9 +567,7 @@
       "workflow": "create-product-brief"
     },
     {
-      "artifacts": [
-        "template:research.template.md"
-      ],
+      "artifacts": ["template:research.template.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "bmm",
@@ -624,9 +580,7 @@
       "workflow": "research"
     },
     {
-      "artifacts": [
-        "template:ux-design-template.md"
-      ],
+      "artifacts": ["template:ux-design-template.md"],
       "evidence": "L1",
       "human": "required",
       "module": "bmm",
@@ -639,10 +593,7 @@
       "workflow": "create-ux-design"
     },
     {
-      "artifacts": [
-        "template:prd-template.md",
-        "{output_folder}/prd.md"
-      ],
+      "artifacts": ["template:prd-template.md", "{output_folder}/prd.md"],
       "evidence": "L1",
       "human": "required",
       "module": "bmm",
@@ -671,9 +622,7 @@
       "workflow": "check-implementation-readiness"
     },
     {
-      "artifacts": [
-        "template:architecture-decision-template.md"
-      ],
+      "artifacts": ["template:architecture-decision-template.md"],
       "evidence": "L1",
       "human": "required",
       "module": "bmm",
@@ -686,10 +635,7 @@
       "workflow": "create-architecture"
     },
     {
-      "artifacts": [
-        "template:templates/epics-template.md",
-        "{output_folder}/epics.md"
-      ],
+      "artifacts": ["template:templates/epics-template.md", "{output_folder}/epics.md"],
       "evidence": "L1",
       "human": "required",
       "module": "bmm",
@@ -728,9 +674,7 @@
       "workflow": "correct-course"
     },
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -769,9 +713,7 @@
       "workflow": "retrospective"
     },
     {
-      "artifacts": [
-        "template:sprint-status-template.yaml"
-      ],
+      "artifacts": ["template:sprint-status-template.yaml"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -893,9 +835,7 @@
       "workflow": "create-wireframe"
     },
     {
-      "artifacts": [
-        "template:project-context-template.md"
-      ],
+      "artifacts": ["template:project-context-template.md"],
       "evidence": "L1",
       "human": "optional",
       "module": "bmm",
@@ -908,9 +848,7 @@
       "workflow": "generate-project-context"
     },
     {
-      "artifacts": [
-        "template:atdd-checklist-template.md"
-      ],
+      "artifacts": ["template:atdd-checklist-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -936,10 +874,7 @@
       "workflow": "automate"
     },
     {
-      "artifacts": [
-        "template:github-actions-template.yaml",
-        "template:gitlab-ci-template.yaml"
-      ],
+      "artifacts": ["template:github-actions-template.yaml", "template:gitlab-ci-template.yaml"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -965,9 +900,7 @@
       "workflow": "framework"
     },
     {
-      "artifacts": [
-        "template:nfr-report-template.md"
-      ],
+      "artifacts": ["template:nfr-report-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -980,11 +913,7 @@
       "workflow": "nfr-assess"
     },
     {
-      "artifacts": [
-        "id: epic-level",
-        "id: system-level",
-        "template:test-design-template.md"
-      ],
+      "artifacts": ["id: epic-level", "id: system-level", "template:test-design-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -997,9 +926,7 @@
       "workflow": "test-design"
     },
     {
-      "artifacts": [
-        "template:test-review-template.md"
-      ],
+      "artifacts": ["template:test-review-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -1012,9 +939,7 @@
       "workflow": "test-review"
     },
     {
-      "artifacts": [
-        "template:trace-template.md"
-      ],
+      "artifacts": ["template:trace-template.md"],
       "evidence": "L2",
       "human": "conditional",
       "module": "bmm",
@@ -1040,9 +965,7 @@
       "workflow": "init"
     },
     {
-      "artifacts": [
-        "template:workflow-status-template.yaml"
-      ],
+      "artifacts": ["template:workflow-status-template.yaml"],
       "evidence": "L1",
       "human": "none",
       "module": "bmm",
@@ -1055,9 +978,7 @@
       "workflow": "workflow-status"
     },
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "cis",
@@ -1070,9 +991,7 @@
       "workflow": "design-thinking"
     },
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "cis",
@@ -1085,9 +1004,7 @@
       "workflow": "innovation-strategy"
     },
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "cis",
@@ -1100,9 +1017,7 @@
       "workflow": "problem-solving"
     },
     {
-      "artifacts": [
-        "template:template.md"
-      ],
+      "artifacts": ["template:template.md"],
       "evidence": "L0",
       "human": "optional",
       "module": "cis",

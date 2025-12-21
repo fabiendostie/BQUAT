@@ -8,9 +8,7 @@ from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 from runtime import config as runtime_config
-from runtime import gates
-from runtime import models
-from runtime import storage
+from runtime import gates, models, storage
 from runtime.plugins.manager import PluginManager
 from runtime.time_provider import get_current_time
 
@@ -35,7 +33,9 @@ def generate_run_id() -> str:
 
 
 def default_mapping_path() -> Path:
-    return Path(__file__).resolve().parents[1] / "methodology" / "mapping" / "integration-mapping.json"
+    return (
+        Path(__file__).resolve().parents[1] / "methodology" / "mapping" / "integration-mapping.json"
+    )
 
 
 def load_mapping_records(path: Optional[Path] = None) -> List[models.WorkflowSpec]:
@@ -108,7 +108,9 @@ class WorkflowEngine:
     def _run_dir(self, run_id: str) -> Path:
         return storage.init_run_dir(self.storage_root, run_id)
 
-    def create_run(self, module: str, workflow: str, run_id: Optional[str] = None) -> Dict[str, Any]:
+    def create_run(
+        self, module: str, workflow: str, run_id: Optional[str] = None
+    ) -> Dict[str, Any]:
         spec = self.get_workflow_spec(module, workflow)
         run_id = run_id or generate_run_id()
         run_dir = self._run_dir(run_id)

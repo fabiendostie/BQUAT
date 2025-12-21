@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, Optional
 
-from runtime import agents
-from runtime import models
-from runtime import storage
+from runtime import agents, models, storage
 from runtime.engine import StepExecutor
 from runtime.providers.base import Provider, ProviderRequest
 
@@ -21,13 +19,16 @@ class PlanExecutor(StepExecutor):
         agent = agents.get_agent(self.agent_name)
         plan = agent.build_plan(spec)
 
-        storage.write_json(run_dir / "plan.json", {
-            "framework": plan.framework,
-            "workflow": plan.workflow.to_dict(),
-            "prompt": plan.prompt,
-            "outputs": plan.outputs,
-            "templates": plan.templates,
-        })
+        storage.write_json(
+            run_dir / "plan.json",
+            {
+                "framework": plan.framework,
+                "workflow": plan.workflow.to_dict(),
+                "prompt": plan.prompt,
+                "outputs": plan.outputs,
+                "templates": plan.templates,
+            },
+        )
 
         if self.provider:
             request = ProviderRequest(
@@ -35,7 +36,10 @@ class PlanExecutor(StepExecutor):
                 messages=[{"role": "user", "content": plan.prompt}],
             )
             response = self.provider.invoke(request)
-            storage.write_json(run_dir / "response.json", {
-                "content": response.content,
-                "raw": response.raw,
-            })
+            storage.write_json(
+                run_dir / "response.json",
+                {
+                    "content": response.content,
+                    "raw": response.raw,
+                },
+            )

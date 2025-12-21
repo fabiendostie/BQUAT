@@ -1,6 +1,7 @@
 # A Practical Guide to Building Agents
 
-**Contents**
+## Contents
+
 - What is an agent? (p. 4)
 - When should you build an agent? (p. 5)
 - Agent design foundations (p. 7)
@@ -97,11 +98,11 @@ Each tool should have a standardized definition, enabling flexible, many-to-many
 
 Broadly speaking, agents need three types of tools:
 
-| Type | Description | Examples |
-|------|-------------|----------|
-| **Data** | Enable agents to retrieve context and information necessary for executing the workflow. | Query transaction databases or systems like CRMs, read PDF documents, or search the web. |
-| **Action** | Enable agents to interact with systems to take actions such as adding new information to databases, updating records, or sending messages. | Send emails and texts, update a CRM record, hand-off a customer service ticket to a human. |
-| **Orchestration** | Agents themselves can serve as tools for other agents—see the Manager Pattern in the Orchestration section. | Refund agent, Research agent, Writing agent. |
+| Type              | Description                                                                                                                                | Examples                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| **Data**          | Enable agents to retrieve context and information necessary for executing the workflow.                                                    | Query transaction databases or systems like CRMs, read PDF documents, or search the web.   |
+| **Action**        | Enable agents to interact with systems to take actions such as adding new information to databases, updating records, or sending messages. | Send emails and texts, update a CRM record, hand-off a customer service ticket to a human. |
+| **Orchestration** | Agents themselves can serve as tools for other agents—see the Manager Pattern in the Orchestration section.                                | Refund agent, Research agent, Writing agent.                                               |
 
 For example, here's how you would equip the agent defined above with a series of tools when using the Agents SDK:
 
@@ -128,23 +129,23 @@ High-quality instructions are essential for any LLM-powered app, but especially 
 
 #### Best Practices for Agent Instructions
 
-| Practice | Description |
-|----------|-------------|
-| **Use existing documents** | When creating routines, use existing operating procedures, support scripts, or policy documents to create LLM-friendly routines. In customer service for example, routines can roughly map to individual articles in your knowledge base. |
-| **Prompt agents to break down tasks** | Providing smaller, clearer steps from dense resources helps minimize ambiguity and helps the model better follow instructions. |
-| **Define clear actions** | Make sure every step in your routine corresponds to a specific action or output. For example, a step might instruct the agent to ask the user for their order number or to call an API to retrieve account details. Being explicit about the action (and even the wording of a user-facing message) leaves less room for errors in interpretation. |
+| Practice                              | Description                                                                                                                                                                                                                                                                                                                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Use existing documents**            | When creating routines, use existing operating procedures, support scripts, or policy documents to create LLM-friendly routines. In customer service for example, routines can roughly map to individual articles in your knowledge base.                                                                                                          |
+| **Prompt agents to break down tasks** | Providing smaller, clearer steps from dense resources helps minimize ambiguity and helps the model better follow instructions.                                                                                                                                                                                                                     |
+| **Define clear actions**              | Make sure every step in your routine corresponds to a specific action or output. For example, a step might instruct the agent to ask the user for their order number or to call an API to retrieve account details. Being explicit about the action (and even the wording of a user-facing message) leaves less room for errors in interpretation. |
 
 ---
 
 ## Guardrails
 
-| Guardrail Type | Description |
-|----------------|-------------|
-| **PII filter** | Prevents unnecessary exposure of personally identifiable information (PII) by vetting model output for any potential PII. |
-| **Moderation** | Flags harmful or inappropriate inputs (hate speech, harassment, violence) to maintain safe, respectful interactions. |
-| **Tool safeguards** | Assess the risk of each tool available to your agent by assigning a rating—low, medium, or high—based on factors like read-only vs. write access, reversibility, required account permissions, and financial impact. Use these risk ratings to trigger automated actions, such as pausing for guardrail checks before executing high-risk functions or escalating to a human if needed. |
-| **Rules-based protections** | Simple deterministic measures (blocklists, input length limits, regex filters) to prevent known threats like prohibited terms or SQL injections. |
-| **Output validation** | Ensures responses align with brand values via prompt engineering and content checks, preventing outputs that could harm your brand's integrity. |
+| Guardrail Type              | Description                                                                                                                                                                                                                                                                                                                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **PII filter**              | Prevents unnecessary exposure of personally identifiable information (PII) by vetting model output for any potential PII.                                                                                                                                                                                                                                                               |
+| **Moderation**              | Flags harmful or inappropriate inputs (hate speech, harassment, violence) to maintain safe, respectful interactions.                                                                                                                                                                                                                                                                    |
+| **Tool safeguards**         | Assess the risk of each tool available to your agent by assigning a rating—low, medium, or high—based on factors like read-only vs. write access, reversibility, required account permissions, and financial impact. Use these risk ratings to trigger automated actions, such as pausing for guardrail checks before executing high-risk functions or escalating to a human if needed. |
+| **Rules-based protections** | Simple deterministic measures (blocklists, input length limits, regex filters) to prevent known threats like prohibited terms or SQL injections.                                                                                                                                                                                                                                        |
+| **Output validation**       | Ensures responses align with brand values via prompt engineering and content checks, preventing outputs that could harm your brand's integrity.                                                                                                                                                                                                                                         |
 
 ### Building Guardrails
 
@@ -193,7 +194,7 @@ async def churn_detection_tripwire(
         input,
         context=ctx.context
     )
-    
+
     return GuardrailFunctionOutput(
         output_info=result.final_output,
         tripwire_triggered=result.final_output.is_churn_risk,
@@ -211,7 +212,7 @@ async def main():
     # This should be ok
     await Runner.run(customer_support_agent, "Hello!")
     print("Hello message passed")
-    
+
     # This should trip the guardrail
     try:
         await Runner.run(customer_support_agent, "I think I might cancel my subscription")
