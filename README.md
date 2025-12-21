@@ -5,6 +5,7 @@ This repository consolidates BMAD-METHOD with Quint-code (FPF reasoning) and TEL
 ## What is here
 
 - Unified method specification: methodology/unified_method_specification.md
+- v1.0 release plan and checklist: docs/v1-plan.md
 - Agent and workflow registries: methodology/registry-agents.md, methodology/registry-workflows.md
 - Agent menu bindings: methodology/registry-agent-menus.md
 - Workflow to Quint/TELIS mapping: methodology/integration-mapping.md
@@ -13,6 +14,10 @@ This repository consolidates BMAD-METHOD with Quint-code (FPF reasoning) and TEL
 - Documentation index: docs/unified-framework-documentation-index.md
 - Runtime configuration: config/runtime.yaml
 - Runtime engine scaffolding: runtime/
+
+## v1.0 plan and checklist
+
+The authoritative plan and checklist live at docs/v1-plan.md. Update that file to track progress and keep scope locked.
 
 ## Regenerate registries and mappings
 

@@ -3,6 +3,7 @@
 ## Core Specification
 
 - methodology/unified_method_specification.md
+- docs/v1-plan.md
 
 ## Registries and Mappings
 
