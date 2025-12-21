@@ -12,6 +12,7 @@ from runtime import gates
 from runtime import models
 from runtime import storage
 from runtime.plugins.manager import PluginManager
+from runtime.time_provider import get_current_time
 
 
 class StepExecutor:
@@ -25,7 +26,7 @@ class NoopExecutor(StepExecutor):
 
 
 def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    return get_current_time()
 
 
 def generate_run_id() -> str:

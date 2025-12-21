@@ -31,10 +31,10 @@ class RuntimeModelTests(unittest.TestCase):
             artifact_type="output",
             checksum="abc123",
             workflow="bmm/prd",
-            created_at="2025-12-21T00:09:32Z",
+            created_at="2025-12-21T05:20:48Z",
             step="step-1",
         )
-        index = models.ArtifactIndex(run_id="run-1", artifacts=[record], updated_at="2025-12-21T00:09:32Z")
+        index = models.ArtifactIndex(run_id="run-1", artifacts=[record], updated_at="2025-12-21T05:20:48Z")
         data = index.to_dict()
         loaded = models.ArtifactIndex.from_dict(data)
         self.assertEqual(loaded.to_dict(), data)
@@ -45,8 +45,8 @@ class RuntimeModelTests(unittest.TestCase):
             claim="Claim",
             level="L1",
             source="test",
-            date="2025-12-21T00:09:32Z",
-            valid_until="2025-12-21T00:09:32Z",
+            date="2025-12-21T05:20:48Z",
+            valid_until="2025-12-21T05:20:48Z",
             congruence="CL2",
             reliability=0.9,
             wlnk=0.9,
@@ -64,7 +64,7 @@ class RuntimeModelTests(unittest.TestCase):
             status="approved",
             required=True,
             approved_by="tester",
-            approved_at="2025-12-21T00:09:32Z",
+            approved_at="2025-12-21T05:20:48Z",
             notes="ok",
         )
         data = gate.to_dict()
@@ -75,7 +75,7 @@ class RuntimeModelTests(unittest.TestCase):
         event = models.EventRecord(
             event_type="WorkflowStarted",
             run_id="run-1",
-            timestamp="2025-12-21T00:09:32Z",
+            timestamp="2025-12-21T05:20:48Z",
             payload={"workflow": "bmm/prd"},
             step_id=None,
         )
@@ -103,8 +103,8 @@ class RuntimeModelTests(unittest.TestCase):
             status="pending",
             steps=[models.RunStep(name="execute")],
             current_step=0,
-            created_at="2025-12-21T00:09:32Z",
-            updated_at="2025-12-21T00:09:32Z",
+            created_at="2025-12-21T05:20:48Z",
+            updated_at="2025-12-21T05:20:48Z",
         )
         data = manifest.to_dict()
         loaded = models.RunManifest.from_dict(data)
