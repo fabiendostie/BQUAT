@@ -34,6 +34,7 @@ Change control:
 - TELIS (LSP, shards, progressive negotiation, validation gates)
 - QUINT (ADI cycle, evidence levels, DRR, WLNK, congruence, decay)
 - docs/a-practical-guide-to-building-agents.md (model-tool-instructions, guardrails, HITL triggers)
+- docs/traceability-audit.md (requirement mapping and evidence)
 
 ## v1.0 Definition of Done
 
@@ -47,24 +48,52 @@ Change control:
 
 ## Requirement Coverage Matrix
 
-Status values: todo, in-progress, done, blocked
+Status values: todo, in-progress, done, partial, missing, blocked
+
+Full traceability with evidence is maintained in docs/traceability-audit.md. This matrix must stay in sync.
 
 | ID | Source | Requirement | Owner | Status | Acceptance Evidence |
 | --- | --- | --- | --- | --- | --- |
-| REQ-BMAD-001 | BMAD | Preserve BMAD workflows and naming without rewriting logic | Runtime | todo | End-to-end BMAD run produces required outputs |
-| REQ-BMAD-002 | BMAD | Sample/reference workflows excluded from production mapping | Mapping | done | tests/test_mapping.py passes |
-| REQ-BMAD-003 | BMAD | Only explicit outputs/templates listed in mapping | Mapping | done | tests/test_mapping.py passes |
-| REQ-TELIS-001 | TELIS | LSP symbiosis for type/signature accuracy | Tools | todo | LSP integration test |
-| REQ-TELIS-002 | TELIS | Knowledge shards with tiered retrieval | TELIS | todo | shard retrieval test |
-| REQ-TELIS-003 | TELIS | Progressive context negotiation | TELIS | todo | negotiation test |
-| REQ-TELIS-004 | TELIS | AST, type, lint validation gates | TELIS | todo | validation gate test |
-| REQ-TELIS-005 | TELIS | Behavioral cache with TTL | TELIS | todo | cache hit test |
-| REQ-QUINT-001 | QUINT | ADI cycle (L0, L1, L2) with promotion rules | QUINT | todo | evidence workflow test |
-| REQ-QUINT-002 | QUINT | WLNK assurance and congruence scoring | QUINT | todo | assurance audit test |
-| REQ-QUINT-003 | QUINT | Evidence decay and revalidation | QUINT | todo | decay scan test |
-| REQ-QUINT-004 | QUINT | DRR generation on major decisions | QUINT | todo | DRR record present |
-| REQ-AGENT-001 | Practical Guide | Guardrails on tools with risk ratings | Runtime | todo | risk gate test |
-| REQ-AGENT-002 | Practical Guide | HITL for high-risk actions and retries | Runtime | in-progress | gate tests |
+| REQ-BMAD-001 | BMAD | Preserve BMAD workflows and naming without rewriting logic | Runtime | partial | Planned: end-to-end workflow run test |
+| REQ-BMAD-002 | BMAD | Sample/reference workflows excluded from production mapping | Mapping | done | tests/test_mapping.py |
+| REQ-BMAD-003 | BMAD | Only explicit outputs/templates listed in mapping | Mapping | done | tests/test_mapping.py |
+| REQ-BMAD-004 | BMAD | Parse workflow definitions (md/yaml/xml) into steps | Runtime | missing | Planned: workflow parser tests |
+| REQ-BMAD-005 | BMAD | Enforce output folder/layout conventions | Runtime | missing | Planned: output validation tests |
+| REQ-BMAD-006 | BMAD | Orchestrator routes workflows and agents | Runtime | missing | Planned: orchestration tests |
+| REQ-BMAD-007 | BMAD | Support all BMAD modules (core, BMM, BMB, CIS, BMGD) | Runtime | partial | methodology/registry-workflows.md |
+| REQ-TELIS-001 | TELIS | LSP symbiosis for type/signature accuracy | Tools | missing | Planned: LSP integration tests |
+| REQ-TELIS-002 | TELIS | LSP fallback to shards on failure | Tools | missing | Planned: LSP fallback tests |
+| REQ-TELIS-003 | TELIS | Tiered knowledge shards with token budgets | TELIS | missing | Planned: shard retrieval tests |
+| REQ-TELIS-004 | TELIS | Progressive context negotiation protocol | TELIS | missing | Planned: negotiation tests |
+| REQ-TELIS-005 | TELIS | AST/type/lint validation pipeline | TELIS | missing | Planned: validation gate tests |
+| REQ-TELIS-006 | TELIS | Behavioral cache with TTL and invalidation | TELIS | missing | Planned: cache hit tests |
+| REQ-TELIS-007 | TELIS | Validation failures trigger retry/escalation | TELIS | partial | runtime/engine.py |
+| REQ-QUINT-001 | QUINT | Evidence store for L0/L1/L2 and invalid | QUINT | missing | Planned: evidence store tests |
+| REQ-QUINT-002 | QUINT | ADI cycle with promotion rules | QUINT | missing | Planned: ADI promotion tests |
+| REQ-QUINT-003 | QUINT | WLNK assurance scoring | QUINT | missing | Planned: assurance tests |
+| REQ-QUINT-004 | QUINT | Congruence scoring for external evidence | QUINT | missing | Planned: congruence tests |
+| REQ-QUINT-005 | QUINT | Evidence decay and revalidation | QUINT | missing | Planned: decay scan tests |
+| REQ-QUINT-006 | QUINT | DRR generation for major decisions | QUINT | missing | Planned: DRR record tests |
+| REQ-QUINT-007 | QUINT | Surface vs grounding separation | QUINT | missing | Planned: summary vs storage tests |
+| REQ-QUINT-008 | QUINT | Bounded context snapshot and drift detection | QUINT | missing | Planned: context drift tests |
+| REQ-AGENT-001 | Practical Guide | Model/tool/instructions triad per agent | Runtime | partial | runtime/agents.py, runtime/prompts.py |
+| REQ-AGENT-002 | Practical Guide | Standardized tool definitions and reuse | Runtime | missing | Planned: tool registry tests |
+| REQ-AGENT-003 | Practical Guide | Tool risk ratings and safeguards | Runtime | missing | Planned: risk policy tests |
+| REQ-AGENT-004 | Practical Guide | PII filter and data privacy guardrails | Runtime | missing | Planned: PII guardrail tests |
+| REQ-AGENT-005 | Practical Guide | Moderation filters for unsafe inputs | Runtime | missing | Planned: moderation tests |
+| REQ-AGENT-006 | Practical Guide | Rules-based protections (blocklists/regex) | Runtime | missing | Planned: rules gate tests |
+| REQ-AGENT-007 | Practical Guide | HITL on high-risk actions and retry thresholds | Runtime | partial | runtime/gates.py |
+| REQ-AGENT-008 | Practical Guide | Optimistic execution with concurrent guardrails | Runtime | missing | Planned: guardrail concurrency tests |
+| REQ-SPEC-001 | Unified Spec | Event bus for workflow state transitions | Runtime | missing | Planned: event bus tests |
+| REQ-SPEC-002 | Unified Spec | State store for workflow progress and artifacts | Runtime | partial | runtime/storage.py |
+| REQ-SPEC-003 | Unified Spec | TELIS policy engine and context manager | TELIS | missing | Planned: TELIS policy tests |
+| REQ-SPEC-004 | Unified Spec | Evidence store for Quint claims and DRRs | QUINT | missing | Planned: evidence store tests |
+| REQ-SPEC-005 | Unified Spec | Control plane/data plane split | Runtime | partial | runtime/plugins/manager.py |
+| REQ-SPEC-006 | Unified Spec | Plugin pipeline for policy/adapters/observability | Runtime | partial | runtime/plugins/manager.py |
+| REQ-SPEC-007 | Unified Spec | Failure isolation with bounded retries | Runtime | partial | runtime/engine.py |
+| REQ-SPEC-008 | Unified Spec | Artifact index with checksum and provenance | Runtime | missing | Planned: artifact index tests |
+| REQ-SPEC-009 | Unified Spec | Context fingerprint tracking | Runtime | missing | Planned: context fingerprint tests |
+| REQ-SPEC-010 | Unified Spec | Gates recorded as DRRs with evidence links | Runtime | missing | Planned: gate DRR tests |
 
 ## Workstreams and Steps
 
@@ -251,10 +280,12 @@ Deliverables:
 
 ## Verification and Gap Audit
 
-We will not claim full coverage until the traceability audit is complete. This includes:
-- Cross-checking all BMAD workflows and outputs against the registry.
-- Mapping TELIS requirements to concrete runtime modules and tests.
-- Mapping QUINT requirements to evidence, DRR, and audit outputs.
-- Mapping Practical Guide guardrails to runtime guardrail implementations.
+We will not claim full coverage until the traceability audit is complete. The current audit lives at docs/traceability-audit.md and must be updated after each workstream.
+
+Required checks:
+- Cross-check all BMAD workflows and outputs against the registry.
+- Map TELIS requirements to concrete runtime modules and tests.
+- Map QUINT requirements to evidence, DRR, and audit outputs.
+- Map Practical Guide guardrails to runtime guardrail implementations.
 
 The traceability audit must be marked done before v1.0 release.

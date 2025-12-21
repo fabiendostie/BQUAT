@@ -6,6 +6,7 @@ This repository consolidates BMAD-METHOD with Quint-code (FPF reasoning) and TEL
 
 - Unified method specification: methodology/unified_method_specification.md
 - v1.0 release plan and checklist: docs/v1-plan.md
+- Traceability audit and requirement coverage: docs/traceability-audit.md
 - Agent and workflow registries: methodology/registry-agents.md, methodology/registry-workflows.md
 - Agent menu bindings: methodology/registry-agent-menus.md
 - Workflow to Quint/TELIS mapping: methodology/integration-mapping.md
