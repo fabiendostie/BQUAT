@@ -3,13 +3,15 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-TOOL_SPEC = {
-    "name": "getCurrentTime",
-    "description": (
+from runtime.tools.base import ToolSpec
+
+TOOL_SPEC = ToolSpec(
+    name="getCurrentTime",
+    description=(
         "Return the current date/time from the system clock in ISO 8601 format. "
         "Use this when the user asks for the current time or date. Default timezone: America/Toronto."
     ),
-    "parameters": {
+    parameters={
         "type": "object",
         "properties": {
             "timezone": {
@@ -19,7 +21,8 @@ TOOL_SPEC = {
         },
         "required": [],
     },
-}
+    risk="low",
+).to_dict()
 
 
 def get_current_time(timezone_name: str = "America/Toronto") -> str:
