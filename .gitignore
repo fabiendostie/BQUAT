@@ -4,6 +4,7 @@ runs/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+.mypy_cache2/
 .pyright/
 coverage/
 node_modules/

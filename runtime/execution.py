@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from pathlib import Path
+from typing import Any, Dict, Optional, cast
 
 from runtime import agents, models, storage
 from runtime.engine import StepExecutor
@@ -12,9 +13,9 @@ class PlanExecutor(StepExecutor):
         self.agent_name = agent_name
         self.provider = provider
 
-    def execute(self, step: Dict[str, object], context: Dict[str, object]) -> None:
-        manifest = context["manifest"]
-        run_dir = context["run_dir"]
+    def execute(self, step: Dict[str, Any], context: Dict[str, Any]) -> None:
+        manifest = cast(Dict[str, Any], context["manifest"])
+        run_dir = cast(Path, context["run_dir"])
         spec = models.WorkflowSpec.from_mapping(manifest["workflow"])
         agent = agents.get_agent(self.agent_name)
         plan = agent.build_plan(spec)

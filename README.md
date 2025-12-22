@@ -58,15 +58,15 @@ flowchart LR
 
 Configured in config/runtime.yaml. The runtime ships with a registry abstraction and provider adapters.
 
-| Provider  | Type      | Default Base URL                                 | Env Key         |
-| --------- | --------- | ------------------------------------------------ | --------------- |
-| Mock      | mock      | n/a                                              | n/a             |
-| Ollama    | ollama    | http://localhost:11434                           | n/a             |
-| LiteLLM   | litellm   | http://localhost:4000                            | API key env var |
-| OpenAI    | openai    | https://api.openai.com                           | API key env var |
-| Anthropic | anthropic | https://api.anthropic.com                        | API key env var |
-| Gemini    | gemini    | https://generativelanguage.googleapis.com/v1beta | API key env var |
-| Groq      | groq      | https://api.groq.com/openai/v1                   | API key env var |
+| Provider  | Type      | Default Base URL                                   | Env Key         |
+| --------- | --------- | -------------------------------------------------- | --------------- |
+| Mock      | mock      | n/a                                                | n/a             |
+| Ollama    | ollama    | <http://localhost:11434>                           | n/a             |
+| LiteLLM   | litellm   | <http://localhost:4000>                            | API key env var |
+| OpenAI    | openai    | <https://api.openai.com>                           | API key env var |
+| Anthropic | anthropic | <https://api.anthropic.com>                        | API key env var |
+| Gemini    | gemini    | <https://generativelanguage.googleapis.com/v1beta> | API key env var |
+| Groq      | groq      | <https://api.groq.com/openai/v1>                   | API key env var |
 
 ## Workflow and gates
 

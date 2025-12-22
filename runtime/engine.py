@@ -189,7 +189,9 @@ class WorkflowEngine:
     def _build_manifest(self, run_id: str, spec: models.WorkflowSpec) -> Dict[str, Any]:
         now = utc_now()
         step_specs = _step_specs_for_workflow(spec, self.config)
-        steps = _run_steps_from_specs(step_specs) if step_specs else [models.RunStep(name="execute")]
+        steps = (
+            _run_steps_from_specs(step_specs) if step_specs else [models.RunStep(name="execute")]
+        )
         manifest = models.RunManifest(
             run_id=run_id,
             workflow=spec,

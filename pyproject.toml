@@ -21,4 +21,5 @@ ignore_missing_imports = true
 warn_unused_ignores = true
 warn_redundant_casts = true
 show_error_codes = true
+cache_dir = ".mypy_cache2"
 exclude = "BMAD-METHOD|quint-code|node_modules|runs|\\.pytest_cache|\\.ruff_cache"

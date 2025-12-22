@@ -48,7 +48,7 @@ class OpenAIProvider(Provider):
 
     def invoke(self, request: ProviderRequest) -> ProviderResponse:
         url = f"{self.base_url}/v1/chat/completions"
-        payload = {
+        payload: Dict[str, Any] = {
             "model": _model_from_request(request, self.model),
             "messages": request.messages,
         }
@@ -76,7 +76,7 @@ class OllamaProvider(Provider):
 
     def invoke(self, request: ProviderRequest) -> ProviderResponse:
         url = f"{self.base_url}/api/chat"
-        payload = {
+        payload: Dict[str, Any] = {
             "model": _model_from_request(request, self.model),
             "messages": request.messages,
             "stream": False,
@@ -94,7 +94,7 @@ class AnthropicProvider(Provider):
 
     def invoke(self, request: ProviderRequest) -> ProviderResponse:
         url = f"{self.base_url}/v1/messages"
-        payload = {
+        payload: Dict[str, Any] = {
             "model": _model_from_request(request, self.model),
             "messages": request.messages,
             "max_tokens": request.max_tokens or 1024,
@@ -105,8 +105,11 @@ class AnthropicProvider(Provider):
         }
         data = post_json(url, payload, headers=headers)
         content = ""
-        if data.get("content"):
-            content = data.get("content")[0].get("text", "")
+        content_items = data.get("content")
+        if isinstance(content_items, list) and content_items:
+            first = content_items[0]
+            if isinstance(first, dict):
+                content = first.get("text", "")
         return ProviderResponse(content=content, raw=data)
 
 
@@ -119,7 +122,7 @@ class GeminiProvider(Provider):
     def invoke(self, request: ProviderRequest) -> ProviderResponse:
         model = _model_from_request(request, self.model)
         url = f"{self.base_url}/models/{model}:generateContent?key={self.api_key}"
-        payload = {
+        payload: Dict[str, Any] = {
             "contents": [
                 {
                     "role": "user",
@@ -130,10 +133,14 @@ class GeminiProvider(Provider):
         data = post_json(url, payload)
         content = ""
         candidates = data.get("candidates", [])
-        if candidates:
-            parts = candidates[0].get("content", {}).get("parts", [])
-            if parts:
-                content = parts[0].get("text", "")
+        if isinstance(candidates, list) and candidates:
+            first = candidates[0]
+            if isinstance(first, dict):
+                parts = first.get("content", {}).get("parts", [])
+                if isinstance(parts, list) and parts:
+                    part = parts[0]
+                    if isinstance(part, dict):
+                        content = part.get("text", "")
         return ProviderResponse(content=content, raw=data)
 
 

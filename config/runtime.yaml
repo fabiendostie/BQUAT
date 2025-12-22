@@ -1,8 +1,7 @@
 {
   "runtime":
     { "storage_root": "runs", "log_level": "info", "max_retries": 1, "step_timeout_seconds": 1800 },
-  "automation":
-    { "phases": ["Phase 4 Implementation", "Phase 4 Production", "Testing/QA"] },
+  "automation": { "phases": ["Phase 4 Implementation", "Phase 4 Production", "Testing/QA"] },
   "hitl": { "mode": "blocking", "require_conditional": false, "approval_interface": "cli" },
   "providers":
     {

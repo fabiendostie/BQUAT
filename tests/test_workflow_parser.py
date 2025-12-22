@@ -110,9 +110,7 @@ description: Ready
                 encoding="ascii",
             )
             instructions = wf_dir / "instructions.md"
-            instructions.write_text(
-                "<step n=\"99\" goal=\"Ignore me\"></step>", encoding="ascii"
-            )
+            instructions.write_text('<step n="99" goal="Ignore me"></step>', encoding="ascii")
             workflow_yaml = wf_dir / "workflow.yaml"
             workflow_yaml.write_text(
                 "instructions: '{installed_path}/instructions.md'",
