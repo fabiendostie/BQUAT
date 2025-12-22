@@ -4,11 +4,11 @@ import json
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
 from runtime import config as runtime_config
-from runtime import gates, models, storage
+from runtime import gates, models, storage, workflow_parser
 from runtime.plugins.manager import PluginManager
 from runtime.time_provider import get_current_time
 
@@ -49,9 +49,82 @@ def _default_steps() -> List[Dict[str, Any]]:
     return [step.to_dict()]
 
 
+def _split_artifacts(artifacts: List[str]) -> Tuple[List[str], List[str]]:
+    outputs: List[str] = []
+    templates: List[str] = []
+    for artifact in artifacts:
+        if artifact.startswith("template:"):
+            templates.append(artifact.split("template:", 1)[1])
+        else:
+            outputs.append(artifact)
+    return outputs, templates
+
+
+def _workflow_path(spec: models.WorkflowSpec) -> Optional[Path]:
+    if not spec.path:
+        return None
+    root = runtime_config.project_root_from_here()
+    bmad_root = root / "BMAD-METHOD"
+    return bmad_root / spec.path
+
+
+def _step_specs_for_workflow(
+    spec: models.WorkflowSpec, config: Dict[str, Any]
+) -> List[models.StepSpec]:
+    workflow_path = _workflow_path(spec)
+    if not workflow_path or not workflow_path.exists():
+        return []
+    steps = workflow_parser.parse_workflow_steps(workflow_path)
+    if not steps:
+        return []
+    outputs, templates = _split_artifacts(spec.artifacts)
+    retries = {"max": _max_retries(config), "backoff_seconds": 0}
+    enriched: List[models.StepSpec] = []
+    last_idx = len(steps) - 1
+    for idx, step in enumerate(steps):
+        step_outputs = outputs if idx == last_idx else []
+        step_templates = templates if idx == last_idx else []
+        enriched.append(
+            models.StepSpec(
+                id=step.id,
+                name=step.name,
+                description=step.description,
+                phase=spec.phase,
+                inputs=dict(step.inputs),
+                outputs=step_outputs,
+                templates=step_templates,
+                tools=list(step.tools),
+                validation=spec.validation,
+                evidence=spec.evidence,
+                human_gate=spec.human,
+                retries=retries,
+            )
+        )
+    return enriched
+
+
+def _run_steps_from_specs(step_specs: List[models.StepSpec]) -> List[models.RunStep]:
+    steps: List[models.RunStep] = []
+    for spec in step_specs:
+        step = models.RunStep(
+            name=spec.name or spec.id,
+            step_id=spec.id,
+            inputs=dict(spec.inputs),
+            outputs=list(spec.outputs),
+            tools=[],
+        )
+        steps.append(step)
+    return steps
+
+
 def _ensure_steps(manifest: Dict[str, Any]) -> None:
     if not manifest.get("steps"):
-        manifest["steps"] = _default_steps()
+        step_specs = manifest.get("step_specs", [])
+        if step_specs:
+            parsed = [models.StepSpec.from_dict(item) for item in step_specs]
+            manifest["steps"] = [step.to_dict() for step in _run_steps_from_specs(parsed)]
+        else:
+            manifest["steps"] = _default_steps()
         manifest["current_step"] = 0
 
 
@@ -63,6 +136,22 @@ def _step_timeout_seconds(config: Dict[str, Any]) -> int:
 def _max_retries(config: Dict[str, Any]) -> int:
     runtime_cfg = config.get("runtime", {})
     return int(runtime_cfg.get("max_retries", 0))
+
+
+def _automation_allowed(spec: models.WorkflowSpec, config: Dict[str, Any]) -> bool:
+    automation_cfg = config.get("automation", {})
+    if automation_cfg.get("override"):
+        return True
+    phases = automation_cfg.get("phases")
+    if not phases:
+        return True
+    return spec.phase in set(phases)
+
+
+def _clear_manual_block(manifest: Dict[str, Any]) -> None:
+    if manifest.get("blocked_reason") == "manual_phase":
+        manifest.pop("blocked_reason", None)
+        manifest.pop("blocked_phase", None)
 
 
 def _gate_id(spec: models.WorkflowSpec) -> str:
@@ -94,11 +183,14 @@ class WorkflowEngine:
 
     def _build_manifest(self, run_id: str, spec: models.WorkflowSpec) -> Dict[str, Any]:
         now = utc_now()
+        step_specs = _step_specs_for_workflow(spec, self.config)
+        steps = _run_steps_from_specs(step_specs) if step_specs else [models.RunStep(name="execute")]
         manifest = models.RunManifest(
             run_id=run_id,
             workflow=spec,
             status="pending",
-            steps=[models.RunStep(name="execute")],
+            step_specs=step_specs,
+            steps=steps,
             current_step=0,
             created_at=now,
             updated_at=now,
@@ -157,6 +249,18 @@ class WorkflowEngine:
 
         _ensure_steps(manifest)
 
+        if not _automation_allowed(spec, self.config):
+            manifest["status"] = "blocked"
+            manifest["blocked_reason"] = "manual_phase"
+            manifest["blocked_phase"] = spec.phase
+            manifest["updated_at"] = utc_now()
+            storage.write_manifest(run_dir, manifest)
+            if self.plugins:
+                self.plugins.on_validation(manifest, "blocked")
+            return manifest
+
+        _clear_manual_block(manifest)
+
         decision = gates.gate_required(spec.human, self.config)
         approvals = storage.read_approvals(run_dir)
         if decision.required and not gates.has_approval(approvals, _gate_id(spec)):
@@ -183,6 +287,18 @@ class WorkflowEngine:
         spec = _load_spec_from_manifest(manifest)
 
         _ensure_steps(manifest)
+
+        if not _automation_allowed(spec, self.config):
+            manifest["status"] = "blocked"
+            manifest["blocked_reason"] = "manual_phase"
+            manifest["blocked_phase"] = spec.phase
+            manifest["updated_at"] = utc_now()
+            storage.write_manifest(run_dir, manifest)
+            if self.plugins:
+                self.plugins.on_validation(manifest, "blocked")
+            return manifest
+
+        _clear_manual_block(manifest)
 
         decision = gates.gate_required(spec.human, self.config)
         approvals = storage.read_approvals(run_dir)
@@ -211,6 +327,8 @@ class WorkflowEngine:
         executor: StepExecutor,
     ) -> Dict[str, Any]:
         steps = manifest.get("steps", [])
+        spec_list = [models.StepSpec.from_dict(item) for item in manifest.get("step_specs", [])]
+        spec_by_id = {spec.id: spec for spec in spec_list}
         max_retries = _max_retries(self.config)
         timeout_seconds = _step_timeout_seconds(self.config)
 
@@ -218,6 +336,17 @@ class WorkflowEngine:
             if step.get("status") == "completed":
                 continue
             manifest["current_step"] = idx
+            step_spec = None
+            step_id = step.get("step_id")
+            if step_id:
+                step_spec = spec_by_id.get(step_id)
+            if not step_spec and idx < len(spec_list):
+                step_spec = spec_list[idx]
+            if step_spec:
+                if not step.get("inputs"):
+                    step["inputs"] = dict(step_spec.inputs)
+                if not step.get("outputs"):
+                    step["outputs"] = list(step_spec.outputs)
             attempts = int(step.get("attempts", 0))
             while attempts <= max_retries:
                 attempts += 1
@@ -231,7 +360,10 @@ class WorkflowEngine:
                     if self.plugins:
                         self.plugins.before_step(step, manifest)
                     started = time.time()
-                    executor.execute(step, {"run_dir": run_dir, "manifest": manifest})
+                    executor.execute(
+                        step,
+                        {"run_dir": run_dir, "manifest": manifest, "step_spec": step_spec},
+                    )
                     elapsed = time.time() - started
                     if elapsed > timeout_seconds:
                         raise TimeoutError("step timeout")

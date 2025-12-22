@@ -49,6 +49,8 @@ class CliTests(unittest.TestCase):
                 run_id=None,
                 agent="bmad",
                 provider="mock",
+                auto=False,
+                manual=False,
             )
             with redirect_stdout(buf):
                 cli_main.cmd_run(args)
@@ -69,6 +71,8 @@ class CliTests(unittest.TestCase):
                 run_id=payload["run_id"],
                 agent="bmad",
                 provider="mock",
+                auto=False,
+                manual=False,
             )
             buf = io.StringIO()
             with redirect_stdout(buf):

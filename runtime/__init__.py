@@ -1,6 +1,6 @@
 """Runtime engine for the unified agentic framework."""
 
-from runtime import agents, config, engine, gates, models, storage, time_provider
+from runtime import agents, config, engine, gates, models, storage, time_provider, workflow_parser
 
 __all__ = [
     "agents",
@@ -10,4 +10,5 @@ __all__ = [
     "models",
     "storage",
     "time_provider",
+    "workflow_parser",
 ]

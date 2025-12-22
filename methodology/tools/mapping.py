@@ -313,11 +313,38 @@ def safe_text(path: Path) -> str:
         return path.read_text(encoding="utf-8", errors="ignore")
 
 
+def clean_artifact_value(value: str) -> str:
+    cleaned = value.strip()
+    if "#" in cleaned:
+        cleaned = cleaned.split("#", 1)[0].strip()
+    cleaned = cleaned.strip().strip("`").strip('"').strip("'").strip()
+    return cleaned
+
+
+def is_explicit_artifact(value: str) -> bool:
+    if not value:
+        return False
+    if value.startswith("[") and value.endswith("]"):
+        return False
+    return True
+
+
 def extract_outputs(text: str) -> List[str]:
     outputs: List[str] = []
-    for match in re.finditer(r"(?im)^\s*output(?:file|_file|_path)\s*:\s*(.+)$", text):
-        val = match.group(1).strip().strip('"').strip("'")
-        if val:
+    for match in re.finditer(
+        r"(?im)^\s*(?:default_)?output(?:file|_file|_path)\s*:\s*(.+)$",
+        text,
+    ):
+        val = clean_artifact_value(match.group(1))
+        if is_explicit_artifact(val):
+            outputs.append(val)
+
+    for match in re.finditer(
+        r"(?im)[`']?(?:default_)?output(?:file|_file|_path)[`']?\s*=\s*`?([^\r\n`]+)`?",
+        text,
+    ):
+        val = clean_artifact_value(match.group(1))
+        if is_explicit_artifact(val):
             outputs.append(val)
 
     for match in re.finditer(r"(?im)^\s*outputs\s*:\s*$", text):
@@ -327,8 +354,8 @@ def extract_outputs(text: str) -> List[str]:
             if not line.strip():
                 continue
             if re.match(r"^\s*-\s+", line):
-                val = re.sub(r"^\s*-\s+", "", line).strip().strip('"').strip("'")
-                if val:
+                val = clean_artifact_value(re.sub(r"^\s*-\s+", "", line))
+                if is_explicit_artifact(val):
                     outputs.append(val)
                 continue
             if re.match(r"^\S", line):
@@ -367,8 +394,13 @@ def artifacts_from_workflow_dir(workflow_dir: Path) -> List[str]:
 
 
 def list_workflow_files(root: Path) -> List[Path]:
-    files = list(root.rglob("workflow.md"))
-    files.extend(root.rglob("workflow.yaml"))
+    patterns = ["workflow.md", "workflow.yaml", "workflow.yml", "workflow.xml"]
+    files: List[Path] = []
+    for pattern in patterns:
+        for path in root.rglob(pattern):
+            if "workflows" not in [part.lower() for part in path.parts]:
+                continue
+            files.append(path)
     return sorted(set(files))
 
 

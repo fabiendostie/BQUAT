@@ -60,10 +60,11 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-BMAD-001  | BMAD            | Preserve BMAD workflows and naming without rewriting logic  | Runtime | partial | Planned: end-to-end workflow run test |
 | REQ-BMAD-002  | BMAD            | Sample/reference workflows excluded from production mapping | Mapping | done    | tests/test_mapping.py                 |
 | REQ-BMAD-003  | BMAD            | Only explicit outputs/templates listed in mapping           | Mapping | done    | tests/test_mapping.py                 |
-| REQ-BMAD-004  | BMAD            | Parse workflow definitions (md/yaml/xml) into steps         | Runtime | missing | Planned: workflow parser tests        |
+| REQ-BMAD-004  | BMAD            | Parse workflow definitions (md/yaml/xml) into steps         | Runtime | partial | tests/test_workflow_parser.py         |
 | REQ-BMAD-005  | BMAD            | Enforce output folder/layout conventions                    | Runtime | missing | Planned: output validation tests      |
 | REQ-BMAD-006  | BMAD            | Orchestrator routes workflows and agents                    | Runtime | missing | Planned: orchestration tests          |
 | REQ-BMAD-007  | BMAD            | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)        | Runtime | partial | methodology/registry-workflows.md     |
+| REQ-INSTALL-001 | Distribution  | Single-command install for full framework (BMAD + QUINT + BQUAT) | Release | missing | Planned: installer integration tests  |
 | REQ-TELIS-001 | TELIS           | LSP symbiosis for type/signature accuracy                   | Tools   | missing | Planned: LSP integration tests        |
 | REQ-TELIS-002 | TELIS           | LSP fallback to shards on failure                           | Tools   | missing | Planned: LSP fallback tests           |
 | REQ-TELIS-003 | TELIS           | Tiered knowledge shards with token budgets                  | TELIS   | missing | Planned: shard retrieval tests        |
@@ -280,7 +281,18 @@ Deliverables:
 - tests/\* integration suite
 - CI green
 
-### WS15: Release readiness
+### WS15: Distribution and installer integration
+
+1. Package a full framework install through the BMAD installer (`npx bmad-method@alpha install`).
+2. Ensure QUINT and BQUAT assets are included alongside BMAD slash commands.
+3. Add an installation verification test or checklist.
+
+Deliverables:
+
+- Installer integration notes
+- Install validation check
+
+### WS16: Release readiness
 
 1. Final documentation sweep and index update.
 2. Version bump to 1.0.0 and changelog.
@@ -310,6 +322,7 @@ Deliverables:
 - [ ] Add observability and run reports
 - [ ] Integration tests for at least one BMAD workflow
 - [ ] CI green with coverage >= 85 percent
+- [ ] Package full framework installer (BMAD + QUINT + BQUAT)
 - [ ] Release docs and tag v1.0.0 on main
 
 ## Verification and Gap Audit

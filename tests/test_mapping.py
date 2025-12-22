@@ -54,6 +54,23 @@ class MappingTests(unittest.TestCase):
             self.assertNotIn("sample-custom-modules", record.path)
             self.assertNotIn("reference", record.path)
 
+    def test_default_output_file_captured(self) -> None:
+        target = None
+        for record in self.records:
+            if "/cis/workflows/innovation-strategy/" in record.path:
+                target = record
+                break
+        self.assertIsNotNone(target, "Innovation strategy workflow mapping not found")
+        self.assertTrue(
+            any("innovation-strategy" in artifact for artifact in target.artifacts),
+            "default_output_file not captured for innovation-strategy",
+        )
+
+    def test_artifacts_exclude_bracket_placeholders(self) -> None:
+        for record in self.records:
+            for artifact in record.artifacts:
+                self.assertFalse(artifact.startswith("[") and artifact.endswith("]"))
+
 
 if __name__ == "__main__":
     unittest.main()

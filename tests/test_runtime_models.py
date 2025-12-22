@@ -111,6 +111,25 @@ class RuntimeModelTests(unittest.TestCase):
         loaded = models.RunManifest.from_dict(data)
         self.assertEqual(loaded.to_dict(), data)
 
+    def test_step_spec_round_trip(self) -> None:
+        step = models.StepSpec(
+            id="step-01",
+            name="init",
+            description="Initialize workflow",
+            phase="Phase 2 Planning",
+            inputs={"context": "minimal"},
+            outputs=["{output_folder}/prd.md"],
+            templates=["template:{template_folder}/prd.template.md"],
+            tools=[{"name": "getCurrentTime", "args": {"timezone": "UTC"}}],
+            validation="Template/schema validation",
+            evidence="L1",
+            human_gate="required",
+            retries={"max": 1, "backoff_seconds": 2},
+        )
+        data = step.to_dict()
+        loaded = models.StepSpec.from_dict(data)
+        self.assertEqual(loaded.to_dict(), data)
+
 
 if __name__ == "__main__":
     unittest.main()

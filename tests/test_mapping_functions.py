@@ -200,12 +200,16 @@ class MappingFunctionTests(unittest.TestCase):
     def test_extract_outputs_and_artifacts(self) -> None:
         text = """
 outputFile: '{output_folder}/prd.md'
+default_output_file: "{output_folder}/default.md"
+- `output_file` = `{output_folder}/inline.md`
 outputs:
   - output-a.md
   - output-b.md
 """
         outputs = mapping.extract_outputs(text)
         self.assertIn("{output_folder}/prd.md", outputs)
+        self.assertIn("{output_folder}/default.md", outputs)
+        self.assertIn("{output_folder}/inline.md", outputs)
         self.assertIn("output-a.md", outputs)
         self.assertIn("output-b.md", outputs)
 
@@ -224,6 +228,21 @@ outputs:
             self.assertIn("{output_folder}/foo.md", artifacts)
             self.assertIn("{output_folder}/bar.md", artifacts)
             self.assertIn("template:template.md", artifacts)
+
+    def test_list_workflow_files_extensions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            wf_dir = root / "src" / "modules" / "bmm" / "workflows" / "sample"
+            wf_dir.mkdir(parents=True, exist_ok=True)
+            for name in ["workflow.md", "workflow.yaml", "workflow.yml", "workflow.xml"]:
+                (wf_dir / name).write_text("", encoding="ascii")
+
+            files = mapping.list_workflow_files(root)
+            names = sorted([path.name for path in files])
+            self.assertEqual(
+                names,
+                sorted(["workflow.md", "workflow.yaml", "workflow.yml", "workflow.xml"]),
+            )
 
     def test_write_outputs(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

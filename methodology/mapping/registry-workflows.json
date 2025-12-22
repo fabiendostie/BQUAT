@@ -73,22 +73,6 @@
       "workflow": "workflow-compliance-check"
     },
     {
-      "definition": "workflow.yaml",
-      "module": "bmb",
-      "path": "src/modules/bmb/workflows-legacy/edit-module/workflow.yaml",
-      "phase": "Builder Legacy",
-      "scope": "production",
-      "workflow": "edit-module"
-    },
-    {
-      "definition": "workflow.yaml",
-      "module": "bmb",
-      "path": "src/modules/bmb/workflows-legacy/module-brief/workflow.yaml",
-      "phase": "Builder Legacy",
-      "scope": "production",
-      "workflow": "module-brief"
-    },
-    {
       "definition": "workflow.md",
       "module": "bmgd",
       "path": "src/modules/bmgd/workflows/1-preproduction/brainstorm-game/workflow.md",

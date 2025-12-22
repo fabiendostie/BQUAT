@@ -38,6 +38,42 @@ class WorkflowSpec:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class StepSpec:
+    id: str
+    name: str
+    description: str
+    phase: str
+    inputs: Dict[str, Any]
+    outputs: List[str]
+    templates: List[str]
+    tools: List[Dict[str, Any]]
+    validation: str
+    evidence: str
+    human_gate: str
+    retries: Dict[str, int]
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "StepSpec":
+        return cls(
+            id=data["id"],
+            name=data.get("name", ""),
+            description=data.get("description", ""),
+            phase=data.get("phase", ""),
+            inputs=dict(data.get("inputs", {})),
+            outputs=list(data.get("outputs", [])),
+            templates=list(data.get("templates", [])),
+            tools=list(data.get("tools", [])),
+            validation=data.get("validation", ""),
+            evidence=data.get("evidence", ""),
+            human_gate=data.get("human_gate", ""),
+            retries=dict(data.get("retries", {})),
+        )
+
+
 @dataclass
 class RunStep:
     name: str
@@ -213,6 +249,7 @@ class RunManifest:
     run_id: str
     workflow: WorkflowSpec
     status: str
+    step_specs: List[StepSpec] = field(default_factory=list)
     steps: List[RunStep] = field(default_factory=list)
     current_step: int = 0
     created_at: str = ""
@@ -223,6 +260,7 @@ class RunManifest:
             "run_id": self.run_id,
             "workflow": self.workflow.to_dict(),
             "status": self.status,
+            "step_specs": [step.to_dict() for step in self.step_specs],
             "steps": [step.to_dict() for step in self.steps],
             "current_step": self.current_step,
             "created_at": self.created_at,
@@ -235,6 +273,7 @@ class RunManifest:
             run_id=data["run_id"],
             workflow=WorkflowSpec.from_mapping(data["workflow"]),
             status=data["status"],
+            step_specs=[StepSpec.from_dict(item) for item in data.get("step_specs", [])],
             steps=[RunStep.from_dict(item) for item in data.get("steps", [])],
             current_step=int(data.get("current_step", 0)),
             created_at=data.get("created_at", ""),

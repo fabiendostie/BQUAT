@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from runtime import config as runtime_config
-from runtime import engine, execution, storage
+from runtime import engine, execution, models, storage
 from runtime.providers.registry import ProviderRegistry
 
 
@@ -20,6 +21,46 @@ def _engine(config: Dict[str, Any]) -> engine.WorkflowEngine:
     return engine.WorkflowEngine(config, mapping)
 
 
+def _prompt_automation_choice(spec: models.WorkflowSpec) -> bool:
+    message = (
+        f"Automation is disabled for phase '{spec.phase}' in {spec.module}/{spec.workflow}.\n"
+        "Select: [A] automate anyway, [M] manual (default): "
+    )
+    print(message, file=sys.stderr, end="")
+    try:
+        choice = input().strip().lower()
+    except EOFError:
+        return False
+    return choice in {"a", "auto", "automate", "y", "yes"}
+
+
+def _automation_decision(
+    config: Dict[str, Any],
+    spec: models.WorkflowSpec,
+    args: argparse.Namespace,
+) -> Optional[bool]:
+    if not getattr(args, "agent", None):
+        return None
+    phases = config.get("automation", {}).get("phases")
+    if not phases or spec.phase in set(phases):
+        return None
+    if args.auto:
+        return True
+    if args.manual:
+        return False
+    if sys.stdin.isatty():
+        return _prompt_automation_choice(spec)
+    return False
+
+
+def _with_automation_override(config: Dict[str, Any]) -> Dict[str, Any]:
+    updated = dict(config)
+    automation = dict(updated.get("automation", {}))
+    automation["override"] = True
+    updated["automation"] = automation
+    return updated
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     records = engine.load_mapping_records()
     print(json.dumps({"records": len(records)}))
@@ -29,6 +70,11 @@ def cmd_validate(args: argparse.Namespace) -> int:
 def cmd_run(args: argparse.Namespace) -> int:
     config = _load_config(args.config)
     eng = _engine(config)
+    spec = eng.get_workflow_spec(args.module, args.workflow)
+    decision = _automation_decision(config, spec, args)
+    if decision:
+        config = _with_automation_override(config)
+        eng = _engine(config)
     executor = None
     if args.agent:
         provider = None
@@ -43,6 +89,12 @@ def cmd_run(args: argparse.Namespace) -> int:
 
 def cmd_resume(args: argparse.Namespace) -> int:
     config = _load_config(args.config)
+    root = runtime_config.storage_root(config)
+    manifest = storage.read_manifest(root / args.run_id)
+    spec = models.WorkflowSpec.from_mapping(manifest["workflow"])
+    decision = _automation_decision(config, spec, args)
+    if decision:
+        config = _with_automation_override(config)
     eng = _engine(config)
     executor = None
     if args.agent:
@@ -94,12 +146,18 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--run-id")
     run.add_argument("--agent", choices=["bmad", "telis", "quint"])
     run.add_argument("--provider")
+    run_select = run.add_mutually_exclusive_group()
+    run_select.add_argument("--auto", action="store_true")
+    run_select.add_argument("--manual", action="store_true")
     run.set_defaults(func=cmd_run)
 
     resume = sub.add_parser("resume", help="Resume a run")
     resume.add_argument("run_id")
     resume.add_argument("--agent", choices=["bmad", "telis", "quint"])
     resume.add_argument("--provider")
+    resume_select = resume.add_mutually_exclusive_group()
+    resume_select.add_argument("--auto", action="store_true")
+    resume_select.add_argument("--manual", action="store_true")
     resume.set_defaults(func=cmd_resume)
 
     approve = sub.add_parser("approve", help="Approve a human gate")

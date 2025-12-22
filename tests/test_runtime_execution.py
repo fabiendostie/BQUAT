@@ -33,9 +33,12 @@ class RuntimeExecutionTests(unittest.TestCase):
             )
             manifest = {"workflow": spec.to_dict()}
             executor = execution.PlanExecutor("bmad", MockProvider("mock"))
-            executor.execute({}, {"run_dir": run_dir, "manifest": manifest})
+            step = {}
+            executor.execute(step, {"run_dir": run_dir, "manifest": manifest})
             self.assertTrue((run_dir / "plan.json").exists())
             self.assertTrue((run_dir / "response.json").exists())
+            self.assertIn("plan.json", step.get("outputs", []))
+            self.assertIn("response.json", step.get("outputs", []))
 
 
 if __name__ == "__main__":

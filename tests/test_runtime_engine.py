@@ -107,6 +107,27 @@ class RuntimeEngineTests(unittest.TestCase):
             self.assertEqual(manifest["status"], "completed")
             self.assertEqual(manifest["steps"][0]["attempts"], 2)
 
+    def test_automation_phase_blocks_manual(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            spec = self._spec(human_gate="optional")
+            config = self._config()
+            config["automation"] = {"phases": ["Phase 4 Implementation"]}
+            eng = engine.WorkflowEngine(config, [spec], storage_root=tmp)
+            manifest = eng.run("bmm", "prd")
+            self.assertEqual(manifest["status"], "blocked")
+            self.assertEqual(manifest.get("blocked_reason"), "manual_phase")
+
+    def test_automation_phase_allows_configured(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            spec = self._spec(human_gate="optional")
+            config = self._config()
+            config["automation"] = {"phases": ["Phase 2 Planning"]}
+            eng = engine.WorkflowEngine(config, [spec], storage_root=tmp)
+            manifest = eng.run("bmm", "prd")
+            self.assertEqual(manifest["status"], "completed")
+
     def test_load_mapping_records(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)
@@ -186,15 +207,13 @@ class RuntimeEngineTests(unittest.TestCase):
             eng = engine.WorkflowEngine(self._config(), [spec], storage_root=tmp, plugins=manager)
             manifest = eng.run("bmm", "prd")
             self.assertEqual(manifest["status"], "completed")
+            self.assertEqual(plugin.events[0], "before_run")
+            self.assertEqual(plugin.events[-1], "after_run")
+            self.assertIn("validation:completed", plugin.events)
+            self.assertGreaterEqual(plugin.events.count("before_step"), 1)
             self.assertEqual(
-                plugin.events,
-                [
-                    "before_run",
-                    "before_step",
-                    "after_step",
-                    "validation:completed",
-                    "after_run",
-                ],
+                plugin.events.count("before_step"),
+                plugin.events.count("after_step"),
             )
 
     def test_plugin_hooks_failure(self) -> None:

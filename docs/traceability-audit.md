@@ -29,10 +29,16 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | partial | methodology/mapping/integration-mapping.json, methodology/registry-workflows.md | Execution engine does not run real BMAD steps yet |
 | BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                                           | None                                              |
 | BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                                           | None                                              |
-| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | missing | None                                                                            | No parser or step model implemented               |
+| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | partial | runtime/workflow_parser.py, tests/test_workflow_parser.py                       | Not yet wired into runtime execution              |
 | BMAD-005 | Enforce BMAD output folder/layout conventions              | missing | None                                                                            | Runtime does not validate output paths            |
 | BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | missing | None                                                                            | No orchestration layer beyond basic engine        |
 | BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | partial | methodology/registry-workflows.md                                               | Registry exists; execution missing                |
+
+## Distribution Coverage
+
+| ID             | Requirement                                              | Status  | Evidence | Gap Notes                                   |
+| -------------- | -------------------------------------------------------- | ------- | -------- | ------------------------------------------- |
+| INSTALL-001    | Single-command install for full framework distribution   | missing | None     | Installer integration not yet implemented   |
 
 ## TELIS Coverage
 

@@ -108,6 +108,20 @@ python -m cli.main approve <run-id> --by you
 python -m cli.main status <run-id>
 ```
 
+- If a workflow is outside configured automation phases and `--agent` is provided, the CLI prompts for manual vs automated execution.
+- Use `--auto` or `--manual` on `run`/`resume` (with `--agent`) to override the prompt.
+- Example overrides:
+
+```bash
+python -m cli.main run bmm prd --agent bmad --provider mock --auto
+python -m cli.main resume <run-id> --agent bmad --provider mock --manual
+```
+
+## Installer (planned)
+
+The full framework will ship through the BMAD installer so slash commands from BMAD, QUINT, and BQUAT are installed together.
+Target command: `npx bmad-method@alpha install`.
+
 ## Docs and registries
 
 - Unified method specification: methodology/unified_method_specification.md

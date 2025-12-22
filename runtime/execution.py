@@ -43,3 +43,8 @@ class PlanExecutor(StepExecutor):
                     "raw": response.raw,
                 },
             )
+            outputs = list(step.get("outputs", []))
+            for name in ["plan.json", "response.json"]:
+                if name not in outputs:
+                    outputs.append(name)
+            step["outputs"] = outputs
