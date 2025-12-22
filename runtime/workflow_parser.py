@@ -11,7 +11,9 @@ from runtime import models
 STEP_FILE_RE = re.compile(r"^step-(\d+)([a-z]?)?(?:-(.*))?$", re.IGNORECASE)
 STEP_TAG_RE = re.compile(r"<step\b([^>]*)>", re.IGNORECASE)
 STEP_BLOCK_RE = re.compile(r"<step\b([^>]*)>(.*?)</step>", re.IGNORECASE | re.DOTALL)
-TEMPLATE_OUTPUT_RE = re.compile(r"<template-output>([^<]+)</template-output>", re.IGNORECASE)
+TEMPLATE_OUTPUT_BLOCK_RE = re.compile(
+    r"<template-output\b([^>]*)>(.*?)</template-output>", re.IGNORECASE | re.DOTALL
+)
 ATTR_RE = re.compile(r"(\w+)\s*=\s*\"([^\"]*)\"")
 
 
@@ -75,13 +77,59 @@ def extract_outputs(text: str) -> List[str]:
     return outputs
 
 
+def parse_template_output_names(text: str) -> List[str]:
+    names: List[str] = []
+    for chunk in re.split(r"[,\n]+", text):
+        item = chunk.strip()
+        if not item:
+            continue
+        if "=" in item:
+            item = item.split("=", 1)[0].strip()
+        item = clean_artifact_value(item)
+        if item:
+            names.append(item)
+    return names
+
+
+def parse_template_output_tags(text: str) -> Tuple[List[str], Dict[str, object]]:
+    outputs: List[str] = []
+    files: Dict[str, object] = {}
+    for match in TEMPLATE_OUTPUT_BLOCK_RE.finditer(text):
+        attrs = {k.lower(): v for k, v in ATTR_RE.findall(match.group(1))}
+        file_ref = clean_artifact_value(attrs.get("file", "")) if attrs.get("file") else ""
+        names = parse_template_output_names(match.group(2))
+        if not names:
+            continue
+        outputs.extend(names)
+        if not file_ref:
+            continue
+        for name in names:
+            existing = files.get(name)
+            if not existing:
+                files[name] = file_ref
+            elif existing == file_ref:
+                continue
+            elif isinstance(existing, list):
+                if file_ref not in existing:
+                    existing.append(file_ref)
+            else:
+                if file_ref != existing:
+                    files[name] = [existing, file_ref]
+    return outputs, files
+
+
 def parse_template_outputs(text: str) -> List[str]:
-    outputs = []
-    for match in TEMPLATE_OUTPUT_RE.finditer(text):
-        name = match.group(1).strip()
-        if name:
-            outputs.append(name)
+    outputs, _files = parse_template_output_tags(text)
     return outputs
+
+
+def is_explicit_template_output_file(value: str) -> bool:
+    if not value:
+        return False
+    cleaned = value.strip()
+    if cleaned in {"{default_output_file}", "{{default_output_file}}", "default_output_file"}:
+        return False
+    return True
 
 
 def parse_frontmatter(text: str) -> Tuple[Dict[str, str], str]:
@@ -161,6 +209,22 @@ def build_step_spec(
     )
 
 
+def template_output_file_refs(files: Dict[str, object]) -> List[str]:
+    refs: List[str] = []
+    seen = set()
+    for value in files.values():
+        if isinstance(value, list):
+            candidates = value
+        else:
+            candidates = [value]
+        for ref in candidates:
+            if isinstance(ref, str) and is_explicit_template_output_file(ref):
+                if ref not in seen:
+                    refs.append(ref)
+                    seen.add(ref)
+    return refs
+
+
 def parse_step_files(step_files: Iterable[Path]) -> List[models.StepSpec]:
     steps: List[models.StepSpec] = []
     for path in step_files:
@@ -169,10 +233,13 @@ def parse_step_files(step_files: Iterable[Path]) -> List[models.StepSpec]:
         name = frontmatter.get("name") or step_name_from_filename(path.stem)
         description = frontmatter.get("description") or first_heading(body)
         outputs = extract_outputs(text)
-        template_outputs = parse_template_outputs(body)
+        template_outputs, template_output_files = parse_template_output_tags(body)
         inputs: Dict[str, object] = {}
         if template_outputs:
             inputs["template_outputs"] = template_outputs
+        if template_output_files:
+            inputs["template_output_files"] = template_output_files
+            outputs.extend(template_output_file_refs(template_output_files))
         steps.append(build_step_spec(path.stem, name, description, inputs, outputs))
     return steps
 
@@ -202,11 +269,15 @@ def parse_steps_from_xml_like(text: str) -> List[models.StepSpec]:
             step_id = f"{step_id}-{count}"
         name = attrs.get("goal") or attrs.get("title") or step_id
         description = attrs.get("goal") or attrs.get("title") or ""
-        template_outputs = parse_template_outputs(body)
+        template_outputs, template_output_files = parse_template_output_tags(body)
         inputs: Dict[str, object] = {}
+        outputs: List[str] = []
         if template_outputs:
             inputs["template_outputs"] = template_outputs
-        steps.append(build_step_spec(step_id, name, description, inputs))
+        if template_output_files:
+            inputs["template_output_files"] = template_output_files
+            outputs.extend(template_output_file_refs(template_output_files))
+        steps.append(build_step_spec(step_id, name, description, inputs, outputs))
     return steps
 
 

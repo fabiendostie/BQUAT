@@ -9,6 +9,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from runtime import (
+    config as runtime_config,  # noqa: E402
+)
+from runtime import (
     engine,  # noqa: E402
     models,  # noqa: E402
     storage,  # noqa: E402
@@ -241,6 +244,69 @@ class RuntimeEngineTests(unittest.TestCase):
             manifest = eng.run("bmm", "prd", executor=TimeoutExecutor())
             self.assertEqual(manifest["status"], "failed")
             self.assertEqual(manifest["steps"][0]["error"], "step timeout")
+
+    def test_step_specs_fallback_outputs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            wf_dir = root / "BMAD-METHOD" / "src" / "modules" / "sample" / "workflows" / "demo"
+            wf_dir.mkdir(parents=True, exist_ok=True)
+            workflow_path = wf_dir / "workflow.md"
+            workflow_path.write_text('<step n="1" goal="One"></step>', encoding="ascii")
+            spec = models.WorkflowSpec(
+                module="sample",
+                workflow="demo",
+                phase="Phase 1 Analysis",
+                quint="Deduction (L1)",
+                telis="Tier 2 shards + progressive negotiation",
+                validation="Template/schema validation",
+                human="optional",
+                evidence="L1",
+                artifacts=["{output_folder}/demo.md"],
+                scope="production",
+                path="src/modules/sample/workflows/demo/workflow.md",
+            )
+            original = runtime_config.project_root_from_here
+            runtime_config.project_root_from_here = lambda: root
+            try:
+                steps = engine._step_specs_for_workflow(spec, self._config())
+            finally:
+                runtime_config.project_root_from_here = original
+            self.assertEqual(len(steps), 1)
+            self.assertEqual(steps[0].outputs, ["{output_folder}/demo.md"])
+
+    def test_step_specs_preserve_step_outputs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            wf_dir = root / "BMAD-METHOD" / "src" / "modules" / "sample" / "workflows" / "demo"
+            steps_dir = wf_dir / "steps"
+            steps_dir.mkdir(parents=True, exist_ok=True)
+            (steps_dir / "step-01-init.md").write_text(
+                "output_file: {output_folder}/step.md",
+                encoding="ascii",
+            )
+            workflow_path = wf_dir / "workflow.md"
+            workflow_path.write_text("# Demo", encoding="ascii")
+            spec = models.WorkflowSpec(
+                module="sample",
+                workflow="demo",
+                phase="Phase 1 Analysis",
+                quint="Deduction (L1)",
+                telis="Tier 2 shards + progressive negotiation",
+                validation="Template/schema validation",
+                human="optional",
+                evidence="L1",
+                artifacts=["{output_folder}/workflow.md"],
+                scope="production",
+                path="src/modules/sample/workflows/demo/workflow.md",
+            )
+            original = runtime_config.project_root_from_here
+            runtime_config.project_root_from_here = lambda: root
+            try:
+                steps = engine._step_specs_for_workflow(spec, self._config())
+            finally:
+                runtime_config.project_root_from_here = original
+            self.assertEqual(len(steps), 1)
+            self.assertEqual(steps[0].outputs, ["{output_folder}/step.md"])
 
 
 if __name__ == "__main__":

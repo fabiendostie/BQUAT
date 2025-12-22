@@ -123,6 +123,39 @@ description: Ready
             self.assertEqual(len(steps), 1)
             self.assertEqual(steps[0].id, "step-02-ready")
 
+    def test_template_outputs_with_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            wf_dir = root / "wf"
+            wf_dir.mkdir(parents=True, exist_ok=True)
+            instructions = wf_dir / "instructions.md"
+            instructions.write_text(
+                """<step n="1" goal="First">
+<template-output>alpha, beta</template-output>
+</step>
+<step n="2" goal="Second">
+<template-output file="{output_folder}/out.md">gamma = {{gamma}}</template-output>
+<template-output file="{default_output_file}">delta</template-output>
+</step>
+""",
+                encoding="ascii",
+            )
+            workflow_yaml = wf_dir / "workflow.yaml"
+            workflow_yaml.write_text(
+                "instructions: '{installed_path}/instructions.md'",
+                encoding="ascii",
+            )
+
+            steps = workflow_parser.parse_workflow_steps(workflow_yaml)
+            self.assertEqual(steps[0].inputs.get("template_outputs"), ["alpha", "beta"])
+            self.assertNotIn("template_output_files", steps[0].inputs)
+            self.assertEqual(steps[1].inputs.get("template_outputs"), ["gamma", "delta"])
+            self.assertEqual(
+                steps[1].inputs.get("template_output_files", {}).get("gamma"),
+                "{output_folder}/out.md",
+            )
+            self.assertEqual(steps[1].outputs, ["{output_folder}/out.md"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -82,8 +82,13 @@ def _step_specs_for_workflow(
     enriched: List[models.StepSpec] = []
     last_idx = len(steps) - 1
     for idx, step in enumerate(steps):
-        step_outputs = outputs if idx == last_idx else []
-        step_templates = templates if idx == last_idx else []
+        step_outputs = list(step.outputs)
+        step_templates = list(step.templates)
+        if idx == last_idx:
+            if not step_outputs:
+                step_outputs = list(outputs)
+            if not step_templates:
+                step_templates = list(templates)
         enriched.append(
             models.StepSpec(
                 id=step.id,
