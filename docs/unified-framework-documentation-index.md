@@ -6,6 +6,7 @@
 - docs/v1-plan.md
 - docs/traceability-audit.md
 - docs/runtime-step-contract.md
+- docs/tool-execution-pipeline.md
 
 ## Registries and Mappings
 
