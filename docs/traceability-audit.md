@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-21T14:50:54-05:00
+Last updated: 2025-12-22T17:28:28-05:00
 
 ## Purpose
 
@@ -29,7 +29,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | partial | methodology/mapping/integration-mapping.json, methodology/registry-workflows.md | Execution engine does not run real BMAD steps yet |
 | BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                                           | None                                              |
 | BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                                           | None                                              |
-| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | partial | runtime/workflow_parser.py, tests/test_workflow_parser.py                       | Not yet wired into runtime execution              |
+| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done    | runtime/workflow_parser.py, tests/test_workflow_parser.py                       | None                                              |
 | BMAD-005 | Enforce BMAD output folder/layout conventions              | missing | None                                                                            | Runtime does not validate output paths            |
 | BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | missing | None                                                                            | No orchestration layer beyond basic engine        |
 | BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | partial | methodology/registry-workflows.md                                               | Registry exists; execution missing                |
@@ -42,15 +42,15 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## TELIS Coverage
 
-| ID        | Requirement                                         | Status  | Evidence          | Gap Notes                                      |
-| --------- | --------------------------------------------------- | ------- | ----------------- | ---------------------------------------------- |
-| TELIS-001 | LSP symbiosis for type/signature accuracy           | missing | None              | No LSP adapter present                         |
-| TELIS-002 | LSP fallback to shards on failure or timeout        | missing | None              | No fallback path                               |
-| TELIS-003 | Tiered knowledge shards with token budgets          | missing | None              | Shard registry not implemented                 |
-| TELIS-004 | Progressive context negotiation protocol            | missing | None              | No negotiation logic or prompts                |
-| TELIS-005 | AST/type/lint validation pipeline                   | missing | None              | No validation gate runner                      |
-| TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None              | Cache not implemented                          |
-| TELIS-007 | Validation failures trigger retry/escalation        | partial | runtime/engine.py | Retries exist but not tied to validation gates |
+| ID        | Requirement                                         | Status  | Evidence                                        | Gap Notes                                      |
+| --------- | --------------------------------------------------- | ------- | ----------------------------------------------- | ---------------------------------------------- |
+| TELIS-001 | LSP symbiosis for type/signature accuracy           | partial | runtime/tools/lsp.py, tests/test_runtime_lsp.py | Adapter present; not yet wired into TELIS      |
+| TELIS-002 | LSP fallback to shards on failure or timeout        | missing | None                                            | No fallback path                               |
+| TELIS-003 | Tiered knowledge shards with token budgets          | missing | None                                            | Shard registry not implemented                 |
+| TELIS-004 | Progressive context negotiation protocol            | missing | None                                            | No negotiation logic or prompts                |
+| TELIS-005 | AST/type/lint validation pipeline                   | missing | None                                            | No validation gate runner                      |
+| TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None                                            | Cache not implemented                          |
+| TELIS-007 | Validation failures trigger retry/escalation        | partial | runtime/engine.py                               | Retries exist but not tied to validation gates |
 
 ## QUINT Coverage
 
@@ -67,16 +67,16 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## Practical Guide Coverage
 
-| ID        | Requirement                                     | Status  | Evidence                              | Gap Notes                                |
-| --------- | ----------------------------------------------- | ------- | ------------------------------------- | ---------------------------------------- |
-| GUIDE-001 | Model, tools, instructions triad per agent      | partial | runtime/prompts.py, runtime/agents.py | Prompts exist; no explicit tool registry |
-| GUIDE-002 | Standardized tool definitions and reuse         | missing | None                                  | No tool schema or registry               |
-| GUIDE-003 | Tool risk ratings and safeguards                | missing | None                                  | No risk policy in runtime                |
-| GUIDE-004 | PII filter and data privacy guardrails          | missing | None                                  | No guardrail hooks                       |
-| GUIDE-005 | Moderation filters for unsafe inputs            | missing | None                                  | No moderation checks                     |
-| GUIDE-006 | Rules-based protections (blocklists/regex)      | missing | None                                  | No rules gate                            |
-| GUIDE-007 | HITL on high-risk actions and retry thresholds  | partial | runtime/gates.py                      | Gate depends on workflow metadata only   |
-| GUIDE-008 | Optimistic execution with concurrent guardrails | missing | None                                  | No guardrail concurrency model           |
+| ID        | Requirement                                     | Status  | Evidence                                                                                                                                     | Gap Notes                                 |
+| --------- | ----------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| GUIDE-001 | Model, tools, instructions triad per agent      | partial | runtime/prompts.py, runtime/agents.py, runtime/tools/base.py                                                                                 | Tool schema exists; no per-agent registry |
+| GUIDE-002 | Standardized tool definitions and reuse         | partial | runtime/tools/base.py, runtime/tools/file_io.py, runtime/tools/repo_tool.py, tests/test_runtime_file_io.py, tests/test_runtime_repo_tools.py | No tool registry or catalog               |
+| GUIDE-003 | Tool risk ratings and safeguards                | partial | runtime/tools/base.py, runtime/tools/time_tool.py                                                                                            | No enforcement or HITL policy             |
+| GUIDE-004 | PII filter and data privacy guardrails          | missing | None                                                                                                                                         | No guardrail hooks                        |
+| GUIDE-005 | Moderation filters for unsafe inputs            | missing | None                                                                                                                                         | No moderation checks                      |
+| GUIDE-006 | Rules-based protections (blocklists/regex)      | missing | None                                                                                                                                         | No rules gate                             |
+| GUIDE-007 | HITL on high-risk actions and retry thresholds  | partial | runtime/gates.py                                                                                                                             | Gate depends on workflow metadata only    |
+| GUIDE-008 | Optimistic execution with concurrent guardrails | missing | None                                                                                                                                         | No guardrail concurrency model            |
 
 ## Unified Spec Coverage
 
@@ -97,7 +97,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - Core runtime is scaffolding only; real BMAD workflow execution, TELIS, and QUINT are mostly missing.
-- Guardrails, tool registry, and validation gates are absent beyond HITL blocking gates.
+- Tool schema and risk metadata exist; safe file IO/repo tools and LSP adapter added; enforcement and registry wiring remain pending.
 
 ## Required Follow-up
 

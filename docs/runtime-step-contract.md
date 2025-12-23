@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-21T14:50:54-05:00
+Last updated: 2025-12-22T17:28:28-05:00
 
 ## Purpose
 
@@ -91,6 +91,8 @@ Tool calls are explicit and auditable. Each call definition includes:
 - risk: low, medium, high
 - gate: optional gate name if a HITL approval is required
 
+Tool specifications are defined in runtime/tools/base.py via ToolSpec; step tool calls should map to ToolCall records.
+
 Tool results are stored as part of the step execution context and may be written to artifacts.
 
 ## Tool Definition (getCurrentTime)
@@ -101,6 +103,10 @@ The runtime must expose a getCurrentTime tool to return the current time from th
 - Purpose: ensure all timestamps are real-time and not from model memory
 - Parameters:
   - timezone: IANA name (default America/Toronto)
+
+Additional tool specs for safe file IO and repo inspection live in runtime/tools/file_io.py and runtime/tools/repo_tool.py.
+
+LSP adapters for signature/hover queries live in runtime/tools/lsp.py and are consumed by TELIS routing when enabled.
 
 ## Validation Gate Contract
 
