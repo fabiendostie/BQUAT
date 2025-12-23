@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-23T03:43:46-05:00
+Last updated: 2025-12-23T05:07:06-05:00
 
 ## Purpose
 
@@ -96,6 +96,8 @@ Tool specifications are defined in runtime/tools/base.py via ToolSpec; step tool
 Execution details are defined in docs/tool-execution-pipeline.md and enforced before validation gates.
 
 Tool results are stored as part of the step execution context and may be written to artifacts.
+
+Tool execution records are persisted to tool_results.json in the run directory.
 
 ## Tool Definition (getCurrentTime)
 

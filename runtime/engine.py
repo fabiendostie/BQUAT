@@ -11,6 +11,7 @@ from runtime import config as runtime_config
 from runtime import gates, models, storage, workflow_parser
 from runtime.plugins.manager import PluginManager
 from runtime.time_provider import get_current_time
+from runtime.tools.pipeline import ToolApprovalRequired, run_tool_calls
 
 
 class StepExecutor:
@@ -159,6 +160,13 @@ def _clear_manual_block(manifest: Dict[str, Any]) -> None:
         manifest.pop("blocked_phase", None)
 
 
+def _clear_tool_block(manifest: Dict[str, Any]) -> None:
+    if manifest.get("blocked_reason") == "tool_gate":
+        manifest.pop("blocked_reason", None)
+        manifest.pop("blocked_gate", None)
+        manifest.pop("blocked_tool", None)
+
+
 def _gate_id(spec: models.WorkflowSpec) -> str:
     return f"{spec.module}:{spec.workflow}:hitl"
 
@@ -267,6 +275,7 @@ class WorkflowEngine:
             return manifest
 
         _clear_manual_block(manifest)
+        _clear_tool_block(manifest)
 
         decision = gates.gate_required(spec.human, self.config)
         approvals = storage.read_approvals(run_dir)
@@ -306,6 +315,7 @@ class WorkflowEngine:
             return manifest
 
         _clear_manual_block(manifest)
+        _clear_tool_block(manifest)
 
         decision = gates.gate_required(spec.human, self.config)
         approvals = storage.read_approvals(run_dir)
@@ -366,6 +376,13 @@ class WorkflowEngine:
                 try:
                     if self.plugins:
                         self.plugins.before_step(step, manifest)
+                    run_tool_calls(
+                        step=step,
+                        step_spec=step_spec,
+                        manifest=manifest,
+                        run_dir=run_dir,
+                        config=self.config,
+                    )
                     started = time.time()
                     executor.execute(
                         step,
@@ -380,6 +397,19 @@ class WorkflowEngine:
                     if self.plugins:
                         self.plugins.after_step(step, manifest)
                     break
+                except ToolApprovalRequired as exc:
+                    step["status"] = "blocked"
+                    step["ended_at"] = utc_now()
+                    step["error"] = str(exc)
+                    manifest["status"] = "blocked"
+                    manifest["blocked_reason"] = "tool_gate"
+                    manifest["blocked_gate"] = exc.gate_id
+                    manifest["blocked_tool"] = exc.tool_name
+                    manifest["updated_at"] = utc_now()
+                    storage.write_manifest(run_dir, manifest)
+                    if self.plugins:
+                        self.plugins.on_validation(manifest, "blocked")
+                    return manifest
                 except Exception as exc:  # noqa: BLE001
                     step["status"] = "failed"
                     step["ended_at"] = utc_now()

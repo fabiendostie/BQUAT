@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-23T04:37:42-05:00
+Last updated: 2025-12-23T05:07:06-05:00
 
 ## Purpose
 
@@ -80,25 +80,25 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## Unified Spec Coverage
 
-| ID       | Requirement                                         | Status  | Evidence                                                       | Gap Notes                          |
-| -------- | --------------------------------------------------- | ------- | -------------------------------------------------------------- | ---------------------------------- |
-| SPEC-001 | Event bus for workflow state transitions            | missing | None                                                           | No event system                    |
-| SPEC-002 | State store for workflow progress and artifacts     | partial | runtime/storage.py                                             | No artifact index or event history |
-| SPEC-003 | TELIS policy engine and context manager             | missing | None                                                           | Not implemented                    |
-| SPEC-004 | Evidence store for Quint claims and DRRs            | missing | None                                                           | Not implemented                    |
-| SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                     | Only a minimal plugin manager      |
-| SPEC-006 | Plugin pipeline for policy/adapters/observability   | partial | runtime/plugins/manager.py                                     | No plugin implementations          |
-| SPEC-007 | Failure isolation with bounded retries              | partial | runtime/engine.py                                              | No circuit breakers or isolation   |
-| SPEC-008 | Artifact index with checksum and provenance         | missing | None                                                           | Not implemented                    |
-| SPEC-009 | Context fingerprint tracking                        | missing | None                                                           | Not implemented                    |
-| SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                           | Not implemented                    |
-| SPEC-011 | Tool execution pipeline (registry, gating, results) | partial | runtime/tools/pipeline.py, tests/test_runtime_tool_pipeline.py | Pipeline not yet wired into engine |
+| ID       | Requirement                                         | Status  | Evidence                                                                                                        | Gap Notes                          |
+| -------- | --------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| SPEC-001 | Event bus for workflow state transitions            | missing | None                                                                                                            | No event system                    |
+| SPEC-002 | State store for workflow progress and artifacts     | partial | runtime/storage.py                                                                                              | No artifact index or event history |
+| SPEC-003 | TELIS policy engine and context manager             | missing | None                                                                                                            | Not implemented                    |
+| SPEC-004 | Evidence store for Quint claims and DRRs            | missing | None                                                                                                            | Not implemented                    |
+| SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                                                                      | Only a minimal plugin manager      |
+| SPEC-006 | Plugin pipeline for policy/adapters/observability   | partial | runtime/plugins/manager.py                                                                                      | No plugin implementations          |
+| SPEC-007 | Failure isolation with bounded retries              | partial | runtime/engine.py                                                                                               | No circuit breakers or isolation   |
+| SPEC-008 | Artifact index with checksum and provenance         | missing | None                                                                                                            | Not implemented                    |
+| SPEC-009 | Context fingerprint tracking                        | missing | None                                                                                                            | Not implemented                    |
+| SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                                                                            | Not implemented                    |
+| SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py | None                               |
 
 ## Audit Summary
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - Core runtime is scaffolding only; real BMAD workflow execution, TELIS, and QUINT are mostly missing.
-- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, and tool execution pipeline added; enforcement and engine wiring remain pending.
+- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, and tool execution pipeline are implemented; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up
 

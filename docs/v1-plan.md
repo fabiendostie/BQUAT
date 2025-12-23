@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-23T04:37:42-05:00
+Last updated: 2025-12-23T05:07:06-05:00
 
 ## Purpose
 
@@ -99,7 +99,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-SPEC-008    | Unified Spec    | Artifact index with checksum and provenance                      | Runtime | missing | Planned: artifact index tests                                                                                                                |
 | REQ-SPEC-009    | Unified Spec    | Context fingerprint tracking                                     | Runtime | missing | Planned: context fingerprint tests                                                                                                           |
 | REQ-SPEC-010    | Unified Spec    | Gates recorded as DRRs with evidence links                       | Runtime | missing | Planned: gate DRR tests                                                                                                                      |
-| REQ-SPEC-011    | Unified Spec    | Tool execution pipeline (registry, gating, results)              | Runtime | partial | runtime/tools/pipeline.py, tests/test_runtime_tool_pipeline.py                                                                               |
+| REQ-SPEC-011    | Unified Spec    | Tool execution pipeline (registry, gating, results)              | Runtime | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py                              |
 
 ## Workstreams and Steps
 
@@ -163,8 +163,8 @@ Deliverables:
 2. Implement safe file IO and repo operations. (done: runtime/tools/file_io.py, runtime/tools/repo_tool.py)
 3. Implement LSP query adapters for supported languages. (done: runtime/tools/lsp.py)
 4. Implement AST and type validation runners. (done: runtime/tools/validation.py, tests/test_runtime_validation.py)
-5. Add allow-list and block high-risk tools behind HITL. (in progress: runtime/tools/pipeline.py)
-6. Define and implement the tool execution pipeline (registry, gating, results). (in progress: runtime/tools/pipeline.py)
+5. Add allow-list and block high-risk tools behind HITL. (done: runtime/tools/pipeline.py)
+6. Define and implement the tool execution pipeline (registry, gating, results). (done: runtime/tools/pipeline.py, runtime/engine.py)
 
 Deliverables:
 
@@ -315,7 +315,7 @@ Deliverables:
 - [x] Complete runtime data model and schemas
 - [ ] Implement BMAD workflow parsing and canonical registry
 - [ ] Build step execution state machine
-- [ ] Implement tool adapters, execution pipeline, and risk policy (tool interface, file IO, repo tools done)
+- [x] Implement tool adapters, execution pipeline, and risk policy
 - [ ] Implement TELIS LSP, shards, negotiation, cache, and validation gates (LSP adapter done)
 - [ ] Implement QUINT evidence engine, WLNK, congruence, decay, and DRR
 - [ ] Harden provider routing with retries and circuit breakers
