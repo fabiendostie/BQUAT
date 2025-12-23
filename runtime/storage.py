@@ -97,3 +97,16 @@ def read_events(run_dir: Path) -> Dict[str, Any]:
     if not target.exists():
         return {"events": []}
     return read_json(target)
+
+
+def write_tool_results(run_dir: Path, results: Dict[str, Any]) -> Path:
+    target = run_dir / "tool_results.json"
+    write_json(target, results)
+    return target
+
+
+def read_tool_results(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "tool_results.json"
+    if not target.exists():
+        return {"results": []}
+    return read_json(target)

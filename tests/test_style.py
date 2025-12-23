@@ -13,6 +13,7 @@ CHECK_PATHS = [
     ROOT / "docs" / "v1-plan.md",
     ROOT / "docs" / "traceability-audit.md",
     ROOT / "docs" / "runtime-step-contract.md",
+    ROOT / "docs" / "tool-execution-pipeline.md",
     ROOT / "package.json",
     ROOT / "pytest.ini",
     ROOT / "requirements-dev.txt",
@@ -35,6 +36,7 @@ CHECK_PATHS = [
     ROOT / "runtime" / "providers" / "registry.py",
     ROOT / "runtime" / "plugins" / "__init__.py",
     ROOT / "runtime" / "tools" / "__init__.py",
+    ROOT / "runtime" / "tools" / "pipeline.py",
     ROOT / "runtime" / "tools" / "time_tool.py",
     ROOT / "runtime" / "plugins" / "base.py",
     ROOT / "runtime" / "plugins" / "manager.py",
@@ -53,6 +55,7 @@ CHECK_PATHS = [
     ROOT / "tests" / "test_runtime_plugins.py",
     ROOT / "tests" / "test_runtime_providers.py",
     ROOT / "tests" / "test_runtime_storage.py",
+    ROOT / "tests" / "test_runtime_tool_pipeline.py",
     ROOT / "tests" / "test_versioning.py",
     ROOT / "tests" / "run_tests.py",
 ]

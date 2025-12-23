@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-23T03:43:46-05:00
+Last updated: 2025-12-23T04:37:42-05:00
 
 ## Purpose
 
@@ -83,7 +83,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-QUINT-008   | QUINT           | Bounded context snapshot and drift detection                     | QUINT   | missing | Planned: context drift tests                                                                                                                 |
 | REQ-AGENT-001   | Practical Guide | Model/tool/instructions triad per agent                          | Runtime | partial | runtime/agents.py, runtime/prompts.py                                                                                                        |
 | REQ-AGENT-002   | Practical Guide | Standardized tool definitions and reuse                          | Runtime | partial | runtime/tools/base.py, runtime/tools/file_io.py, runtime/tools/repo_tool.py, tests/test_runtime_file_io.py, tests/test_runtime_repo_tools.py |
-| REQ-AGENT-003   | Practical Guide | Tool risk ratings and safeguards                                 | Runtime | partial | runtime/tools/base.py, runtime/tools/time_tool.py                                                                                            |
+| REQ-AGENT-003   | Practical Guide | Tool risk ratings and safeguards                                 | Runtime | partial | runtime/tools/base.py, runtime/tools/time_tool.py, runtime/tools/pipeline.py                                                                 |
 | REQ-AGENT-004   | Practical Guide | PII filter and data privacy guardrails                           | Runtime | missing | Planned: PII guardrail tests                                                                                                                 |
 | REQ-AGENT-005   | Practical Guide | Moderation filters for unsafe inputs                             | Runtime | missing | Planned: moderation tests                                                                                                                    |
 | REQ-AGENT-006   | Practical Guide | Rules-based protections (blocklists/regex)                       | Runtime | missing | Planned: rules gate tests                                                                                                                    |
@@ -99,7 +99,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-SPEC-008    | Unified Spec    | Artifact index with checksum and provenance                      | Runtime | missing | Planned: artifact index tests                                                                                                                |
 | REQ-SPEC-009    | Unified Spec    | Context fingerprint tracking                                     | Runtime | missing | Planned: context fingerprint tests                                                                                                           |
 | REQ-SPEC-010    | Unified Spec    | Gates recorded as DRRs with evidence links                       | Runtime | missing | Planned: gate DRR tests                                                                                                                      |
-| REQ-SPEC-011    | Unified Spec    | Tool execution pipeline (registry, gating, results)              | Runtime | missing | Planned: tool execution pipeline tests                                                                                                       |
+| REQ-SPEC-011    | Unified Spec    | Tool execution pipeline (registry, gating, results)              | Runtime | partial | runtime/tools/pipeline.py, tests/test_runtime_tool_pipeline.py                                                                               |
 
 ## Workstreams and Steps
 
@@ -163,8 +163,8 @@ Deliverables:
 2. Implement safe file IO and repo operations. (done: runtime/tools/file_io.py, runtime/tools/repo_tool.py)
 3. Implement LSP query adapters for supported languages. (done: runtime/tools/lsp.py)
 4. Implement AST and type validation runners. (done: runtime/tools/validation.py, tests/test_runtime_validation.py)
-5. Add allow-list and block high-risk tools behind HITL.
-6. Define and implement the tool execution pipeline (registry, gating, results).
+5. Add allow-list and block high-risk tools behind HITL. (in progress: runtime/tools/pipeline.py)
+6. Define and implement the tool execution pipeline (registry, gating, results). (in progress: runtime/tools/pipeline.py)
 
 Deliverables:
 

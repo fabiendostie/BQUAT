@@ -8,9 +8,9 @@ import shutil
 import subprocess
 import sys
 import time
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from runtime import config as runtime_config
 from runtime.tools.base import ToolSpec
@@ -84,6 +84,9 @@ class ValidationResult:
     stdout: str = ""
     stderr: str = ""
     duration_ms: int = 0
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
 
 
 @dataclass(frozen=True)
