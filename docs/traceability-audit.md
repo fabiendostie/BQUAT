@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-22T17:28:28-05:00
+Last updated: 2025-12-22T22:32:24-05:00
 
 ## Purpose
 
@@ -42,15 +42,15 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## TELIS Coverage
 
-| ID        | Requirement                                         | Status  | Evidence                                        | Gap Notes                                      |
-| --------- | --------------------------------------------------- | ------- | ----------------------------------------------- | ---------------------------------------------- |
-| TELIS-001 | LSP symbiosis for type/signature accuracy           | partial | runtime/tools/lsp.py, tests/test_runtime_lsp.py | Adapter present; not yet wired into TELIS      |
-| TELIS-002 | LSP fallback to shards on failure or timeout        | missing | None                                            | No fallback path                               |
-| TELIS-003 | Tiered knowledge shards with token budgets          | missing | None                                            | Shard registry not implemented                 |
-| TELIS-004 | Progressive context negotiation protocol            | missing | None                                            | No negotiation logic or prompts                |
-| TELIS-005 | AST/type/lint validation pipeline                   | missing | None                                            | No validation gate runner                      |
-| TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None                                            | Cache not implemented                          |
-| TELIS-007 | Validation failures trigger retry/escalation        | partial | runtime/engine.py                               | Retries exist but not tied to validation gates |
+| ID        | Requirement                                         | Status  | Evidence                                                      | Gap Notes                                      |
+| --------- | --------------------------------------------------- | ------- | ------------------------------------------------------------- | ---------------------------------------------- |
+| TELIS-001 | LSP symbiosis for type/signature accuracy           | partial | runtime/tools/lsp.py, tests/test_runtime_lsp.py               | Adapter present; not yet wired into TELIS      |
+| TELIS-002 | LSP fallback to shards on failure or timeout        | missing | None                                                          | No fallback path                               |
+| TELIS-003 | Tiered knowledge shards with token budgets          | missing | None                                                          | Shard registry not implemented                 |
+| TELIS-004 | Progressive context negotiation protocol            | missing | None                                                          | No negotiation logic or prompts                |
+| TELIS-005 | AST/type/lint validation pipeline                   | partial | runtime/tools/validation.py, tests/test_runtime_validation.py | Validation runner added; gate wiring pending   |
+| TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None                                                          | Cache not implemented                          |
+| TELIS-007 | Validation failures trigger retry/escalation        | partial | runtime/engine.py                                             | Retries exist but not tied to validation gates |
 
 ## QUINT Coverage
 
@@ -97,7 +97,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - Core runtime is scaffolding only; real BMAD workflow execution, TELIS, and QUINT are mostly missing.
-- Tool schema and risk metadata exist; safe file IO/repo tools and LSP adapter added; enforcement and registry wiring remain pending.
+- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, and validation runner added; enforcement and registry wiring remain pending.
 
 ## Required Follow-up
 

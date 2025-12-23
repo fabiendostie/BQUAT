@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-22T17:28:28-05:00
+Last updated: 2025-12-22T22:32:24-05:00
 
 ## Purpose
 
@@ -13,6 +13,7 @@ This document is the single source of truth for delivering the BQUAT super-frame
 In scope:
 
 - Fully automated execution with blocking human-in-the-loop (HITL) gates.
+- Pre-development phases default to manual; optional CLI menu enables automation with HITL when approved.
 - End-to-end execution of real BMAD workflows with correct artifacts.
 - TELIS token efficiency controls and validation gates.
 - QUINT evidence and DRR workflows with auditable trails.
@@ -69,7 +70,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-TELIS-002   | TELIS           | LSP fallback to shards on failure                                | Tools   | missing | Planned: LSP fallback tests                                                                                                                  |
 | REQ-TELIS-003   | TELIS           | Tiered knowledge shards with token budgets                       | TELIS   | missing | Planned: shard retrieval tests                                                                                                               |
 | REQ-TELIS-004   | TELIS           | Progressive context negotiation protocol                         | TELIS   | missing | Planned: negotiation tests                                                                                                                   |
-| REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | missing | Planned: validation gate tests                                                                                                               |
+| REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | partial | runtime/tools/validation.py, tests/test_runtime_validation.py                                                                                |
 | REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | missing | Planned: cache hit tests                                                                                                                     |
 | REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | partial | runtime/engine.py                                                                                                                            |
 | REQ-QUINT-001   | QUINT           | Evidence store for L0/L1/L2 and invalid                          | QUINT   | missing | Planned: evidence store tests                                                                                                                |
@@ -160,7 +161,7 @@ Deliverables:
 1. Define tool interface with risk rating (low, medium, high). (done: runtime/tools/base.py)
 2. Implement safe file IO and repo operations. (done: runtime/tools/file_io.py, runtime/tools/repo_tool.py)
 3. Implement LSP query adapters for supported languages. (done: runtime/tools/lsp.py)
-4. Implement AST and type validation runners.
+4. Implement AST and type validation runners. (done: runtime/tools/validation.py, tests/test_runtime_validation.py)
 5. Add allow-list and block high-risk tools behind HITL.
 
 Deliverables:

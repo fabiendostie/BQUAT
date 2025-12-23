@@ -19,12 +19,24 @@ from runtime.tools.lsp import (
 from runtime.tools.repo_tool import TOOL_SPECS as REPO_TOOL_SPECS
 from runtime.tools.repo_tool import git_diff, git_status
 from runtime.tools.time_tool import TOOL_SPEC, get_current_time
+from runtime.tools.validation import (
+    TOOL_SPECS as VALIDATION_TOOL_SPECS,
+)
+from runtime.tools.validation import (
+    ValidationResult,
+    ValidationSummary,
+    run_validation_pipeline,
+    validate_ast,
+    validate_lint,
+    validate_typecheck,
+)
 
-TOOL_SPECS = [TOOL_SPEC, *FILE_TOOL_SPECS, *REPO_TOOL_SPECS]
+TOOL_SPECS = [TOOL_SPEC, *FILE_TOOL_SPECS, *REPO_TOOL_SPECS, *VALIDATION_TOOL_SPECS]
 
 __all__ = [
     "FILE_TOOL_SPECS",
     "REPO_TOOL_SPECS",
+    "VALIDATION_TOOL_SPECS",
     "RiskLevel",
     "TOOL_SPEC",
     "TOOL_SPECS",
@@ -42,5 +54,11 @@ __all__ = [
     "git_status",
     "list_directory",
     "read_text_file",
+    "run_validation_pipeline",
+    "validate_ast",
+    "validate_lint",
+    "validate_typecheck",
+    "ValidationResult",
+    "ValidationSummary",
     "write_text_file",
 ]

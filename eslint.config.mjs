@@ -13,6 +13,9 @@ const ignores = [
 
 export default defineConfig([
   {
+    ignores,
+  },
+  {
     plugins: {
       json,
     },

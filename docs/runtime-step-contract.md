@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-22T17:28:28-05:00
+Last updated: 2025-12-22T22:32:24-05:00
 
 ## Purpose
 
@@ -117,6 +117,9 @@ Examples:
 - Format validation
 - Template/schema validation
 - AST + type + lint (as applicable)
+
+AST/type/lint runners live in runtime/tools/validation.py and currently support Python (ast.parse, mypy,
+ruff) plus JSON/YAML parse checks when available.
 
 Validation failures:
 
