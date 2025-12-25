@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-24T23:35:24-05:00
+Last updated: 2025-12-25T00:28:40-05:00
 
 ## Purpose
 
@@ -93,6 +93,16 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | SPEC-009 | Context fingerprint tracking                        | missing | None                                                                                                            | Not implemented                    |
 | SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                                                                            | Not implemented                    |
 | SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py | None                               |
+
+## Governance Coverage
+
+| ID      | Requirement                                 | Status | Evidence                                  | Gap Notes |
+| ------- | ------------------------------------------- | ------ | ----------------------------------------- | --------- |
+| GOV-001 | Change control recorded in plan and README  | done   | README.md, docs/v1-plan.md                | None      |
+| GOV-002 | Branch policy documented (development/main) | done   | README.md                                 | None      |
+| GOV-003 | SemVer enforced in VERSION + release notes  | done   | VERSION, CHANGELOG.md, docs/versioning.md | None      |
+| GOV-004 | Conventional Commits enforcement via hook   | done   | .husky/commit-msg                         | None      |
+| GOV-005 | CI pinned to latest stable action majors    | done   | .github/workflows/ci.yml                  | None      |
 
 ## Audit Summary
 

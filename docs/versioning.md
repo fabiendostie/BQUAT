@@ -20,5 +20,6 @@ This repository follows Semantic Versioning (SemVer 2.0.0).
 ## Source of truth
 
 - Version is stored in the root `VERSION` file.
+- Release notes live in `CHANGELOG.md` and must include the current VERSION entry.
 - Releases should tag the repository with the same version string.
 - Release notes must reference the VERSION value and summarize changes.

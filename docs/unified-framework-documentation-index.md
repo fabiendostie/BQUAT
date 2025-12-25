@@ -19,6 +19,7 @@
 
 - methodology/drr-template.md
 - methodology/evidence-schema.yaml
+- CHANGELOG.md
 
 - cicd/ci-cd-blueprint.md
 - security/security-audit-report-template.md

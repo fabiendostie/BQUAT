@@ -132,6 +132,7 @@ Target command: `npx bmad-method@alpha install`.
 - Agent and workflow registries: methodology/registry-agents.md, methodology/registry-workflows.md
 - Agent menu bindings: methodology/registry-agent-menus.md
 - Workflow to Quint/TELIS mapping: methodology/integration-mapping.md
+- Release notes: CHANGELOG.md
 
 ## Runtime layout
 

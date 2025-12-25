@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-24T23:35:24-05:00
+Last updated: 2025-12-25T00:28:40-05:00
 
 ## Purpose
 
@@ -105,11 +105,11 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 
 ### WS1: Governance and repo hygiene
 
-1. Confirm this plan as source of truth and add change-control note to README.
-2. Align branch policy: development is primary, main is release only.
-3. Ensure SemVer is enforced in VERSION and release notes.
-4. Enforce Conventional Commits via commit-msg hook.
-5. Verify CI uses latest compatible actions and locks versions.
+1. Confirm this plan as source of truth and add change-control note to README. (done: README.md)
+2. Align branch policy: development is primary, main is release only. (done: README.md)
+3. Ensure SemVer is enforced in VERSION and release notes. (done: VERSION, docs/versioning.md, CHANGELOG.md, tests/test_versioning.py)
+4. Enforce Conventional Commits via commit-msg hook. (done: .husky/commit-msg)
+5. Verify CI uses latest compatible actions and locks versions. (done: .github/workflows/ci.yml; verified 2025-12-25 via GitHub releases API)
 
 Deliverables:
 

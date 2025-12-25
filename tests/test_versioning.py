@@ -13,6 +13,14 @@ class VersioningTests(unittest.TestCase):
         text = doc_path.read_text(encoding="ascii").lower()
         self.assertIn("semver", text)
 
+    def test_changelog_mentions_version(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        version_path = root / "VERSION"
+        changelog_path = root / "CHANGELOG.md"
+        version = version_path.read_text(encoding="ascii").strip()
+        changelog = changelog_path.read_text(encoding="ascii")
+        self.assertIn(f"[{version}]", changelog)
+
 
 if __name__ == "__main__":
     unittest.main()

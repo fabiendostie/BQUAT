@@ -8,6 +8,7 @@ CHECK_PATHS = [
     ROOT / ".husky" / "commit-msg",
     ROOT / ".husky" / "pre-push",
     ROOT / ".husky" / "pre-commit",
+    ROOT / "CHANGELOG.md",
     ROOT / "VERSION",
     ROOT / "docs" / "versioning.md",
     ROOT / "docs" / "v1-plan.md",
