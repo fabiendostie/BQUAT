@@ -85,7 +85,7 @@ class RunStep:
     step_id: Optional[str] = None
     inputs: Dict[str, Any] = field(default_factory=dict)
     outputs: List[str] = field(default_factory=list)
-    tools: List[str] = field(default_factory=list)
+    tools: List[Dict[str, Any]] = field(default_factory=list)
     validation: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -103,7 +103,7 @@ class RunStep:
             step_id=data.get("step_id"),
             inputs=dict(data.get("inputs", {})),
             outputs=list(data.get("outputs", [])),
-            tools=list(data.get("tools", [])),
+            tools=[dict(item) for item in data.get("tools", [])],
             validation=dict(data.get("validation", {})),
         )
 

@@ -17,7 +17,7 @@ class RuntimeModelTests(unittest.TestCase):
             step_id="step-1",
             inputs={"goal": "draft"},
             outputs=["plan.json"],
-            tools=["tool-a"],
+            tools=[{"name": "tool-a"}],
             validation={"status": "passed"},
         )
         data = step.to_dict()

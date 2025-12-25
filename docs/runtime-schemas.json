@@ -1,4 +1,5 @@
 {
+  "generated_at": "2025-12-25T09:24:27-05:00",
   "schemas": {
     "artifact_index": {
       "properties": {
@@ -307,7 +308,7 @@
               },
               "tools": {
                 "items": {
-                  "type": "string"
+                  "type": "object"
                 },
                 "type": "array"
               },
@@ -424,7 +425,7 @@
         },
         "tools": {
           "items": {
-            "type": "string"
+            "type": "object"
           },
           "type": "array"
         },

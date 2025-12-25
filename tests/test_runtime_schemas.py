@@ -77,6 +77,7 @@ class RuntimeSchemaTests(unittest.TestCase):
         text = json.dumps(payload, sort_keys=True)
         self.assertIn("schemas", text)
         self.assertIn("version", payload)
+        self.assertIn("generated_at", payload)
 
 
 if __name__ == "__main__":

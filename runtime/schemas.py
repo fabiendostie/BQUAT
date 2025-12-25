@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from runtime.time_provider import get_current_time
+
 SCHEMA_VERSION = "1.0"
 
 
@@ -88,7 +90,7 @@ RUN_STEP_SCHEMA: Dict[str, Any] = {
         "step_id": {"type": ["string", "null"]},
         "inputs": {"type": "object"},
         "outputs": {"type": "array", "items": {"type": "string"}},
-        "tools": {"type": "array", "items": {"type": "string"}},
+        "tools": {"type": "array", "items": {"type": "object"}},
         "validation": {"type": "object"},
     },
 }
@@ -221,7 +223,11 @@ SCHEMAS: Dict[str, Dict[str, Any]] = {
 
 
 def schema_registry() -> Dict[str, Any]:
-    return {"version": SCHEMA_VERSION, "schemas": SCHEMAS}
+    return {
+        "version": SCHEMA_VERSION,
+        "generated_at": get_current_time(),
+        "schemas": SCHEMAS,
+    }
 
 
 def _is_type(value: Any, type_name: str) -> bool:

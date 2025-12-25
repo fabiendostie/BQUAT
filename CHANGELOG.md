@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-25T06:54:23-05:00
+Last updated: 2025-12-25T09:25:03-05:00
 
 ## [Unreleased]
 
@@ -17,6 +17,8 @@ Last updated: 2025-12-25T06:54:23-05:00
 - Deterministic mapping/registry generation with expanded mapping accuracy tests.
 - Docs consistency tests enforcing plan/audit alignment and documentation index coverage.
 - Step progression state machine enforcing status transitions.
+- RunStep tool records now store tool execution results.
+- Schema registry output now includes a generated_at timestamp.
 
 ### Changed
 
@@ -25,6 +27,8 @@ Last updated: 2025-12-25T06:54:23-05:00
 - Allow duplicate changelog headings across releases in markdownlint config.
 - Align traceability audit and unified spec to the plan and BMAD-METHOD canonical layout.
 - Add engine tests covering step state transitions.
+- Align RunStep tools schema with tool result payloads.
+- Include generated_at in runtime schema registry output.
 
 ### Fixed
 
