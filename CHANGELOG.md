@@ -6,9 +6,37 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [Unreleased]
 
-- Require CHANGELOG.md updates for non-doc changes via pre-commit hook.
+### Added
+
+- Tool execution pipeline with registry, risk gating, HITL metadata, and tool results persistence.
+- Tool adapters for safe file IO, repo operations, time, and LSP (Pyright/TypeScript) queries.
+- Validation runners (AST, typecheck, lint) and engine validation gates with retries and output layout checks.
+- Runtime schema registry and stable JSON schema export.
+- Canonical workflow parsing for BMAD md/yaml/xml definitions plus step output parsing improvements.
+- Deterministic mapping/registry generation with expanded mapping accuracy tests.
+
+### Changed
+
+- Step contract and tool execution pipeline documentation updates.
+- Governance hardening with lint/typecheck/format hooks and changelog enforcement.
+- Allow duplicate changelog headings across releases in markdownlint config.
+
+### Fixed
+
 - Remove WARP.md ignore from markdownlint config.
 
 ## [0.1.0] - 2025-12-24
 
-- Initial release plan, runtime scaffolding, and tool pipeline foundations.
+### Added
+
+- Unified framework spec, repository overview, release plan, and traceability audit.
+- Runtime scaffolding for engine, agents, prompts, storage, and execution flow.
+- Provider registry with OpenAI, Anthropic, Gemini, Groq, Ollama, and LiteLLM adapters.
+- Plugin system scaffolding and CLI entry points.
+- Mapping automation tooling and methodology extraction.
+- Husky hooks, SemVer policy, and Conventional Commits enforcement.
+- Time tool with timezone-aware formatting.
+
+### Fixed
+
+- CI mapping inputs and timezone-aware UTC timestamps.
