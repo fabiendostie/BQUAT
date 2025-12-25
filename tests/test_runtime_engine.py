@@ -63,6 +63,15 @@ class RecordingPlugin(Plugin):
         self.events.append(f"validation:{status}")
 
 
+class PersistingPlugin(Plugin):
+    def __init__(self, storage_root: Path) -> None:
+        self.storage_root = storage_root
+        self.snapshot = None
+
+    def on_error(self, step: dict, manifest: dict, error: str) -> None:
+        self.snapshot = storage.read_manifest(self.storage_root / manifest["run_id"])
+
+
 class TimeoutExecutor(engine.StepExecutor):
     def execute(self, step: dict, context: dict) -> None:
         time.sleep(0.01)
@@ -360,6 +369,20 @@ class RuntimeEngineTests(unittest.TestCase):
         self.assertIn("on_error", plugin.events)
         self.assertIn("validation:failed", plugin.events)
         self.assertIn("after_run", plugin.events)
+
+    def test_manifest_persisted_on_error(self) -> None:
+        tmp = _sandbox_root()
+        spec = self._spec(human_gate="optional")
+        plugin = PersistingPlugin(tmp)
+        manager = engine.PluginManager([plugin])
+        eng = engine.WorkflowEngine(
+            self._config(max_retries=1), [spec], storage_root=tmp, plugins=manager
+        )
+        manifest = eng.run("bmm", "prd", executor=FlakyExecutor())
+        self.assertEqual(manifest["status"], "completed")
+        self.assertIsNotNone(plugin.snapshot)
+        self.assertEqual(plugin.snapshot["steps"][0]["status"], "failed")
+        self.assertEqual(plugin.snapshot["steps"][0]["error"], "boom")
 
     def test_step_state_machine_rejects_invalid_transition(self) -> None:
         step = {"name": "demo", "status": "pending"}

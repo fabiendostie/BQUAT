@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T07:41:00-05:00
+Last updated: 2025-12-25T09:38:10-05:00
 
 ## Purpose
 
@@ -173,12 +173,13 @@ Evidence links are stored in evidence.json and cross-linked to artifacts.
 
 1. Load StepSpec from parsed workflow.
 2. Create or update RunStep with status=running and started_at.
-3. Enforce human gate if required.
-4. Execute tool calls through the tool execution pipeline and record results.
-5. Run validation gate; retry or fail on error.
-6. Write outputs and update artifact index.
-7. Record evidence links as required.
-8. Mark RunStep completed and set ended_at.
+3. Persist run state after each step update and on errors.
+4. Enforce human gate if required.
+5. Execute tool calls through the tool execution pipeline and record results.
+6. Run validation gate; retry or fail on error.
+7. Write outputs and update artifact index.
+8. Record evidence links as required.
+9. Mark RunStep completed and set ended_at.
 
 ## Required Events
 

@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-25T09:25:03-05:00
+Last updated: 2025-12-25T09:38:10-05:00
 
 ## [Unreleased]
 
@@ -19,6 +19,7 @@ Last updated: 2025-12-25T09:25:03-05:00
 - Step progression state machine enforcing status transitions.
 - RunStep tool records now store tool execution results.
 - Schema registry output now includes a generated_at timestamp.
+- Persist run state after step errors and update timestamps on completion.
 
 ### Changed
 
@@ -29,6 +30,7 @@ Last updated: 2025-12-25T09:25:03-05:00
 - Add engine tests covering step state transitions.
 - Align RunStep tools schema with tool result payloads.
 - Include generated_at in runtime schema registry output.
+- Add engine test to assert run state persistence on errors.
 
 ### Fixed
 

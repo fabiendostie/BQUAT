@@ -558,6 +558,7 @@ class WorkflowEngine:
                     _transition_step(step, "completed")
                     step["ended_at"] = utc_now()
                     step["error"] = None
+                    manifest["updated_at"] = utc_now()
                     if self.plugins:
                         self.plugins.after_step(step, manifest)
                     break
@@ -578,6 +579,8 @@ class WorkflowEngine:
                     _transition_step(step, "failed")
                     step["ended_at"] = utc_now()
                     step["error"] = str(exc)
+                    manifest["updated_at"] = utc_now()
+                    storage.write_manifest(run_dir, manifest)
                     if self.plugins:
                         self.plugins.on_error(step, manifest, step["error"] or "error")
                     if attempts > max_retries:
