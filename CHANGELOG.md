@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-25T11:21:25-05:00
+Last updated: 2025-12-25T11:54:17-05:00
 
 ## [Unreleased]
 
@@ -21,6 +21,7 @@ Last updated: 2025-12-25T11:21:25-05:00
 - Schema registry output now includes a generated_at timestamp.
 - Persist run state after step errors and update timestamps on completion.
 - Resume execution from the first incomplete step.
+- Per-step retry policies with backoff in the runtime engine.
 
 ### Changed
 
@@ -33,6 +34,7 @@ Last updated: 2025-12-25T11:21:25-05:00
 - Include generated_at in runtime schema registry output.
 - Add engine test to assert run state persistence on errors.
 - Add engine test to assert resume starts from last incomplete step.
+- Step retry behavior now honors StepSpec overrides and applies backoff between attempts.
 
 ### Fixed
 

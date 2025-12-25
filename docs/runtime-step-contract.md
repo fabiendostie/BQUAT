@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T11:21:25-05:00
+Last updated: 2025-12-25T11:54:17-05:00
 
 ## Purpose
 
@@ -140,6 +140,13 @@ Validation failures:
 - add error details to step.error
 - retry if allowed by retries.max
 - if retries exhausted, mark step failed and run failed
+
+## Timeouts and Retry Policy
+
+- Step execution time is bounded by runtime.step_timeout_seconds (default 1800s).
+- Retry behavior uses StepSpec.retries when present; max controls retry count and backoff_seconds sleeps between attempts.
+- If retries are not set on the step, runtime.max_retries is used as the fallback.
+- Retries apply to execution errors and validation failures; once retries are exhausted the run is marked failed.
 
 Validation inputs:
 

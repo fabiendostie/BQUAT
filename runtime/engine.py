@@ -309,6 +309,21 @@ def _max_retries(config: Dict[str, Any]) -> int:
     return int(runtime_cfg.get("max_retries", 0))
 
 
+def _step_retry_policy(
+    step: Dict[str, Any],
+    step_spec: Optional[models.StepSpec],
+    config: Dict[str, Any],
+) -> Tuple[int, int]:
+    retries: Dict[str, Any] = {}
+    if step_spec:
+        retries = dict(step_spec.retries)
+    elif isinstance(step.get("retries"), dict):
+        retries = dict(step.get("retries", {}))
+    max_retries = retries.get("max", _max_retries(config))
+    backoff_seconds = retries.get("backoff_seconds", 0)
+    return max(0, int(max_retries)), max(0, int(backoff_seconds))
+
+
 def _automation_allowed(spec: models.WorkflowSpec, config: Dict[str, Any]) -> bool:
     automation_cfg = config.get("automation", {})
     if automation_cfg.get("override"):
@@ -516,7 +531,6 @@ class WorkflowEngine:
             storage.write_manifest(run_dir, manifest)
         spec_list = [models.StepSpec.from_dict(item) for item in manifest.get("step_specs", [])]
         spec_by_id = {spec.id: spec for spec in spec_list}
-        max_retries = _max_retries(self.config)
         timeout_seconds = _step_timeout_seconds(self.config)
 
         for idx in range(start_idx, len(steps)):
@@ -535,6 +549,7 @@ class WorkflowEngine:
                     step["inputs"] = dict(step_spec.inputs)
                 if not step.get("outputs"):
                     step["outputs"] = list(step_spec.outputs)
+            max_retries, backoff_seconds = _step_retry_policy(step, step_spec, self.config)
             attempts = int(step.get("attempts", 0))
             while attempts <= max_retries:
                 attempts += 1
@@ -605,6 +620,8 @@ class WorkflowEngine:
                         if self.plugins:
                             self.plugins.after_run(manifest)
                         return manifest
+                    if backoff_seconds > 0:
+                        time.sleep(backoff_seconds)
 
             storage.write_manifest(run_dir, manifest)
 

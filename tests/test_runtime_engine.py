@@ -131,6 +131,69 @@ class RuntimeEngineTests(unittest.TestCase):
         self.assertEqual(manifest["status"], "completed")
         self.assertEqual(manifest["steps"][0]["attempts"], 2)
 
+    def test_step_retries_override_config(self) -> None:
+        tmp = _sandbox_root()
+        spec = self._spec(human_gate="optional")
+        eng = engine.WorkflowEngine(self._config(max_retries=2), [spec], storage_root=tmp)
+        created = eng.create_run("bmm", "prd")
+        run_dir = tmp / created["run_id"]
+        step_spec = models.StepSpec(
+            id="step-1",
+            name="retry",
+            description="",
+            phase=spec.phase,
+            inputs={},
+            outputs=["{output_folder}/prd.md"],
+            templates=[],
+            tools=[],
+            validation=spec.validation,
+            evidence=spec.evidence,
+            human_gate=spec.human,
+            retries={"max": 0, "backoff_seconds": 0},
+        )
+        manifest = storage.read_manifest(run_dir)
+        manifest["step_specs"] = [step_spec.to_dict()]
+        manifest["steps"] = []
+        storage.write_manifest(run_dir, manifest)
+        result = eng.run("bmm", "prd", run_id=created["run_id"], executor=FailingExecutor())
+        self.assertEqual(result["status"], "failed")
+        self.assertEqual(result["steps"][0]["attempts"], 1)
+
+    def test_step_retry_backoff_applied(self) -> None:
+        tmp = _sandbox_root()
+        spec = self._spec(human_gate="optional")
+        eng = engine.WorkflowEngine(self._config(max_retries=0), [spec], storage_root=tmp)
+        created = eng.create_run("bmm", "prd")
+        run_dir = tmp / created["run_id"]
+        step_spec = models.StepSpec(
+            id="step-1",
+            name="backoff",
+            description="",
+            phase=spec.phase,
+            inputs={},
+            outputs=["{output_folder}/prd.md"],
+            templates=[],
+            tools=[],
+            validation=spec.validation,
+            evidence=spec.evidence,
+            human_gate=spec.human,
+            retries={"max": 1, "backoff_seconds": 5},
+        )
+        manifest = storage.read_manifest(run_dir)
+        manifest["step_specs"] = [step_spec.to_dict()]
+        manifest["steps"] = []
+        storage.write_manifest(run_dir, manifest)
+        calls = []
+        original_sleep = engine.time.sleep
+        engine.time.sleep = lambda seconds: calls.append(seconds)
+        try:
+            result = eng.run("bmm", "prd", run_id=created["run_id"], executor=FailingExecutor())
+        finally:
+            engine.time.sleep = original_sleep
+        self.assertEqual(result["status"], "failed")
+        self.assertEqual(result["steps"][0]["attempts"], 2)
+        self.assertEqual(calls, [5])
+
     def test_automation_phase_blocks_manual(self) -> None:
         tmp = _sandbox_root()
         spec = self._spec(human_gate="optional")
