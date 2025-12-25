@@ -1,3 +1,41 @@
+set -e
+
+python - <<'PY'
+import subprocess
+import sys
+
+
+def main() -> int:
+    result = subprocess.run(
+        ["git", "diff", "--cached", "--name-only"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    files = [line.strip().replace("\\\\", "/") for line in result.stdout.splitlines() if line.strip()]
+    if not files:
+        return 0
+
+    changelog = "CHANGELOG.md"
+    docs_only = all(
+        path == changelog
+        or path == "README.md"
+        or path.startswith("docs/")
+        for path in files
+    )
+    if docs_only:
+        return 0
+
+    if changelog not in files:
+        print("CHANGELOG.md must be updated for non-doc changes.", file=sys.stderr)
+        return 1
+
+    return 0
+
+
+raise SystemExit(main())
+PY
+
 npm run lint
 npm run typecheck
 npm run format:check

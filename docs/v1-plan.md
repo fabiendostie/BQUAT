@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T03:37:24-05:00
+Last updated: 2025-12-25T04:18:46-05:00
 
 ## Purpose
 
@@ -31,6 +31,7 @@ Change control:
 
 - Any new requirement must be added here with a linked justification and an owner.
 - No implementation work begins without a checklist item.
+- CHANGELOG.md must be updated for any non-doc change; enforce via pre-commit gate.
 
 ## Sources of Truth
 
@@ -110,6 +111,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 3. Ensure SemVer is enforced in VERSION and release notes. (done: VERSION, docs/versioning.md, CHANGELOG.md, tests/test_versioning.py)
 4. Enforce Conventional Commits via commit-msg hook. (done: .husky/commit-msg)
 5. Verify CI uses latest compatible actions and locks versions. (done: .github/workflows/ci.yml; verified 2025-12-25 via GitHub releases API)
+6. Require CHANGELOG.md update for non-doc changes via pre-commit gate. (done: .husky/pre-commit)
 
 Deliverables:
 
