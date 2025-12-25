@@ -8,7 +8,6 @@
     "node_modules/**",
     "runs/**",
     ".pytest_cache/**",
-    "coverage/**",
-    "WARP.md"
+    "coverage/**"
   ]
 }

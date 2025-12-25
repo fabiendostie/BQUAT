@@ -7,6 +7,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 ## [Unreleased]
 
 - Require CHANGELOG.md updates for non-doc changes via pre-commit hook.
+- Remove WARP.md ignore from markdownlint config.
 
 ## [0.1.0] - 2025-12-24
 
