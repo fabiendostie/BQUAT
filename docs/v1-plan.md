@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T00:40:01-05:00
+Last updated: 2025-12-25T03:37:24-05:00
 
 ## Purpose
 
@@ -134,10 +134,10 @@ Deliverables:
 
 ### WS3: Mapping and registry pipeline
 
-1. Parse BMAD workflow definitions (md/yaml/xml) into canonical steps.
-2. Extract explicit outputs/templates only, exclude samples/references.
-3. Generate registry and mapping files deterministically.
-4. Add mapping accuracy tests for production workflows.
+1. Parse BMAD workflow definitions (md/yaml/xml) into canonical steps. (done: runtime/workflow_parser.py, tests/test_workflow_parser.py)
+2. Extract explicit outputs/templates only, exclude samples/references. (done: methodology/tools/mapping.py, tests/test_mapping.py)
+3. Generate registry and mapping files deterministically. (done: methodology/tools/mapping.py, methodology/tools/generate_mapping.py, tests/test_mapping.py)
+4. Add mapping accuracy tests for production workflows. (done: tests/test_mapping.py)
 
 Deliverables:
 
@@ -316,7 +316,7 @@ Deliverables:
 
 - [x] Confirm plan is the source of truth and update README link
 - [x] Complete runtime data model and schemas
-- [ ] Implement BMAD workflow parsing and canonical registry
+- [x] Implement BMAD workflow parsing and canonical registry
 - [ ] Build step execution state machine
 - [x] Implement tool adapters, execution pipeline, and risk policy
 - [ ] Implement TELIS LSP, shards, negotiation, cache, and validation gates (LSP adapter done)

@@ -71,6 +71,18 @@ class MappingTests(unittest.TestCase):
             for artifact in record.artifacts:
                 self.assertFalse(artifact.startswith("[") and artifact.endswith("]"))
 
+    def test_records_sorted_by_path(self) -> None:
+        paths = [record.path for record in self.records]
+        self.assertEqual(paths, sorted(paths))
+
+    def test_registry_sorted_by_path(self) -> None:
+        paths = [record.path for record in self.registry]
+        self.assertEqual(paths, sorted(paths))
+
+    def test_artifacts_sorted(self) -> None:
+        for record in self.records:
+            self.assertEqual(record.artifacts, sorted(record.artifacts))
+
 
 if __name__ == "__main__":
     unittest.main()
