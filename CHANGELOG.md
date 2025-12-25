@@ -14,12 +14,14 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 - Runtime schema registry and stable JSON schema export.
 - Canonical workflow parsing for BMAD md/yaml/xml definitions plus step output parsing improvements.
 - Deterministic mapping/registry generation with expanded mapping accuracy tests.
+- Docs consistency tests enforcing plan/audit alignment and documentation index coverage.
 
 ### Changed
 
 - Step contract and tool execution pipeline documentation updates.
 - Governance hardening with lint/typecheck/format hooks and changelog enforcement.
 - Allow duplicate changelog headings across releases in markdownlint config.
+- Align traceability audit and unified spec to the plan and BMAD-METHOD canonical layout.
 
 ### Fixed
 

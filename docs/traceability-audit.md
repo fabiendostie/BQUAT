@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T05:18:22-05:00
+Last updated: 2025-12-25T06:24:07-05:00
 
 ## Purpose
 
@@ -24,15 +24,15 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## BMAD Coverage
 
-| ID       | Requirement                                                | Status  | Evidence                                                                                              | Gap Notes                                  |
-| -------- | ---------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | done    | runtime/workflow_parser.py, methodology/registry-workflows.md, tests/test_workflow_parser.py          | None                                       |
-| BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                                                                 | None                                       |
-| BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                                                                 | None                                       |
-| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done    | runtime/workflow_parser.py, tests/test_workflow_parser.py                                             | None                                       |
-| BMAD-005 | Enforce BMAD output folder/layout conventions              | done    | runtime/engine.py, tests/test_runtime_engine.py                                                       | None                                       |
-| BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | missing | None                                                                                                  | No orchestration layer beyond basic engine |
-| BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | done    | methodology/registry-workflows.md, methodology/mapping/registry-workflows.json, tests/test_mapping.py | None                                       |
+| ID       | Requirement                                                | Status  | Evidence                                                                                     | Gap Notes                                  |
+| -------- | ---------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | partial | runtime/workflow_parser.py, methodology/registry-workflows.md, tests/test_workflow_parser.py | End-to-end workflow run not yet validated  |
+| BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                                                        | None                                       |
+| BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                                                        | None                                       |
+| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done    | runtime/workflow_parser.py, tests/test_workflow_parser.py                                    | None                                       |
+| BMAD-005 | Enforce BMAD output folder/layout conventions              | done    | runtime/engine.py, tests/test_runtime_engine.py                                              | None                                       |
+| BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | missing | None                                                                                         | No orchestration layer beyond basic engine |
+| BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | partial | methodology/registry-workflows.md                                                            | Registry exists; execution missing         |
 
 ## Distribution Coverage
 
@@ -80,19 +80,19 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## Unified Spec Coverage
 
-| ID       | Requirement                                         | Status  | Evidence                                                                                                                        | Gap Notes                        |
-| -------- | --------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| SPEC-001 | Event bus for workflow state transitions            | missing | None                                                                                                                            | No event system                  |
-| SPEC-002 | State store for workflow progress and artifacts     | done    | runtime/storage.py, runtime/schemas.py, docs/runtime-schemas.json, tests/test_runtime_storage.py, tests/test_runtime_schemas.py | None                             |
-| SPEC-003 | TELIS policy engine and context manager             | missing | None                                                                                                                            | Not implemented                  |
-| SPEC-004 | Evidence store for Quint claims and DRRs            | missing | None                                                                                                                            | Not implemented                  |
-| SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                                                                                      | Only a minimal plugin manager    |
-| SPEC-006 | Plugin pipeline for policy/adapters/observability   | partial | runtime/plugins/manager.py                                                                                                      | No plugin implementations        |
-| SPEC-007 | Failure isolation with bounded retries              | partial | runtime/engine.py                                                                                                               | No circuit breakers or isolation |
-| SPEC-008 | Artifact index with checksum and provenance         | missing | None                                                                                                                            | Not implemented                  |
-| SPEC-009 | Context fingerprint tracking                        | missing | None                                                                                                                            | Not implemented                  |
-| SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                                                                                            | Not implemented                  |
-| SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py                 | None                             |
+| ID       | Requirement                                         | Status  | Evidence                                                                                                                        | Gap Notes                          |
+| -------- | --------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| SPEC-001 | Event bus for workflow state transitions            | missing | None                                                                                                                            | No event system                    |
+| SPEC-002 | State store for workflow progress and artifacts     | partial | runtime/storage.py, runtime/schemas.py, docs/runtime-schemas.json, tests/test_runtime_storage.py, tests/test_runtime_schemas.py | No artifact index or event history |
+| SPEC-003 | TELIS policy engine and context manager             | missing | None                                                                                                                            | Not implemented                    |
+| SPEC-004 | Evidence store for Quint claims and DRRs            | missing | None                                                                                                                            | Not implemented                    |
+| SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                                                                                      | Only a minimal plugin manager      |
+| SPEC-006 | Plugin pipeline for policy/adapters/observability   | partial | runtime/plugins/manager.py                                                                                                      | No plugin implementations          |
+| SPEC-007 | Failure isolation with bounded retries              | partial | runtime/engine.py                                                                                                               | No circuit breakers or isolation   |
+| SPEC-008 | Artifact index with checksum and provenance         | missing | None                                                                                                                            | Not implemented                    |
+| SPEC-009 | Context fingerprint tracking                        | missing | None                                                                                                                            | Not implemented                    |
+| SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                                                                                            | Not implemented                    |
+| SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py                 | None                               |
 
 ## Governance Coverage
 
@@ -107,7 +107,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 ## Audit Summary
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
-- WS1-WS3 coverage is complete (governance, schemas, mapping/registry).
+- WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 remain partial per the plan.
 - Real BMAD workflow execution, TELIS, and QUINT are mostly missing.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, and runtime schemas are implemented; enforcement coverage beyond current tools remains pending.
 

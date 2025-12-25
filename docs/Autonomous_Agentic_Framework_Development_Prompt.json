@@ -112,8 +112,9 @@
   "output_structure": {
     "root": "project_directory",
     "subdirectories": [
-      "/agents",
-      "/workflows",
+      "/BMAD-METHOD",
+      "/BMAD-METHOD/src",
+      "/BMAD-METHOD/tools",
       "/methodology",
       "/tests",
       "/cicd",

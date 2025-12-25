@@ -295,15 +295,14 @@ All gates are recorded as DRRs with evidence links.
 
 Project root contains the following directories:
 
-- /agents
-- /workflows
+- /BMAD-METHOD (canonical BMAD assets; use BMAD-METHOD/src for agents/workflows/modules/tasks/resources, BMAD-METHOD/src/utility/agent-components, and BMAD-METHOD/tools)
 - /methodology
 - /tests
 - /cicd
 - /security
 - /docs
 
-Naming convention: BMAD standard.
+Naming convention: BMAD standard; BMAD-METHOD remains the canonical source.
 
 ## 15) Success Criteria Alignment
 
