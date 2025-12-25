@@ -11,6 +11,8 @@ from runtime import config as runtime_config
 from runtime import gates, models, storage, workflow_parser
 from runtime.plugins.manager import PluginManager
 from runtime.time_provider import get_current_time
+from runtime.tools import file_io
+from runtime.tools import validation as validation_tools
 from runtime.tools.pipeline import ToolApprovalRequired, run_tool_calls
 
 
@@ -59,6 +61,141 @@ def _split_artifacts(artifacts: List[str]) -> Tuple[List[str], List[str]]:
         else:
             outputs.append(artifact)
     return outputs, templates
+
+
+_ALLOWED_OUTPUT_PLACEHOLDERS = ("{output_folder}", "{bmb_creations_output_folder}")
+_VALIDATION_TARGET_KEYS = ("validation_targets", "validation_paths", "validation_files")
+
+
+def _validation_policy_stages(policy: str) -> List[str]:
+    normalized = policy.strip().lower()
+    if not normalized or normalized in {"n/a", "na", "none"}:
+        return []
+    if "ast" in normalized or "type" in normalized or "lint" in normalized:
+        return ["ast", "typecheck", "lint"]
+    if "template" in normalized or "schema" in normalized or "format" in normalized:
+        return ["ast"]
+    return []
+
+
+def _output_layout_issues(outputs: List[str]) -> List[str]:
+    issues: List[str] = []
+    for output in outputs:
+        if not output:
+            issues.append("output path is empty")
+            continue
+        if output.startswith("id:"):
+            continue
+        if output.startswith("template:"):
+            issues.append(f"template artifact listed as output: {output}")
+            continue
+        if any(token in output for token in _ALLOWED_OUTPUT_PLACEHOLDERS):
+            continue
+        issues.append(f"output path missing output folder placeholder: {output}")
+    return issues
+
+
+def _collect_validation_targets(
+    step: Dict[str, Any],
+    step_spec: Optional[models.StepSpec],
+    root: Path,
+) -> Tuple[List[str], List[str]]:
+    inputs = step_spec.inputs if step_spec else step.get("inputs", {})
+    raw_targets: List[str] = []
+    for key in _VALIDATION_TARGET_KEYS:
+        value = inputs.get(key)
+        if not value:
+            continue
+        if isinstance(value, list):
+            raw_targets.extend([str(item) for item in value])
+        elif isinstance(value, str):
+            raw_targets.append(value)
+    issues: List[str] = []
+    targets: List[str] = []
+    for target in raw_targets:
+        try:
+            resolved = file_io.resolve_path(target, root=root)
+        except ValueError:
+            issues.append(f"validation target outside project root: {target}")
+            continue
+        if not resolved.exists():
+            issues.append(f"validation target missing: {target}")
+            continue
+        if resolved.is_dir():
+            issues.append(f"validation target is a directory: {target}")
+            continue
+        targets.append(str(resolved))
+    outputs = step_spec.outputs if step_spec else step.get("outputs", [])
+    for output in outputs:
+        if not isinstance(output, str):
+            continue
+        if output.startswith("id:") or output.startswith("template:"):
+            continue
+        if "{" in output:
+            continue
+        try:
+            resolved = file_io.resolve_path(output, root=root)
+        except ValueError:
+            continue
+        if resolved.exists() and resolved.is_file():
+            targets.append(str(resolved))
+    return targets, issues
+
+
+def _validation_error_message(report: Dict[str, Any]) -> str:
+    issues = report.get("issues", [])
+    if issues:
+        return "; ".join(issues)
+    failed_targets = [
+        item.get("target") for item in report.get("results", []) if item.get("status") == "failed"
+    ]
+    if failed_targets:
+        return f"failed targets: {', '.join(failed_targets)}"
+    return "validation failed"
+
+
+def _run_validation_gate(
+    step: Dict[str, Any],
+    step_spec: Optional[models.StepSpec],
+) -> Optional[Dict[str, Any]]:
+    if not step_spec:
+        return None
+    policy = step_spec.validation or ""
+    stages = _validation_policy_stages(policy)
+    issues = _output_layout_issues(step_spec.outputs)
+    root = runtime_config.project_root_from_here()
+    targets, target_issues = _collect_validation_targets(step, step_spec, root)
+    issues.extend(target_issues)
+    results: List[Dict[str, Any]] = []
+    if stages and targets:
+        for target in targets:
+            summary = validation_tools.run_validation_pipeline(
+                target,
+                root=root,
+                stages=stages,
+            )
+            results.append(
+                {
+                    "target": target,
+                    "status": summary.status,
+                    "results": [item.to_dict() for item in summary.results],
+                }
+            )
+    statuses = [item.get("status") for item in results]
+    if issues or "failed" in statuses:
+        status = "failed"
+    elif "passed" in statuses:
+        status = "passed"
+    else:
+        status = "skipped"
+    return {
+        "policy": policy,
+        "status": status,
+        "issues": issues,
+        "targets": targets,
+        "stages": stages,
+        "results": results,
+    }
 
 
 def _workflow_path(spec: models.WorkflowSpec) -> Optional[Path]:
@@ -391,6 +528,12 @@ class WorkflowEngine:
                     elapsed = time.time() - started
                     if elapsed > timeout_seconds:
                         raise TimeoutError("step timeout")
+                    validation_report = _run_validation_gate(step, step_spec)
+                    if validation_report:
+                        step["validation"] = validation_report
+                        if validation_report["status"] == "failed":
+                            message = _validation_error_message(validation_report)
+                            raise RuntimeError(f"validation failed: {message}")
                     step["status"] = "completed"
                     step["ended_at"] = utc_now()
                     step["error"] = None

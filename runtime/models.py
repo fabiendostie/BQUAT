@@ -86,6 +86,7 @@ class RunStep:
     inputs: Dict[str, Any] = field(default_factory=dict)
     outputs: List[str] = field(default_factory=list)
     tools: List[str] = field(default_factory=list)
+    validation: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -103,6 +104,7 @@ class RunStep:
             inputs=dict(data.get("inputs", {})),
             outputs=list(data.get("outputs", [])),
             tools=list(data.get("tools", [])),
+            validation=dict(data.get("validation", {})),
         )
 
 

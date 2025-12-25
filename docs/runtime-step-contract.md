@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-23T05:07:06-05:00
+Last updated: 2025-12-24T23:35:24-05:00
 
 ## Purpose
 
@@ -130,6 +130,14 @@ Validation failures:
 - add error details to step.error
 - retry if allowed by retries.max
 - if retries exhausted, mark step failed and run failed
+
+Validation inputs:
+
+- validation_targets: optional list of file paths (relative to project root) to validate for this step.
+
+Output layout enforcement:
+
+- Outputs must include {output_folder} or {bmb_creations_output_folder} placeholders when specified.
 
 ## Human Gate Contract
 

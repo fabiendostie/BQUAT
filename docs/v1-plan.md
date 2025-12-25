@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-23T05:07:06-05:00
+Last updated: 2025-12-24T23:35:24-05:00
 
 ## Purpose
 
@@ -62,7 +62,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-BMAD-002    | BMAD            | Sample/reference workflows excluded from production mapping      | Mapping | done    | tests/test_mapping.py                                                                                                                        |
 | REQ-BMAD-003    | BMAD            | Only explicit outputs/templates listed in mapping                | Mapping | done    | tests/test_mapping.py                                                                                                                        |
 | REQ-BMAD-004    | BMAD            | Parse workflow definitions (md/yaml/xml) into steps              | Runtime | done    | tests/test_workflow_parser.py                                                                                                                |
-| REQ-BMAD-005    | BMAD            | Enforce output folder/layout conventions                         | Runtime | missing | Planned: output validation tests                                                                                                             |
+| REQ-BMAD-005    | BMAD            | Enforce output folder/layout conventions                         | Runtime | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
 | REQ-BMAD-006    | BMAD            | Orchestrator routes workflows and agents                         | Runtime | missing | Planned: orchestration tests                                                                                                                 |
 | REQ-BMAD-007    | BMAD            | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)             | Runtime | partial | methodology/registry-workflows.md                                                                                                            |
 | REQ-INSTALL-001 | Distribution    | Single-command install for full framework (BMAD + QUINT + BQUAT) | Release | missing | Planned: installer integration tests                                                                                                         |
@@ -70,9 +70,9 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-TELIS-002   | TELIS           | LSP fallback to shards on failure                                | Tools   | missing | Planned: LSP fallback tests                                                                                                                  |
 | REQ-TELIS-003   | TELIS           | Tiered knowledge shards with token budgets                       | TELIS   | missing | Planned: shard retrieval tests                                                                                                               |
 | REQ-TELIS-004   | TELIS           | Progressive context negotiation protocol                         | TELIS   | missing | Planned: negotiation tests                                                                                                                   |
-| REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | partial | runtime/tools/validation.py, tests/test_runtime_validation.py                                                                                |
+| REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py                               |
 | REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | missing | Planned: cache hit tests                                                                                                                     |
-| REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | partial | runtime/engine.py                                                                                                                            |
+| REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
 | REQ-QUINT-001   | QUINT           | Evidence store for L0/L1/L2 and invalid                          | QUINT   | missing | Planned: evidence store tests                                                                                                                |
 | REQ-QUINT-002   | QUINT           | ADI cycle with promotion rules                                   | QUINT   | missing | Planned: ADI promotion tests                                                                                                                 |
 | REQ-QUINT-003   | QUINT           | WLNK assurance scoring                                           | QUINT   | missing | Planned: assurance tests                                                                                                                     |
@@ -179,7 +179,7 @@ Deliverables:
 2. Implement LSP symbiosis routing and compression.
 3. Implement progressive negotiation protocol.
 4. Implement behavioral cache with TTL and invalidation.
-5. Enforce validation gates before output acceptance.
+5. Enforce validation gates before output acceptance. (done: runtime/engine.py, tests/test_runtime_engine.py)
 
 Deliverables:
 

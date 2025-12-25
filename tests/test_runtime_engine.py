@@ -270,6 +270,66 @@ class RuntimeEngineTests(unittest.TestCase):
         self.assertEqual(result["status"], "blocked")
         self.assertEqual(result.get("blocked_reason"), "tool_gate")
 
+    def test_validation_gate_fails_on_invalid_target(self) -> None:
+        tmp = _sandbox_root()
+        bad_path = tmp / "bad.py"
+        bad_path.write_text("def add(:\n    pass\n", encoding="utf-8")
+        spec = self._spec(human_gate="optional")
+        eng = engine.WorkflowEngine(self._config(max_retries=0), [spec], storage_root=tmp)
+        created = eng.create_run("bmm", "prd")
+        run_dir = tmp / created["run_id"]
+        step_spec = models.StepSpec(
+            id="step-1",
+            name="validate",
+            description="",
+            phase=spec.phase,
+            inputs={"validation_targets": [str(bad_path.relative_to(ROOT))]},
+            outputs=["{output_folder}/prd.md"],
+            templates=[],
+            tools=[],
+            validation="AST + type + lint (as applicable)",
+            evidence=spec.evidence,
+            human_gate=spec.human,
+            retries={"max": 0, "backoff_seconds": 0},
+        )
+        manifest = storage.read_manifest(run_dir)
+        manifest["step_specs"] = [step_spec.to_dict()]
+        manifest["steps"] = []
+        storage.write_manifest(run_dir, manifest)
+        result = eng.run("bmm", "prd", run_id=created["run_id"])
+        self.assertEqual(result["status"], "failed")
+        self.assertEqual(result["steps"][0]["validation"]["status"], "failed")
+        self.assertIn("validation failed", result["steps"][0]["error"])
+
+    def test_output_layout_requires_placeholder(self) -> None:
+        tmp = _sandbox_root()
+        spec = self._spec(human_gate="optional")
+        eng = engine.WorkflowEngine(self._config(max_retries=0), [spec], storage_root=tmp)
+        created = eng.create_run("bmm", "prd")
+        run_dir = tmp / created["run_id"]
+        step_spec = models.StepSpec(
+            id="step-1",
+            name="layout",
+            description="",
+            phase=spec.phase,
+            inputs={},
+            outputs=["docs/prd.md"],
+            templates=[],
+            tools=[],
+            validation="Format validation",
+            evidence=spec.evidence,
+            human_gate=spec.human,
+            retries={"max": 0, "backoff_seconds": 0},
+        )
+        manifest = storage.read_manifest(run_dir)
+        manifest["step_specs"] = [step_spec.to_dict()]
+        manifest["steps"] = []
+        storage.write_manifest(run_dir, manifest)
+        result = eng.run("bmm", "prd", run_id=created["run_id"])
+        self.assertEqual(result["status"], "failed")
+        issues = result["steps"][0]["validation"]["issues"]
+        self.assertTrue(any("output folder placeholder" in item for item in issues))
+
     def test_plugin_hooks_success(self) -> None:
         tmp = _sandbox_root()
         spec = self._spec(human_gate="optional")

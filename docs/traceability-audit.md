@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-23T05:07:06-05:00
+Last updated: 2025-12-24T23:35:24-05:00
 
 ## Purpose
 
@@ -30,7 +30,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                                           | None                                              |
 | BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                                           | None                                              |
 | BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done    | runtime/workflow_parser.py, tests/test_workflow_parser.py                       | None                                              |
-| BMAD-005 | Enforce BMAD output folder/layout conventions              | missing | None                                                                            | Runtime does not validate output paths            |
+| BMAD-005 | Enforce BMAD output folder/layout conventions              | done    | runtime/engine.py, tests/test_runtime_engine.py                                 | None                                              |
 | BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | missing | None                                                                            | No orchestration layer beyond basic engine        |
 | BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | partial | methodology/registry-workflows.md                                               | Registry exists; execution missing                |
 
@@ -42,15 +42,15 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## TELIS Coverage
 
-| ID        | Requirement                                         | Status  | Evidence                                                      | Gap Notes                                      |
-| --------- | --------------------------------------------------- | ------- | ------------------------------------------------------------- | ---------------------------------------------- |
-| TELIS-001 | LSP symbiosis for type/signature accuracy           | partial | runtime/tools/lsp.py, tests/test_runtime_lsp.py               | Adapter present; not yet wired into TELIS      |
-| TELIS-002 | LSP fallback to shards on failure or timeout        | missing | None                                                          | No fallback path                               |
-| TELIS-003 | Tiered knowledge shards with token budgets          | missing | None                                                          | Shard registry not implemented                 |
-| TELIS-004 | Progressive context negotiation protocol            | missing | None                                                          | No negotiation logic or prompts                |
-| TELIS-005 | AST/type/lint validation pipeline                   | partial | runtime/tools/validation.py, tests/test_runtime_validation.py | Validation runner added; gate wiring pending   |
-| TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None                                                          | Cache not implemented                          |
-| TELIS-007 | Validation failures trigger retry/escalation        | partial | runtime/engine.py                                             | Retries exist but not tied to validation gates |
+| ID        | Requirement                                         | Status  | Evidence                                                                                                       | Gap Notes                                 |
+| --------- | --------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| TELIS-001 | LSP symbiosis for type/signature accuracy           | partial | runtime/tools/lsp.py, tests/test_runtime_lsp.py                                                                | Adapter present; not yet wired into TELIS |
+| TELIS-002 | LSP fallback to shards on failure or timeout        | missing | None                                                                                                           | No fallback path                          |
+| TELIS-003 | Tiered knowledge shards with token budgets          | missing | None                                                                                                           | Shard registry not implemented            |
+| TELIS-004 | Progressive context negotiation protocol            | missing | None                                                                                                           | No negotiation logic or prompts           |
+| TELIS-005 | AST/type/lint validation pipeline                   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py | None                                      |
+| TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None                                                                                                           | Cache not implemented                     |
+| TELIS-007 | Validation failures trigger retry/escalation        | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                | None                                      |
 
 ## QUINT Coverage
 
@@ -98,7 +98,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - Core runtime is scaffolding only; real BMAD workflow execution, TELIS, and QUINT are mostly missing.
-- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, and tool execution pipeline are implemented; enforcement coverage beyond current tools remains pending.
+- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, and validation gates are implemented; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up
 
