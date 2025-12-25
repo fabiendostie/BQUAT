@@ -1,0 +1,555 @@
+{
+  "schemas": {
+    "artifact_index": {
+      "properties": {
+        "artifacts": {
+          "items": {
+            "properties": {
+              "artifact_id": {
+                "type": "string"
+              },
+              "artifact_type": {
+                "type": "string"
+              },
+              "checksum": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "path": {
+                "type": "string"
+              },
+              "step": {
+                "type": ["string", "null"]
+              },
+              "workflow": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_id",
+              "path",
+              "artifact_type",
+              "checksum",
+              "workflow",
+              "created_at",
+              "metadata"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "required": ["run_id", "artifacts", "updated_at"],
+      "type": "object"
+    },
+    "artifact_record": {
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "artifact_type": {
+          "type": "string"
+        },
+        "checksum": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "path": {
+          "type": "string"
+        },
+        "step": {
+          "type": ["string", "null"]
+        },
+        "workflow": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "path",
+        "artifact_type",
+        "checksum",
+        "workflow",
+        "created_at",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "event_record": {
+      "properties": {
+        "event_type": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "step_id": {
+          "type": ["string", "null"]
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      },
+      "required": ["event_type", "run_id", "timestamp", "payload"],
+      "type": "object"
+    },
+    "evidence_link": {
+      "properties": {
+        "artifacts": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "carrier_ref": {
+          "type": "string"
+        },
+        "claim": {
+          "type": "string"
+        },
+        "congruence": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "reliability": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        },
+        "valid_until": {
+          "type": "string"
+        },
+        "wlnk": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "claim",
+        "level",
+        "source",
+        "date",
+        "valid_until",
+        "congruence",
+        "reliability",
+        "wlnk",
+        "carrier_ref",
+        "artifacts",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "human_gate": {
+      "properties": {
+        "approved_at": {
+          "type": ["string", "null"]
+        },
+        "approved_by": {
+          "type": ["string", "null"]
+        },
+        "gate_id": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "required": ["gate_id", "status", "required", "notes"],
+      "type": "object"
+    },
+    "run_manifest": {
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "current_step": {
+          "type": "integer"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "step_specs": {
+          "items": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "human_gate": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "inputs": {
+                "type": "object"
+              },
+              "name": {
+                "type": "string"
+              },
+              "outputs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "phase": {
+                "type": "string"
+              },
+              "retries": {
+                "type": "object"
+              },
+              "templates": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "tools": {
+                "type": "array"
+              },
+              "validation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "description",
+              "phase",
+              "inputs",
+              "outputs",
+              "templates",
+              "tools",
+              "validation",
+              "evidence",
+              "human_gate",
+              "retries"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "steps": {
+          "items": {
+            "properties": {
+              "attempts": {
+                "type": "integer"
+              },
+              "ended_at": {
+                "type": ["string", "null"]
+              },
+              "error": {
+                "type": ["string", "null"]
+              },
+              "inputs": {
+                "type": "object"
+              },
+              "name": {
+                "type": "string"
+              },
+              "outputs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "started_at": {
+                "type": ["string", "null"]
+              },
+              "status": {
+                "type": "string"
+              },
+              "step_id": {
+                "type": ["string", "null"]
+              },
+              "tools": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "validation": {
+                "type": "object"
+              }
+            },
+            "required": ["name", "status", "attempts", "inputs", "outputs", "tools", "validation"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "workflow": {
+          "properties": {
+            "artifacts": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "evidence": {
+              "type": "string"
+            },
+            "human": {
+              "type": "string"
+            },
+            "module": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string"
+            },
+            "quint": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string"
+            },
+            "telis": {
+              "type": "string"
+            },
+            "validation": {
+              "type": "string"
+            },
+            "workflow": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "module",
+            "workflow",
+            "phase",
+            "quint",
+            "telis",
+            "validation",
+            "human",
+            "evidence",
+            "artifacts",
+            "scope",
+            "path"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "run_id",
+        "workflow",
+        "status",
+        "step_specs",
+        "steps",
+        "current_step",
+        "created_at",
+        "updated_at"
+      ],
+      "type": "object"
+    },
+    "run_step": {
+      "properties": {
+        "attempts": {
+          "type": "integer"
+        },
+        "ended_at": {
+          "type": ["string", "null"]
+        },
+        "error": {
+          "type": ["string", "null"]
+        },
+        "inputs": {
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "outputs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "started_at": {
+          "type": ["string", "null"]
+        },
+        "status": {
+          "type": "string"
+        },
+        "step_id": {
+          "type": ["string", "null"]
+        },
+        "tools": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "validation": {
+          "type": "object"
+        }
+      },
+      "required": ["name", "status", "attempts", "inputs", "outputs", "tools", "validation"],
+      "type": "object"
+    },
+    "step_spec": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "human_gate": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "outputs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "retries": {
+          "type": "object"
+        },
+        "templates": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tools": {
+          "type": "array"
+        },
+        "validation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "phase",
+        "inputs",
+        "outputs",
+        "templates",
+        "tools",
+        "validation",
+        "evidence",
+        "human_gate",
+        "retries"
+      ],
+      "type": "object"
+    },
+    "workflow_spec": {
+      "properties": {
+        "artifacts": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "human": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "quint": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "telis": {
+          "type": "string"
+        },
+        "validation": {
+          "type": "string"
+        },
+        "workflow": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "module",
+        "workflow",
+        "phase",
+        "quint",
+        "telis",
+        "validation",
+        "human",
+        "evidence",
+        "artifacts",
+        "scope",
+        "path"
+      ],
+      "type": "object"
+    }
+  },
+  "version": "1.0"
+}

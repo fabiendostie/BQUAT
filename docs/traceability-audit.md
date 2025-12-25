@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T00:28:40-05:00
+Last updated: 2025-12-25T00:40:01-05:00
 
 ## Purpose
 
@@ -83,7 +83,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | ID       | Requirement                                         | Status  | Evidence                                                                                                        | Gap Notes                          |
 | -------- | --------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | SPEC-001 | Event bus for workflow state transitions            | missing | None                                                                                                            | No event system                    |
-| SPEC-002 | State store for workflow progress and artifacts     | partial | runtime/storage.py                                                                                              | No artifact index or event history |
+| SPEC-002 | State store for workflow progress and artifacts     | partial | runtime/storage.py, runtime/schemas.py, docs/runtime-schemas.json, tests/test_runtime_schemas.py                | No artifact index or event history |
 | SPEC-003 | TELIS policy engine and context manager             | missing | None                                                                                                            | Not implemented                    |
 | SPEC-004 | Evidence store for Quint claims and DRRs            | missing | None                                                                                                            | Not implemented                    |
 | SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                                                                      | Only a minimal plugin manager      |
@@ -108,7 +108,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - Core runtime is scaffolding only; real BMAD workflow execution, TELIS, and QUINT are mostly missing.
-- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, and validation gates are implemented; enforcement coverage beyond current tools remains pending.
+- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, and runtime schemas are implemented; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up
 

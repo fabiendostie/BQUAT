@@ -7,6 +7,7 @@
 - docs/traceability-audit.md
 - docs/runtime-step-contract.md
 - docs/tool-execution-pipeline.md
+- docs/runtime-schemas.json
 
 ## Registries and Mappings
 

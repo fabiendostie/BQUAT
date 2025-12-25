@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T00:28:40-05:00
+Last updated: 2025-12-25T00:40:01-05:00
 
 ## Purpose
 
@@ -119,15 +119,18 @@ Deliverables:
 
 ### WS2: Canonical runtime data model
 
-1. Define schemas for RunManifest, RunStep, ArtifactIndex, EvidenceLink, HumanGate.
-2. Define event schema for run lifecycle and gate state.
-3. Store all schema outputs in a stable JSON format.
-4. Add schema validation tests.
+1. Define schemas for RunManifest, RunStep, ArtifactIndex, EvidenceLink, HumanGate. (done: runtime/schemas.py)
+2. Define event schema for run lifecycle and gate state. (done: runtime/schemas.py)
+3. Store all schema outputs in a stable JSON format. (done: docs/runtime-schemas.json)
+4. Add schema validation tests. (done: tests/test_runtime_schemas.py)
 
 Deliverables:
 
 - runtime/models.py updates
 - tests for schema round trips
+- runtime/schemas.py
+- docs/runtime-schemas.json
+- tests/test_runtime_schemas.py
 
 ### WS3: Mapping and registry pipeline
 
