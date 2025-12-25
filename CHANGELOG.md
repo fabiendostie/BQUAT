@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
+Last updated: 2025-12-25T06:54:23-05:00
 
 ## [Unreleased]
 
@@ -15,6 +16,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 - Canonical workflow parsing for BMAD md/yaml/xml definitions plus step output parsing improvements.
 - Deterministic mapping/registry generation with expanded mapping accuracy tests.
 - Docs consistency tests enforcing plan/audit alignment and documentation index coverage.
+- Step progression state machine enforcing status transitions.
 
 ### Changed
 
@@ -22,6 +24,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 - Governance hardening with lint/typecheck/format hooks and changelog enforcement.
 - Allow duplicate changelog headings across releases in markdownlint config.
 - Align traceability audit and unified spec to the plan and BMAD-METHOD canonical layout.
+- Add engine tests covering step state transitions.
 
 ### Fixed
 

@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-24T23:35:24-05:00
+Last updated: 2025-12-25T06:56:17-05:00
 
 ## Purpose
 
@@ -80,6 +80,16 @@ At execution time, each step is converted into a RunStep entry stored in the run
 - inputs
 - outputs
 - tools
+
+## Step State Machine
+
+Allowed transitions:
+
+- pending -> running
+- running -> completed, failed, blocked
+- failed -> running
+- blocked -> running
+- completed -> (terminal)
 
 ## Tool Call Contract
 

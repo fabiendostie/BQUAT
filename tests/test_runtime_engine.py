@@ -361,6 +361,17 @@ class RuntimeEngineTests(unittest.TestCase):
         self.assertIn("validation:failed", plugin.events)
         self.assertIn("after_run", plugin.events)
 
+    def test_step_state_machine_rejects_invalid_transition(self) -> None:
+        step = {"name": "demo", "status": "pending"}
+        with self.assertRaises(ValueError):
+            engine._transition_step(step, "completed")
+
+    def test_step_state_machine_allows_retry_or_resume(self) -> None:
+        for status in ("failed", "blocked"):
+            step = {"name": "demo", "status": status}
+            engine._transition_step(step, "running")
+            self.assertEqual(step["status"], "running")
+
     def test_timeout_failure(self) -> None:
         tmp = _sandbox_root()
         spec = self._spec(human_gate="optional")

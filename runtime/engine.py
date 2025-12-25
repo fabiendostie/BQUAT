@@ -65,6 +65,27 @@ def _split_artifacts(artifacts: List[str]) -> Tuple[List[str], List[str]]:
 
 _ALLOWED_OUTPUT_PLACEHOLDERS = ("{output_folder}", "{bmb_creations_output_folder}")
 _VALIDATION_TARGET_KEYS = ("validation_targets", "validation_paths", "validation_files")
+_STEP_STATUSES = {"pending", "running", "blocked", "failed", "completed"}
+_STEP_TRANSITIONS = {
+    "pending": {"running"},
+    "running": {"completed", "failed", "blocked"},
+    "failed": {"running"},
+    "blocked": {"running"},
+    "completed": set(),
+}
+
+
+def _transition_step(step: Dict[str, Any], status: str) -> None:
+    current = step.get("status") or "pending"
+    if current == status:
+        return
+    if current not in _STEP_TRANSITIONS:
+        raise ValueError(f"unknown step status: {current}")
+    if status not in _STEP_STATUSES:
+        raise ValueError(f"invalid step status: {status}")
+    if status not in _STEP_TRANSITIONS[current]:
+        raise ValueError(f"invalid step transition: {current} -> {status}")
+    step["status"] = status
 
 
 def _validation_policy_stages(policy: str) -> List[str]:
@@ -505,7 +526,7 @@ class WorkflowEngine:
             while attempts <= max_retries:
                 attempts += 1
                 step["attempts"] = attempts
-                step["status"] = "running"
+                _transition_step(step, "running")
                 step["started_at"] = utc_now()
                 manifest["updated_at"] = utc_now()
                 storage.write_manifest(run_dir, manifest)
@@ -534,14 +555,14 @@ class WorkflowEngine:
                         if validation_report["status"] == "failed":
                             message = _validation_error_message(validation_report)
                             raise RuntimeError(f"validation failed: {message}")
-                    step["status"] = "completed"
+                    _transition_step(step, "completed")
                     step["ended_at"] = utc_now()
                     step["error"] = None
                     if self.plugins:
                         self.plugins.after_step(step, manifest)
                     break
                 except ToolApprovalRequired as exc:
-                    step["status"] = "blocked"
+                    _transition_step(step, "blocked")
                     step["ended_at"] = utc_now()
                     step["error"] = str(exc)
                     manifest["status"] = "blocked"
@@ -554,7 +575,7 @@ class WorkflowEngine:
                         self.plugins.on_validation(manifest, "blocked")
                     return manifest
                 except Exception as exc:  # noqa: BLE001
-                    step["status"] = "failed"
+                    _transition_step(step, "failed")
                     step["ended_at"] = utc_now()
                     step["error"] = str(exc)
                     if self.plugins:
