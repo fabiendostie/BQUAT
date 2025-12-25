@@ -292,6 +292,13 @@ def _ensure_steps(manifest: Dict[str, Any]) -> None:
         manifest["current_step"] = 0
 
 
+def _resume_start_index(steps: List[Dict[str, Any]]) -> int:
+    for idx, step in enumerate(steps):
+        if step.get("status") != "completed":
+            return idx
+    return len(steps)
+
+
 def _step_timeout_seconds(config: Dict[str, Any]) -> int:
     runtime_cfg = config.get("runtime", {})
     return int(runtime_cfg.get("step_timeout_seconds", 1800))
@@ -502,12 +509,18 @@ class WorkflowEngine:
         executor: StepExecutor,
     ) -> Dict[str, Any]:
         steps = manifest.get("steps", [])
+        start_idx = _resume_start_index(steps)
+        if start_idx != manifest.get("current_step", 0):
+            manifest["current_step"] = start_idx
+            manifest["updated_at"] = utc_now()
+            storage.write_manifest(run_dir, manifest)
         spec_list = [models.StepSpec.from_dict(item) for item in manifest.get("step_specs", [])]
         spec_by_id = {spec.id: spec for spec in spec_list}
         max_retries = _max_retries(self.config)
         timeout_seconds = _step_timeout_seconds(self.config)
 
-        for idx, step in enumerate(steps):
+        for idx in range(start_idx, len(steps)):
+            step = steps[idx]
             if step.get("status") == "completed":
                 continue
             manifest["current_step"] = idx

@@ -77,6 +77,14 @@ class TimeoutExecutor(engine.StepExecutor):
         time.sleep(0.01)
 
 
+class RecordingExecutor(engine.StepExecutor):
+    def __init__(self) -> None:
+        self.steps = []
+
+    def execute(self, step: dict, context: dict) -> None:
+        self.steps.append(step.get("name"))
+
+
 class RuntimeEngineTests(unittest.TestCase):
     def _config(self, max_retries: int = 0, require_conditional: bool = False) -> dict:
         return {
@@ -383,6 +391,54 @@ class RuntimeEngineTests(unittest.TestCase):
         self.assertIsNotNone(plugin.snapshot)
         self.assertEqual(plugin.snapshot["steps"][0]["status"], "failed")
         self.assertEqual(plugin.snapshot["steps"][0]["error"], "boom")
+
+    def test_resume_starts_from_last_incomplete_step(self) -> None:
+        tmp = _sandbox_root()
+        spec = self._spec(human_gate="optional")
+        eng = engine.WorkflowEngine(self._config(), [spec], storage_root=tmp)
+        created = eng.create_run("bmm", "prd")
+        run_dir = tmp / created["run_id"]
+        step_specs = [
+            models.StepSpec(
+                id="step-1",
+                name="one",
+                description="",
+                phase=spec.phase,
+                inputs={},
+                outputs=["{output_folder}/one.md"],
+                templates=[],
+                tools=[],
+                validation=spec.validation,
+                evidence=spec.evidence,
+                human_gate=spec.human,
+                retries={"max": 0, "backoff_seconds": 0},
+            ),
+            models.StepSpec(
+                id="step-2",
+                name="two",
+                description="",
+                phase=spec.phase,
+                inputs={},
+                outputs=["{output_folder}/two.md"],
+                templates=[],
+                tools=[],
+                validation=spec.validation,
+                evidence=spec.evidence,
+                human_gate=spec.human,
+                retries={"max": 0, "backoff_seconds": 0},
+            ),
+        ]
+        manifest = storage.read_manifest(run_dir)
+        manifest["step_specs"] = [spec_item.to_dict() for spec_item in step_specs]
+        manifest["steps"] = [
+            models.RunStep(name="one", status="completed", step_id="step-1").to_dict(),
+            models.RunStep(name="two", step_id="step-2").to_dict(),
+        ]
+        storage.write_manifest(run_dir, manifest)
+        executor = RecordingExecutor()
+        resumed = eng.resume(created["run_id"], executor=executor)
+        self.assertEqual(resumed["status"], "completed")
+        self.assertEqual(executor.steps, ["two"])
 
     def test_step_state_machine_rejects_invalid_transition(self) -> None:
         step = {"name": "demo", "status": "pending"}

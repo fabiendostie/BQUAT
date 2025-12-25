@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T09:38:10-05:00
+Last updated: 2025-12-25T11:21:25-05:00
 
 ## Purpose
 
@@ -180,6 +180,11 @@ Evidence links are stored in evidence.json and cross-linked to artifacts.
 7. Write outputs and update artifact index.
 8. Record evidence links as required.
 9. Mark RunStep completed and set ended_at.
+
+## Resume Semantics
+
+- Resume starts from the first step that is not completed.
+- Completed steps are not re-executed.
 
 ## Required Events
 

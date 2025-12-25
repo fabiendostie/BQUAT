@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T09:38:10-05:00
+Last updated: 2025-12-25T11:21:25-05:00
 
 ## Purpose
 
@@ -152,7 +152,7 @@ Deliverables:
 1. Build a state machine for step progression (pending, running, blocked, failed, completed).
 2. Implement step contract with inputs, outputs, tools, and validation hooks. (done: runtime/models.py, runtime/engine.py, runtime/tools/pipeline.py, docs/runtime-step-contract.md, tests/test_runtime_engine.py, tests/test_runtime_models.py)
 3. Persist run state after each step and on errors. (done: runtime/engine.py, runtime/storage.py, tests/test_runtime_engine.py)
-4. Implement resume semantics from the last incomplete step.
+4. Implement resume semantics from the last incomplete step. (done: runtime/engine.py, tests/test_runtime_engine.py, docs/runtime-step-contract.md)
 5. Enforce step timeouts and bounded retries.
 
 Deliverables:
