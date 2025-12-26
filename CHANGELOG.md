@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-25T11:54:17-05:00
+Last updated: 2025-12-26T15:29:23-05:00
 
 ## [Unreleased]
 
@@ -22,6 +22,7 @@ Last updated: 2025-12-25T11:54:17-05:00
 - Persist run state after step errors and update timestamps on completion.
 - Resume execution from the first incomplete step.
 - Per-step retry policies with backoff in the runtime engine.
+- PyYAML in dev requirements for workflow parsing in CI.
 
 ### Changed
 
