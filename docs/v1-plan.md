@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T01:45:22-05:00
+Last updated: 2025-12-27T01:59:34-05:00
 
 ## Purpose
 
@@ -91,7 +91,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-AGENT-007   | Practical Guide | HITL on high-risk actions and retry thresholds                   | Runtime | partial | runtime/gates.py                                                                                                                             |
 | REQ-AGENT-008   | Practical Guide | Optimistic execution with concurrent guardrails                  | Runtime | missing | Planned: guardrail concurrency tests                                                                                                         |
 | REQ-SPEC-001    | Unified Spec    | Event bus for workflow state transitions                         | Runtime | missing | Planned: event bus tests                                                                                                                     |
-| REQ-SPEC-002    | Unified Spec    | State store for workflow progress and artifacts                  | Runtime | partial | runtime/storage.py                                                                                                                           |
+| REQ-SPEC-002    | Unified Spec    | State store for workflow progress and artifacts                  | Runtime | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                                |
 | REQ-SPEC-003    | Unified Spec    | TELIS policy engine and context manager                          | TELIS   | missing | Planned: TELIS policy tests                                                                                                                  |
 | REQ-SPEC-004    | Unified Spec    | Evidence store for Quint claims and DRRs                         | QUINT   | missing | Planned: evidence store tests                                                                                                                |
 | REQ-SPEC-005    | Unified Spec    | Control plane/data plane split                                   | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |

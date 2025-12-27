@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import time
 from datetime import datetime, timezone
@@ -114,6 +115,107 @@ def _output_layout_issues(outputs: List[str]) -> List[str]:
             continue
         issues.append(f"output path missing output folder placeholder: {output}")
     return issues
+
+
+def _append_event(
+    run_dir: Path,
+    event_type: str,
+    run_id: str,
+    payload: Optional[Dict[str, Any]] = None,
+    step_id: Optional[str] = None,
+) -> None:
+    events = storage.read_events(run_dir)
+    entries: List[Dict[str, Any]] = events.get("events", [])
+    record = models.EventRecord(
+        event_type=event_type,
+        run_id=run_id,
+        timestamp=utc_now(),
+        payload=dict(payload or {}),
+        step_id=step_id,
+    )
+    entries.append(record.to_dict())
+    events["events"] = entries
+    storage.write_events(run_dir, events)
+
+
+def _artifact_checksum(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _artifact_id(path: str, checksum: str, artifact_type: str) -> str:
+    basis = f"{path}:{checksum}:{artifact_type}"
+    return hashlib.sha256(basis.encode("utf-8")).hexdigest()[:16]
+
+
+def _resolve_artifact_path(value: str, root: Path, run_dir: Path) -> Optional[Path]:
+    if not value:
+        return None
+    cleaned = value.strip()
+    if not cleaned or "{" in cleaned:
+        return None
+    if cleaned.startswith("template:") or cleaned.startswith("id:"):
+        return None
+    for base in (root, run_dir):
+        try:
+            resolved = file_io.resolve_path(cleaned, root=base)
+        except ValueError:
+            continue
+        if resolved.exists() and resolved.is_file():
+            return resolved
+    return None
+
+
+def _update_artifact_index(
+    run_dir: Path,
+    manifest: Dict[str, Any],
+    step: Dict[str, Any],
+    step_spec: Optional[models.StepSpec],
+) -> None:
+    root = runtime_config.project_root_from_here()
+    index = storage.read_artifact_index(run_dir)
+    artifacts: List[Dict[str, Any]] = index.get("artifacts", [])
+    existing = {(item.get("path"), item.get("checksum")) for item in artifacts}
+    workflow = manifest.get("workflow", {})
+    workflow_id = f"{workflow.get('module')}/{workflow.get('workflow')}"
+    created_at = step.get("ended_at") or utc_now()
+    step_id = step.get("step_id")
+
+    candidates: List[Tuple[str, str]] = []
+    for output in step.get("outputs", []):
+        if isinstance(output, str):
+            candidates.append((output, "output"))
+    if step_spec:
+        for template in step_spec.templates:
+            if isinstance(template, str):
+                candidates.append((template, "template"))
+
+    for value, artifact_type in candidates:
+        resolved = _resolve_artifact_path(value, root, run_dir)
+        if not resolved:
+            continue
+        rel_path = (
+            str(resolved.relative_to(root)) if resolved.is_relative_to(root) else str(resolved)
+        )
+        checksum = _artifact_checksum(resolved)
+        key = (rel_path, checksum)
+        if key in existing:
+            continue
+        record = models.ArtifactRecord(
+            artifact_id=_artifact_id(rel_path, checksum, artifact_type),
+            path=rel_path,
+            artifact_type=artifact_type,
+            checksum=checksum,
+            workflow=workflow_id,
+            created_at=created_at,
+            step=step_id,
+            metadata={"step_name": step.get("name", "")},
+        )
+        artifacts.append(record.to_dict())
+        existing.add(key)
+
+    index["artifacts"] = artifacts
+    index["updated_at"] = utc_now()
+    storage.write_artifact_index(run_dir, index)
 
 
 def _collect_validation_targets(
@@ -450,6 +552,12 @@ class WorkflowEngine:
             manifest["blocked_phase"] = spec.phase
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            _append_event(
+                run_dir,
+                "WorkflowBlocked",
+                manifest["run_id"],
+                {"reason": "manual_phase", "phase": spec.phase},
+            )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
             return manifest
@@ -463,6 +571,12 @@ class WorkflowEngine:
             manifest["status"] = "blocked"
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            _append_event(
+                run_dir,
+                "WorkflowBlocked",
+                manifest["run_id"],
+                {"reason": "human_gate", "gate_id": _gate_id(spec)},
+            )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
             return manifest
@@ -473,6 +587,12 @@ class WorkflowEngine:
         manifest["status"] = "running"
         manifest["updated_at"] = utc_now()
         storage.write_manifest(run_dir, manifest)
+        _append_event(
+            run_dir,
+            "WorkflowStarted",
+            manifest["run_id"],
+            {"workflow": manifest["workflow"]},
+        )
 
         step_executor = executor or NoopExecutor()
         return self._execute_steps(run_dir, manifest, step_executor)
@@ -490,6 +610,12 @@ class WorkflowEngine:
             manifest["blocked_phase"] = spec.phase
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            _append_event(
+                run_dir,
+                "WorkflowBlocked",
+                manifest["run_id"],
+                {"reason": "manual_phase", "phase": spec.phase},
+            )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
             return manifest
@@ -503,6 +629,12 @@ class WorkflowEngine:
             manifest["status"] = "blocked"
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            _append_event(
+                run_dir,
+                "WorkflowBlocked",
+                manifest["run_id"],
+                {"reason": "human_gate", "gate_id": _gate_id(spec)},
+            )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
             return manifest
@@ -513,6 +645,12 @@ class WorkflowEngine:
         manifest["status"] = "running"
         manifest["updated_at"] = utc_now()
         storage.write_manifest(run_dir, manifest)
+        _append_event(
+            run_dir,
+            "WorkflowResumed",
+            manifest["run_id"],
+            {"workflow": manifest["workflow"]},
+        )
 
         step_executor = executor or NoopExecutor()
         return self._execute_steps(run_dir, manifest, step_executor)
@@ -558,6 +696,13 @@ class WorkflowEngine:
                 step["started_at"] = utc_now()
                 manifest["updated_at"] = utc_now()
                 storage.write_manifest(run_dir, manifest)
+                _append_event(
+                    run_dir,
+                    "WorkflowStepStarted",
+                    manifest["run_id"],
+                    {"step": step.get("name"), "attempt": attempts},
+                    step_id=step_id,
+                )
 
                 try:
                     if self.plugins:
@@ -587,6 +732,14 @@ class WorkflowEngine:
                     step["ended_at"] = utc_now()
                     step["error"] = None
                     manifest["updated_at"] = utc_now()
+                    _update_artifact_index(run_dir, manifest, step, step_spec)
+                    _append_event(
+                        run_dir,
+                        "WorkflowStepCompleted",
+                        manifest["run_id"],
+                        {"step": step.get("name"), "outputs": step.get("outputs", [])},
+                        step_id=step_id,
+                    )
                     if self.plugins:
                         self.plugins.after_step(step, manifest)
                     break
@@ -600,6 +753,19 @@ class WorkflowEngine:
                     manifest["blocked_tool"] = exc.tool_name
                     manifest["updated_at"] = utc_now()
                     storage.write_manifest(run_dir, manifest)
+                    _append_event(
+                        run_dir,
+                        "WorkflowStepBlocked",
+                        manifest["run_id"],
+                        {"step": step.get("name"), "reason": "tool_gate"},
+                        step_id=step_id,
+                    )
+                    _append_event(
+                        run_dir,
+                        "WorkflowBlocked",
+                        manifest["run_id"],
+                        {"reason": "tool_gate", "gate_id": exc.gate_id},
+                    )
                     if self.plugins:
                         self.plugins.on_validation(manifest, "blocked")
                     return manifest
@@ -609,12 +775,25 @@ class WorkflowEngine:
                     step["error"] = str(exc)
                     manifest["updated_at"] = utc_now()
                     storage.write_manifest(run_dir, manifest)
+                    _append_event(
+                        run_dir,
+                        "WorkflowStepFailed",
+                        manifest["run_id"],
+                        {"step": step.get("name"), "error": step.get("error")},
+                        step_id=step_id,
+                    )
                     if self.plugins:
                         self.plugins.on_error(step, manifest, step["error"] or "error")
                     if attempts > max_retries:
                         manifest["status"] = "failed"
                         manifest["updated_at"] = utc_now()
                         storage.write_manifest(run_dir, manifest)
+                        _append_event(
+                            run_dir,
+                            "WorkflowFailed",
+                            manifest["run_id"],
+                            {"reason": "step_failed", "step": step.get("name")},
+                        )
                         if self.plugins:
                             self.plugins.on_validation(manifest, "failed")
                         if self.plugins:
@@ -628,6 +807,12 @@ class WorkflowEngine:
         manifest["status"] = "completed"
         manifest["updated_at"] = utc_now()
         storage.write_manifest(run_dir, manifest)
+        _append_event(
+            run_dir,
+            "WorkflowCompleted",
+            manifest["run_id"],
+            {"workflow": manifest.get("workflow", {})},
+        )
         if self.plugins:
             self.plugins.on_validation(manifest, "completed")
         if self.plugins:
