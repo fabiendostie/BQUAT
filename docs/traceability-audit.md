@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T03:39:58-05:00
+Last updated: 2025-12-27T14:34:05-05:00
 
 ## Purpose
 
@@ -42,15 +42,15 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## TELIS Coverage
 
-| ID        | Requirement                                         | Status  | Evidence                                                                                                       | Gap Notes                                 |
-| --------- | --------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| TELIS-001 | LSP symbiosis for type/signature accuracy           | partial | runtime/tools/lsp.py, runtime/telis/context.py, tests/test_runtime_telis_context.py                            | LSP routing not yet wired into engine     |
-| TELIS-002 | LSP fallback to shards on failure or timeout        | partial | runtime/telis/context.py, tests/test_runtime_telis_context.py                                                  | Fallback not yet wired into engine        |
-| TELIS-003 | Tiered knowledge shards with token budgets          | partial | runtime/telis/shards.py, tests/test_runtime_telis_shards.py                                                    | Shard retrieval not yet wired into engine |
-| TELIS-004 | Progressive context negotiation protocol            | partial | runtime/telis/negotiation.py, tests/test_runtime_telis_negotiation.py                                          | Not yet wired into engine                 |
-| TELIS-005 | AST/type/lint validation pipeline                   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py | None                                      |
-| TELIS-006 | Behavioral cache with TTL and invalidation triggers | partial | runtime/telis/cache.py, tests/test_runtime_telis_cache.py                                                      | Not yet wired into engine                 |
-| TELIS-007 | Validation failures trigger retry/escalation        | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                | None                                      |
+| ID        | Requirement                                         | Status | Evidence                                                                                                       | Gap Notes |
+| --------- | --------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------- | --------- |
+| TELIS-001 | LSP symbiosis for type/signature accuracy           | done   | runtime/tools/lsp.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py         | None      |
+| TELIS-002 | LSP fallback to shards on failure or timeout        | done   | runtime/telis/context.py, runtime/telis/manager.py, tests/test_runtime_telis_manager.py                        | None      |
+| TELIS-003 | Tiered knowledge shards with token budgets          | done   | runtime/telis/shards.py, runtime/telis/manager.py, tests/test_runtime_telis_manager.py                         | None      |
+| TELIS-004 | Progressive context negotiation protocol            | done   | runtime/telis/negotiation.py, runtime/telis/manager.py, tests/test_runtime_telis_manager.py                    | None      |
+| TELIS-005 | AST/type/lint validation pipeline                   | done   | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py | None      |
+| TELIS-006 | Behavioral cache with TTL and invalidation triggers | done   | runtime/telis/cache.py, runtime/telis/manager.py, tests/test_runtime_telis_manager.py                          | None      |
+| TELIS-007 | Validation failures trigger retry/escalation        | done   | runtime/engine.py, tests/test_runtime_engine.py                                                                | None      |
 
 ## QUINT Coverage
 
@@ -84,12 +84,12 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | -------- | --------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | SPEC-001 | Event bus for workflow state transitions            | missing | None                                                                                                            | No event system                  |
 | SPEC-002 | State store for workflow progress and artifacts     | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                   | None                             |
-| SPEC-003 | TELIS policy engine and context manager             | missing | None                                                                                                            | Not implemented                  |
+| SPEC-003 | TELIS policy engine and context manager             | done    | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                | None                             |
 | SPEC-004 | Evidence store for Quint claims and DRRs            | missing | None                                                                                                            | Not implemented                  |
 | SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                                                                      | Only a minimal plugin manager    |
 | SPEC-006 | Plugin pipeline for policy/adapters/observability   | partial | runtime/plugins/manager.py                                                                                      | No plugin implementations        |
 | SPEC-007 | Failure isolation with bounded retries              | partial | runtime/engine.py                                                                                               | No circuit breakers or isolation |
-| SPEC-008 | Artifact index with checksum and provenance         | missing | None                                                                                                            | Not implemented                  |
+| SPEC-008 | Artifact index with checksum and provenance         | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                   | None                             |
 | SPEC-009 | Context fingerprint tracking                        | missing | None                                                                                                            | Not implemented                  |
 | SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                                                                            | Not implemented                  |
 | SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py | None                             |
@@ -108,7 +108,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 are now covered by integration tests and runtime persistence.
-- Real BMAD workflow execution, TELIS, and QUINT are mostly missing; TELIS shard registry exists but is not yet integrated.
+- Real BMAD workflow execution and QUINT are mostly missing; TELIS context routing, negotiation, and caching now run in the engine.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, and runtime schemas are implemented; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up

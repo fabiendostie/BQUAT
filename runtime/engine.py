@@ -11,6 +11,7 @@ from uuid import uuid4
 from runtime import config as runtime_config
 from runtime import gates, models, storage, workflow_parser
 from runtime.plugins.manager import PluginManager
+from runtime.telis.manager import TelisPolicyEngine
 from runtime.time_provider import get_current_time
 from runtime.tools import file_io
 from runtime.tools import validation as validation_tools
@@ -464,11 +465,13 @@ class WorkflowEngine:
         mapping_records: List[models.WorkflowSpec],
         storage_root: Optional[Path] = None,
         plugins: Optional[PluginManager] = None,
+        telis: Optional[TelisPolicyEngine] = None,
     ) -> None:
         self.config = config
         self.mapping = {(rec.module, rec.workflow): rec for rec in mapping_records}
         self.storage_root = storage_root or runtime_config.storage_root(config)
         self.plugins = plugins
+        self.telis = telis or TelisPolicyEngine.from_config(config)
 
     def get_workflow_spec(self, module: str, workflow: str) -> models.WorkflowSpec:
         key = (module, workflow)
@@ -714,10 +717,20 @@ class WorkflowEngine:
                         run_dir=run_dir,
                         config=self.config,
                     )
+                    telis_context = None
+                    if self.telis:
+                        telis_context = self.telis.resolve_for_step(step, step_spec, manifest)
+                        if telis_context:
+                            step["telis_context"] = telis_context
                     started = time.time()
                     executor.execute(
                         step,
-                        {"run_dir": run_dir, "manifest": manifest, "step_spec": step_spec},
+                        {
+                            "run_dir": run_dir,
+                            "manifest": manifest,
+                            "step_spec": step_spec,
+                            "telis_context": telis_context,
+                        },
                     )
                     elapsed = time.time() - started
                     if elapsed > timeout_seconds:

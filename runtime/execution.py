@@ -19,22 +19,27 @@ class PlanExecutor(StepExecutor):
         spec = models.WorkflowSpec.from_mapping(manifest["workflow"])
         agent = agents.get_agent(self.agent_name)
         plan = agent.build_plan(spec)
+        telis_context = cast(Optional[Dict[str, Any]], context.get("telis_context"))
+        prompt = plan.prompt
+        if telis_context and telis_context.get("context"):
+            prompt = f"{prompt}\n\nTELIS context:\n{telis_context['context']}"
 
         storage.write_json(
             run_dir / "plan.json",
             {
                 "framework": plan.framework,
                 "workflow": plan.workflow.to_dict(),
-                "prompt": plan.prompt,
+                "prompt": prompt,
                 "outputs": plan.outputs,
                 "templates": plan.templates,
+                "telis_context": telis_context,
             },
         )
 
         if self.provider:
             request = ProviderRequest(
                 model="",
-                messages=[{"role": "user", "content": plan.prompt}],
+                messages=[{"role": "user", "content": prompt}],
             )
             response = self.provider.invoke(request)
             storage.write_json(

@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T03:41:09-05:00
+Last updated: 2025-12-27T12:15:28-05:00
 
 ## Purpose
 
@@ -67,12 +67,12 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-BMAD-006    | BMAD            | Orchestrator routes workflows and agents                         | Runtime | missing | Planned: orchestration tests                                                                                                                 |
 | REQ-BMAD-007    | BMAD            | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)             | Runtime | done    | tests/test_runtime_bmad_execution.py                                                                                                         |
 | REQ-INSTALL-001 | Distribution    | Single-command install for full framework (BMAD + QUINT + BQUAT) | Release | missing | Planned: installer integration tests                                                                                                         |
-| REQ-TELIS-001   | TELIS           | LSP symbiosis for type/signature accuracy                        | Tools   | partial | runtime/tools/lsp.py, runtime/telis/context.py, tests/test_runtime_telis_context.py                                                          |
-| REQ-TELIS-002   | TELIS           | LSP fallback to shards on failure                                | Tools   | partial | runtime/telis/context.py, tests/test_runtime_telis_context.py                                                                                |
-| REQ-TELIS-003   | TELIS           | Tiered knowledge shards with token budgets                       | TELIS   | partial | runtime/telis/shards.py, tests/test_runtime_telis_shards.py                                                                                  |
-| REQ-TELIS-004   | TELIS           | Progressive context negotiation protocol                         | TELIS   | partial | runtime/telis/negotiation.py, tests/test_runtime_telis_negotiation.py                                                                        |
+| REQ-TELIS-001   | TELIS           | LSP symbiosis for type/signature accuracy                        | Tools   | done    | runtime/tools/lsp.py, runtime/telis/context.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py             |
+| REQ-TELIS-002   | TELIS           | LSP fallback to shards on failure                                | Tools   | done    | runtime/telis/context.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                   |
+| REQ-TELIS-003   | TELIS           | Tiered knowledge shards with token budgets                       | TELIS   | done    | runtime/telis/shards.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                    |
+| REQ-TELIS-004   | TELIS           | Progressive context negotiation protocol                         | TELIS   | done    | runtime/telis/negotiation.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                               |
 | REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py                               |
-| REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | partial | runtime/telis/cache.py, tests/test_runtime_telis_cache.py                                                                                    |
+| REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | done    | runtime/telis/cache.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                     |
 | REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
 | REQ-QUINT-001   | QUINT           | Evidence store for L0/L1/L2 and invalid                          | QUINT   | missing | Planned: evidence store tests                                                                                                                |
 | REQ-QUINT-002   | QUINT           | ADI cycle with promotion rules                                   | QUINT   | missing | Planned: ADI promotion tests                                                                                                                 |
@@ -92,12 +92,12 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-AGENT-008   | Practical Guide | Optimistic execution with concurrent guardrails                  | Runtime | missing | Planned: guardrail concurrency tests                                                                                                         |
 | REQ-SPEC-001    | Unified Spec    | Event bus for workflow state transitions                         | Runtime | missing | Planned: event bus tests                                                                                                                     |
 | REQ-SPEC-002    | Unified Spec    | State store for workflow progress and artifacts                  | Runtime | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                                |
-| REQ-SPEC-003    | Unified Spec    | TELIS policy engine and context manager                          | TELIS   | missing | Planned: TELIS policy tests                                                                                                                  |
+| REQ-SPEC-003    | Unified Spec    | TELIS policy engine and context manager                          | TELIS   | done    | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                                             |
 | REQ-SPEC-004    | Unified Spec    | Evidence store for Quint claims and DRRs                         | QUINT   | missing | Planned: evidence store tests                                                                                                                |
 | REQ-SPEC-005    | Unified Spec    | Control plane/data plane split                                   | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
 | REQ-SPEC-006    | Unified Spec    | Plugin pipeline for policy/adapters/observability                | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
 | REQ-SPEC-007    | Unified Spec    | Failure isolation with bounded retries                           | Runtime | partial | runtime/engine.py                                                                                                                            |
-| REQ-SPEC-008    | Unified Spec    | Artifact index with checksum and provenance                      | Runtime | missing | Planned: artifact index tests                                                                                                                |
+| REQ-SPEC-008    | Unified Spec    | Artifact index with checksum and provenance                      | Runtime | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                                |
 | REQ-SPEC-009    | Unified Spec    | Context fingerprint tracking                                     | Runtime | missing | Planned: context fingerprint tests                                                                                                           |
 | REQ-SPEC-010    | Unified Spec    | Gates recorded as DRRs with evidence links                       | Runtime | missing | Planned: gate DRR tests                                                                                                                      |
 | REQ-SPEC-011    | Unified Spec    | Tool execution pipeline (registry, gating, results)              | Runtime | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py                              |
@@ -321,7 +321,7 @@ Deliverables:
 - [x] Implement BMAD workflow parsing and canonical registry
 - [x] Build step execution state machine
 - [x] Implement tool adapters, execution pipeline, and risk policy
-- [ ] Implement TELIS LSP, shards, negotiation, cache, and validation gates (LSP adapter done)
+- [x] Implement TELIS LSP, shards, negotiation, cache, and validation gates (LSP adapter done)
 - [ ] Implement QUINT evidence engine, WLNK, congruence, decay, and DRR
 - [ ] Harden provider routing with retries and circuit breakers
 - [ ] Enforce HITL gating with CLI approvals

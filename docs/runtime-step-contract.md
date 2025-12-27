@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T11:54:17-05:00
+Last updated: 2025-12-27T04:12:25-05:00
 
 ## Purpose
 
@@ -80,6 +80,7 @@ At execution time, each step is converted into a RunStep entry stored in the run
 - inputs
 - outputs
 - tools (tool execution results)
+- telis_context (resolved TELIS context payload)
 
 ## Step State Machine
 
@@ -108,6 +109,27 @@ Execution details are defined in docs/tool-execution-pipeline.md and enforced be
 Tool results are stored as part of the step execution context and may be written to artifacts.
 
 Tool execution records are persisted to tool_results.json in the run directory.
+
+## TELIS Context Manager
+
+TELIS context is resolved before executor execution so the agent can consume LSP/shard context.
+
+Inputs (optional keys in StepSpec.inputs):
+
+- telis_query: string query used for shard/LSP lookup
+- telis_language: language identifier (python, typescript, javascript, json, yaml)
+- telis_document_path: file path for LSP-backed requests
+- telis_document_text: inline document text when no file exists
+- telis_method: LSP method (hover or signatureHelp)
+- telis_line / telis_character: cursor position for LSP calls
+- telis_shard_limit: limit shard count for retrieval
+- telis_min_score: minimum shard score threshold
+- telis_max_phase: cap negotiation phases
+- telis_phase_tiers: explicit tiers for negotiation escalation
+
+Outputs:
+
+- telis_context is attached to the RunStep and passed to executors.
 
 ## Tool Definition (getCurrentTime)
 

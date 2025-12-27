@@ -2,6 +2,7 @@
 
 from runtime.telis.cache import BehavioralCache, CacheEntry
 from runtime.telis.context import TelisContextRequest, TelisContextResult, resolve_context
+from runtime.telis.manager import TelisPolicy, TelisPolicyEngine, parse_policy
 from runtime.telis.negotiation import (
     TelisNegotiationPhase,
     TelisNegotiationRequest,
@@ -23,6 +24,8 @@ __all__ = [
     "ShardSearchResult",
     "CacheEntry",
     "BehavioralCache",
+    "TelisPolicy",
+    "TelisPolicyEngine",
     "TelisContextRequest",
     "TelisContextResult",
     "TelisNegotiationPhase",
@@ -32,5 +35,6 @@ __all__ = [
     "detect_uncertainty",
     "default_tier_budgets",
     "negotiate_context",
+    "parse_policy",
     "resolve_context",
 ]
