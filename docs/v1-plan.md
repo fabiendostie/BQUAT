@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T02:43:47-05:00
+Last updated: 2025-12-27T02:57:17-05:00
 
 ## Purpose
 
@@ -70,7 +70,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-TELIS-001   | TELIS           | LSP symbiosis for type/signature accuracy                        | Tools   | partial | runtime/tools/lsp.py, runtime/telis/context.py, tests/test_runtime_telis_context.py                                                          |
 | REQ-TELIS-002   | TELIS           | LSP fallback to shards on failure                                | Tools   | partial | runtime/telis/context.py, tests/test_runtime_telis_context.py                                                                                |
 | REQ-TELIS-003   | TELIS           | Tiered knowledge shards with token budgets                       | TELIS   | partial | runtime/telis/shards.py, tests/test_runtime_telis_shards.py                                                                                  |
-| REQ-TELIS-004   | TELIS           | Progressive context negotiation protocol                         | TELIS   | missing | Planned: negotiation tests                                                                                                                   |
+| REQ-TELIS-004   | TELIS           | Progressive context negotiation protocol                         | TELIS   | partial | runtime/telis/negotiation.py, tests/test_runtime_telis_negotiation.py                                                                        |
 | REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py                               |
 | REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | missing | Planned: cache hit tests                                                                                                                     |
 | REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
