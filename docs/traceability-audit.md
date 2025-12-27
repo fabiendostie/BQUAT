@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-25T06:24:07-05:00
+Last updated: 2025-12-27T00:11:54-05:00
 
 ## Purpose
 
@@ -46,7 +46,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | --------- | --------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | TELIS-001 | LSP symbiosis for type/signature accuracy           | partial | runtime/tools/lsp.py, tests/test_runtime_lsp.py                                                                | Adapter present; not yet wired into TELIS |
 | TELIS-002 | LSP fallback to shards on failure or timeout        | missing | None                                                                                                           | No fallback path                          |
-| TELIS-003 | Tiered knowledge shards with token budgets          | missing | None                                                                                                           | Shard registry not implemented            |
+| TELIS-003 | Tiered knowledge shards with token budgets          | partial | runtime/telis/shards.py, tests/test_runtime_telis_shards.py                                                    | Shard retrieval not yet wired into engine |
 | TELIS-004 | Progressive context negotiation protocol            | missing | None                                                                                                           | No negotiation logic or prompts           |
 | TELIS-005 | AST/type/lint validation pipeline                   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py | None                                      |
 | TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None                                                                                                           | Cache not implemented                     |
@@ -108,7 +108,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 remain partial per the plan.
-- Real BMAD workflow execution, TELIS, and QUINT are mostly missing.
+- Real BMAD workflow execution, TELIS, and QUINT are mostly missing; TELIS shard registry exists but is not yet integrated.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, and runtime schemas are implemented; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up
