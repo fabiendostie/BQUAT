@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-27T02:53:36-05:00
+Last updated: 2025-12-27T03:39:58-05:00
 
 ## [Unreleased]
 
@@ -28,6 +28,7 @@ Last updated: 2025-12-27T02:53:36-05:00
 - Artifact index and event history persistence with runtime coverage tests.
 - TELIS context routing with LSP response compression and shard fallback.
 - TELIS progressive context negotiation with phase escalation heuristics.
+- TELIS behavioral cache with TTL and invalidation triggers.
 
 ### Changed
 

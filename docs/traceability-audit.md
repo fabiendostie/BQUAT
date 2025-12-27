@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T02:53:36-05:00
+Last updated: 2025-12-27T03:39:58-05:00
 
 ## Purpose
 
@@ -49,7 +49,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | TELIS-003 | Tiered knowledge shards with token budgets          | partial | runtime/telis/shards.py, tests/test_runtime_telis_shards.py                                                    | Shard retrieval not yet wired into engine |
 | TELIS-004 | Progressive context negotiation protocol            | partial | runtime/telis/negotiation.py, tests/test_runtime_telis_negotiation.py                                          | Not yet wired into engine                 |
 | TELIS-005 | AST/type/lint validation pipeline                   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py | None                                      |
-| TELIS-006 | Behavioral cache with TTL and invalidation triggers | missing | None                                                                                                           | Cache not implemented                     |
+| TELIS-006 | Behavioral cache with TTL and invalidation triggers | partial | runtime/telis/cache.py, tests/test_runtime_telis_cache.py                                                      | Not yet wired into engine                 |
 | TELIS-007 | Validation failures trigger retry/escalation        | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                | None                                      |
 
 ## QUINT Coverage

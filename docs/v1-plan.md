@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T02:57:17-05:00
+Last updated: 2025-12-27T03:41:09-05:00
 
 ## Purpose
 
@@ -72,7 +72,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-TELIS-003   | TELIS           | Tiered knowledge shards with token budgets                       | TELIS   | partial | runtime/telis/shards.py, tests/test_runtime_telis_shards.py                                                                                  |
 | REQ-TELIS-004   | TELIS           | Progressive context negotiation protocol                         | TELIS   | partial | runtime/telis/negotiation.py, tests/test_runtime_telis_negotiation.py                                                                        |
 | REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py                               |
-| REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | missing | Planned: cache hit tests                                                                                                                     |
+| REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | partial | runtime/telis/cache.py, tests/test_runtime_telis_cache.py                                                                                    |
 | REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
 | REQ-QUINT-001   | QUINT           | Evidence store for L0/L1/L2 and invalid                          | QUINT   | missing | Planned: evidence store tests                                                                                                                |
 | REQ-QUINT-002   | QUINT           | ADI cycle with promotion rules                                   | QUINT   | missing | Planned: ADI promotion tests                                                                                                                 |

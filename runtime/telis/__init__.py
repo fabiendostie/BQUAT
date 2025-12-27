@@ -1,5 +1,6 @@
 """TELIS context management primitives."""
 
+from runtime.telis.cache import BehavioralCache, CacheEntry
 from runtime.telis.context import TelisContextRequest, TelisContextResult, resolve_context
 from runtime.telis.negotiation import (
     TelisNegotiationPhase,
@@ -20,6 +21,8 @@ __all__ = [
     "Shard",
     "ShardRegistry",
     "ShardSearchResult",
+    "CacheEntry",
+    "BehavioralCache",
     "TelisContextRequest",
     "TelisContextResult",
     "TelisNegotiationPhase",
