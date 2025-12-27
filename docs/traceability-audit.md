@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T00:11:54-05:00
+Last updated: 2025-12-27T01:47:58-05:00
 
 ## Purpose
 
@@ -24,15 +24,15 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## BMAD Coverage
 
-| ID       | Requirement                                                | Status  | Evidence                                                                                     | Gap Notes                                  |
-| -------- | ---------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | partial | runtime/workflow_parser.py, methodology/registry-workflows.md, tests/test_workflow_parser.py | End-to-end workflow run not yet validated  |
-| BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                                                        | None                                       |
-| BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                                                        | None                                       |
-| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done    | runtime/workflow_parser.py, tests/test_workflow_parser.py                                    | None                                       |
-| BMAD-005 | Enforce BMAD output folder/layout conventions              | done    | runtime/engine.py, tests/test_runtime_engine.py                                              | None                                       |
-| BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | missing | None                                                                                         | No orchestration layer beyond basic engine |
-| BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | partial | methodology/registry-workflows.md                                                            | Registry exists; execution missing         |
+| ID       | Requirement                                                | Status  | Evidence                                                  | Gap Notes                                  |
+| -------- | ---------------------------------------------------------- | ------- | --------------------------------------------------------- | ------------------------------------------ |
+| BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | done    | tests/test_runtime_bmad_execution.py                      | None                                       |
+| BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                     | None                                       |
+| BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                     | None                                       |
+| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done    | runtime/workflow_parser.py, tests/test_workflow_parser.py | None                                       |
+| BMAD-005 | Enforce BMAD output folder/layout conventions              | done    | runtime/engine.py, tests/test_runtime_engine.py           | None                                       |
+| BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | missing | None                                                      | No orchestration layer beyond basic engine |
+| BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | done    | tests/test_runtime_bmad_execution.py                      | None                                       |
 
 ## Distribution Coverage
 
@@ -107,7 +107,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 ## Audit Summary
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
-- WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 remain partial per the plan.
+- WS1-WS3 tasks are complete; BMAD-001/007 are now covered by integration tests; SPEC-002 remains partial per the plan.
 - Real BMAD workflow execution, TELIS, and QUINT are mostly missing; TELIS shard registry exists but is not yet integrated.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, and runtime schemas are implemented; enforcement coverage beyond current tools remains pending.
 

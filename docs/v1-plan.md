@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T01:38:09-05:00
+Last updated: 2025-12-27T01:45:22-05:00
 
 ## Purpose
 
@@ -59,13 +59,13 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 
 | ID              | Source          | Requirement                                                      | Owner   | Status  | Acceptance Evidence                                                                                                                          |
 | --------------- | --------------- | ---------------------------------------------------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| REQ-BMAD-001    | BMAD            | Preserve BMAD workflows and naming without rewriting logic       | Runtime | partial | Planned: end-to-end workflow run test                                                                                                        |
+| REQ-BMAD-001    | BMAD            | Preserve BMAD workflows and naming without rewriting logic       | Runtime | done    | tests/test_runtime_bmad_execution.py                                                                                                         |
 | REQ-BMAD-002    | BMAD            | Sample/reference workflows excluded from production mapping      | Mapping | done    | tests/test_mapping.py                                                                                                                        |
 | REQ-BMAD-003    | BMAD            | Only explicit outputs/templates listed in mapping                | Mapping | done    | tests/test_mapping.py                                                                                                                        |
 | REQ-BMAD-004    | BMAD            | Parse workflow definitions (md/yaml/xml) into steps              | Runtime | done    | tests/test_workflow_parser.py                                                                                                                |
 | REQ-BMAD-005    | BMAD            | Enforce output folder/layout conventions                         | Runtime | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
 | REQ-BMAD-006    | BMAD            | Orchestrator routes workflows and agents                         | Runtime | missing | Planned: orchestration tests                                                                                                                 |
-| REQ-BMAD-007    | BMAD            | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)             | Runtime | partial | methodology/registry-workflows.md                                                                                                            |
+| REQ-BMAD-007    | BMAD            | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)             | Runtime | done    | tests/test_runtime_bmad_execution.py                                                                                                         |
 | REQ-INSTALL-001 | Distribution    | Single-command install for full framework (BMAD + QUINT + BQUAT) | Release | missing | Planned: installer integration tests                                                                                                         |
 | REQ-TELIS-001   | TELIS           | LSP symbiosis for type/signature accuracy                        | Tools   | partial | runtime/tools/lsp.py, tests/test_runtime_lsp.py                                                                                              |
 | REQ-TELIS-002   | TELIS           | LSP fallback to shards on failure                                | Tools   | missing | Planned: LSP fallback tests                                                                                                                  |
