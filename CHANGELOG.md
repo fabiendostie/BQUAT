@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-27T01:59:34-05:00
+Last updated: 2025-12-27T02:23:18-05:00
 
 ## [Unreleased]
 
@@ -26,6 +26,7 @@ Last updated: 2025-12-27T01:59:34-05:00
 - TELIS shard registry with tier budgets and retrieval scoring.
 - Integration test covering one workflow execution per BMAD module.
 - Artifact index and event history persistence with runtime coverage tests.
+- TELIS context routing with LSP response compression and shard fallback.
 
 ### Changed
 
