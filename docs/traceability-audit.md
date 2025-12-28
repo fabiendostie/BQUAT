@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T22:21:20-05:00
+Last updated: 2025-12-27T23:34:41-05:00
 
 ## Purpose
 
@@ -54,16 +54,16 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## QUINT Coverage
 
-| ID        | Requirement                                  | Status  | Evidence                                                     | Gap Notes                         |
-| --------- | -------------------------------------------- | ------- | ------------------------------------------------------------ | --------------------------------- |
-| QUINT-001 | Evidence store for L0/L1/L2 and invalid      | done    | runtime/quint/store.py, tests/test_runtime_quint_evidence.py | None                              |
-| QUINT-002 | ADI cycle with promotion rules               | done    | runtime/quint/adi.py, tests/test_runtime_quint_adi.py        | None                              |
-| QUINT-003 | WLNK assurance scoring                       | missing | None                                                         | No assurance calculator           |
-| QUINT-004 | Congruence scoring for external evidence     | missing | None                                                         | No congruence model               |
-| QUINT-005 | Evidence decay with valid_until checks       | missing | None                                                         | No decay scan                     |
-| QUINT-006 | DRR generation for major decisions           | missing | None                                                         | DRR template exists but not used  |
-| QUINT-007 | Surface vs grounding separation              | missing | None                                                         | No summary vs stored trace split  |
-| QUINT-008 | Bounded context snapshot and drift detection | missing | None                                                         | No context file or drift tracking |
+| ID        | Requirement                                  | Status  | Evidence                                                          | Gap Notes                         |
+| --------- | -------------------------------------------- | ------- | ----------------------------------------------------------------- | --------------------------------- |
+| QUINT-001 | Evidence store for L0/L1/L2 and invalid      | done    | runtime/quint/store.py, tests/test_runtime_quint_evidence.py      | None                              |
+| QUINT-002 | ADI cycle with promotion rules               | done    | runtime/quint/adi.py, tests/test_runtime_quint_adi.py             | None                              |
+| QUINT-003 | WLNK assurance scoring                       | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py | None                              |
+| QUINT-004 | Congruence scoring for external evidence     | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py | None                              |
+| QUINT-005 | Evidence decay with valid_until checks       | missing | None                                                              | No decay scan                     |
+| QUINT-006 | DRR generation for major decisions           | missing | None                                                              | DRR template exists but not used  |
+| QUINT-007 | Surface vs grounding separation              | missing | None                                                              | No summary vs stored trace split  |
+| QUINT-008 | Bounded context snapshot and drift detection | missing | None                                                              | No context file or drift tracking |
 
 ## Practical Guide Coverage
 
@@ -108,7 +108,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 are now covered by integration tests and runtime persistence.
-- Real BMAD workflow execution is still missing; QUINT evidence store and ADI promotion rules exist but WLNK/DRR remain missing.
+- Real BMAD workflow execution is still missing; QUINT evidence store, ADI promotion, WLNK, and congruence exist but DRR/decay remain missing.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, and runtime schemas are implemented; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up
