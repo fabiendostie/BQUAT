@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-27T23:32:27-05:00
+Last updated: 2025-12-27T23:44:06-05:00
 
 ## [Unreleased]
 
@@ -34,6 +34,7 @@ Last updated: 2025-12-27T23:32:27-05:00
 - QUINT evidence store with record/invalidate helpers and coverage tests.
 - QUINT ADI promotion rules with invalidation handling and tests.
 - QUINT WLNK assurance scoring and congruence penalties with tests.
+- QUINT evidence decay scan with valid_until checks and tests.
 
 ### Changed
 

@@ -8,6 +8,7 @@ from runtime.quint.assurance import (
     normalize_congruence,
     wlnk_score,
 )
+from runtime.quint.decay import EvidenceDecayResult, scan_evidence
 from runtime.quint.store import EvidenceRecord, EvidenceStore, build_evidence_link, normalize_level
 
 __all__ = [
@@ -17,9 +18,11 @@ __all__ = [
     "apply_congruence_penalty",
     "build_evidence_link",
     "congruence_factor",
+    "EvidenceDecayResult",
     "invalidate_evidence",
     "normalize_congruence",
     "normalize_level",
     "promote_evidence",
+    "scan_evidence",
     "wlnk_score",
 ]
