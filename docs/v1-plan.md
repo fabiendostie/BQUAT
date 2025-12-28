@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T12:15:28-05:00
+Last updated: 2025-12-27T17:38:15-05:00
 
 ## Purpose
 
@@ -74,7 +74,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-TELIS-005   | TELIS           | AST/type/lint validation pipeline                                | TELIS   | done    | runtime/tools/validation.py, runtime/engine.py, tests/test_runtime_validation.py, tests/test_runtime_engine.py                               |
 | REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | done    | runtime/telis/cache.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                     |
 | REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
-| REQ-QUINT-001   | QUINT           | Evidence store for L0/L1/L2 and invalid                          | QUINT   | missing | Planned: evidence store tests                                                                                                                |
+| REQ-QUINT-001   | QUINT           | Evidence store for L0/L1/L2 and invalid                          | QUINT   | done    | runtime/quint/store.py, tests/test_runtime_quint_evidence.py                                                                                 |
 | REQ-QUINT-002   | QUINT           | ADI cycle with promotion rules                                   | QUINT   | missing | Planned: ADI promotion tests                                                                                                                 |
 | REQ-QUINT-003   | QUINT           | WLNK assurance scoring                                           | QUINT   | missing | Planned: assurance tests                                                                                                                     |
 | REQ-QUINT-004   | QUINT           | Congruence scoring for external evidence                         | QUINT   | missing | Planned: congruence tests                                                                                                                    |
@@ -93,7 +93,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-SPEC-001    | Unified Spec    | Event bus for workflow state transitions                         | Runtime | missing | Planned: event bus tests                                                                                                                     |
 | REQ-SPEC-002    | Unified Spec    | State store for workflow progress and artifacts                  | Runtime | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                                |
 | REQ-SPEC-003    | Unified Spec    | TELIS policy engine and context manager                          | TELIS   | done    | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                                             |
-| REQ-SPEC-004    | Unified Spec    | Evidence store for Quint claims and DRRs                         | QUINT   | missing | Planned: evidence store tests                                                                                                                |
+| REQ-SPEC-004    | Unified Spec    | Evidence store for Quint claims and DRRs                         | QUINT   | partial | runtime/quint/store.py, tests/test_runtime_quint_evidence.py (DRR pending)                                                                   |
 | REQ-SPEC-005    | Unified Spec    | Control plane/data plane split                                   | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
 | REQ-SPEC-006    | Unified Spec    | Plugin pipeline for policy/adapters/observability                | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
 | REQ-SPEC-007    | Unified Spec    | Failure isolation with bounded retries                           | Runtime | partial | runtime/engine.py                                                                                                                            |
