@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T17:38:15-05:00
+Last updated: 2025-12-27T22:19:03-05:00
 
 ## Purpose
 
@@ -75,7 +75,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-TELIS-006   | TELIS           | Behavioral cache with TTL and invalidation                       | TELIS   | done    | runtime/telis/cache.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                     |
 | REQ-TELIS-007   | TELIS           | Validation failures trigger retry/escalation                     | TELIS   | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
 | REQ-QUINT-001   | QUINT           | Evidence store for L0/L1/L2 and invalid                          | QUINT   | done    | runtime/quint/store.py, tests/test_runtime_quint_evidence.py                                                                                 |
-| REQ-QUINT-002   | QUINT           | ADI cycle with promotion rules                                   | QUINT   | missing | Planned: ADI promotion tests                                                                                                                 |
+| REQ-QUINT-002   | QUINT           | ADI cycle with promotion rules                                   | QUINT   | done    | runtime/quint/adi.py, tests/test_runtime_quint_adi.py                                                                                        |
 | REQ-QUINT-003   | QUINT           | WLNK assurance scoring                                           | QUINT   | missing | Planned: assurance tests                                                                                                                     |
 | REQ-QUINT-004   | QUINT           | Congruence scoring for external evidence                         | QUINT   | missing | Planned: congruence tests                                                                                                                    |
 | REQ-QUINT-005   | QUINT           | Evidence decay and revalidation                                  | QUINT   | missing | Planned: decay scan tests                                                                                                                    |
