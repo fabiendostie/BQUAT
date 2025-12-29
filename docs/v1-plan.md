@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T23:42:21-05:00
+Last updated: 2025-12-28T17:04:07-05:00
 
 ## Purpose
 
@@ -79,7 +79,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-QUINT-003   | QUINT           | WLNK assurance scoring                                           | QUINT   | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py                                                                            |
 | REQ-QUINT-004   | QUINT           | Congruence scoring for external evidence                         | QUINT   | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py                                                                            |
 | REQ-QUINT-005   | QUINT           | Evidence decay and revalidation                                  | QUINT   | done    | runtime/quint/decay.py, tests/test_runtime_quint_decay.py                                                                                    |
-| REQ-QUINT-006   | QUINT           | DRR generation for major decisions                               | QUINT   | missing | Planned: DRR record tests                                                                                                                    |
+| REQ-QUINT-006   | QUINT           | DRR generation for major decisions                               | QUINT   | done    | runtime/quint/drr.py, tests/test_runtime_quint_drr.py                                                                                          |
 | REQ-QUINT-007   | QUINT           | Surface vs grounding separation                                  | QUINT   | missing | Planned: summary vs storage tests                                                                                                            |
 | REQ-QUINT-008   | QUINT           | Bounded context snapshot and drift detection                     | QUINT   | missing | Planned: context drift tests                                                                                                                 |
 | REQ-AGENT-001   | Practical Guide | Model/tool/instructions triad per agent                          | Runtime | partial | runtime/agents.py, runtime/prompts.py                                                                                                        |
@@ -93,7 +93,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-SPEC-001    | Unified Spec    | Event bus for workflow state transitions                         | Runtime | missing | Planned: event bus tests                                                                                                                     |
 | REQ-SPEC-002    | Unified Spec    | State store for workflow progress and artifacts                  | Runtime | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                                |
 | REQ-SPEC-003    | Unified Spec    | TELIS policy engine and context manager                          | TELIS   | done    | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                                             |
-| REQ-SPEC-004    | Unified Spec    | Evidence store for Quint claims and DRRs                         | QUINT   | partial | runtime/quint/store.py, tests/test_runtime_quint_evidence.py (DRR pending)                                                                   |
+| REQ-SPEC-004    | Unified Spec    | Evidence store for Quint claims and DRRs                         | QUINT   | done    | runtime/quint/store.py, runtime/quint/drr.py, tests/test_runtime_quint_evidence.py, tests/test_runtime_quint_drr.py                          |
 | REQ-SPEC-005    | Unified Spec    | Control plane/data plane split                                   | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
 | REQ-SPEC-006    | Unified Spec    | Plugin pipeline for policy/adapters/observability                | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
 | REQ-SPEC-007    | Unified Spec    | Failure isolation with bounded retries                           | Runtime | partial | runtime/engine.py                                                                                                                            |
@@ -198,7 +198,7 @@ Deliverables:
 2. Implement ADI promotion rules and invalidation handling.
 3. Implement WLNK and congruence scoring.
 4. Implement evidence decay and revalidation checks.
-5. Implement DRR generation and linking to decisions.
+5. Implement DRR generation and linking to decisions. (done: runtime/quint/drr.py, runtime/storage.py, tests/test_runtime_quint_drr.py)
 
 Deliverables:
 
@@ -322,7 +322,7 @@ Deliverables:
 - [x] Build step execution state machine
 - [x] Implement tool adapters, execution pipeline, and risk policy
 - [x] Implement TELIS LSP, shards, negotiation, cache, and validation gates (LSP adapter done)
-- [ ] Implement QUINT evidence engine, WLNK, congruence, decay, and DRR
+- [x] Implement QUINT evidence engine, WLNK, congruence, decay, and DRR
 - [ ] Harden provider routing with retries and circuit breakers
 - [ ] Enforce HITL gating with CLI approvals
 - [ ] Add artifact indexing and run timeline

@@ -73,6 +73,19 @@ def read_evidence_links(run_dir: Path) -> Dict[str, Any]:
     return read_json(target)
 
 
+def write_drrs(run_dir: Path, drrs: Dict[str, Any]) -> Path:
+    target = run_dir / "drr.json"
+    write_json(target, drrs)
+    return target
+
+
+def read_drrs(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "drr.json"
+    if not target.exists():
+        return {"drrs": []}
+    return read_json(target)
+
+
 def write_human_gates(run_dir: Path, gates: Dict[str, Any]) -> Path:
     target = run_dir / "gates.json"
     write_json(target, gates)

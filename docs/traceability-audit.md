@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T23:44:57-05:00
+Last updated: 2025-12-28T17:05:13-05:00
 
 ## Purpose
 
@@ -61,7 +61,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | QUINT-003 | WLNK assurance scoring                       | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py | None                              |
 | QUINT-004 | Congruence scoring for external evidence     | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py | None                              |
 | QUINT-005 | Evidence decay with valid_until checks       | done    | runtime/quint/decay.py, tests/test_runtime_quint_decay.py         | None                              |
-| QUINT-006 | DRR generation for major decisions           | missing | None                                                              | DRR template exists but not used  |
+| QUINT-006 | DRR generation for major decisions           | done    | runtime/quint/drr.py, tests/test_runtime_quint_drr.py             | None                              |
 | QUINT-007 | Surface vs grounding separation              | missing | None                                                              | No summary vs stored trace split  |
 | QUINT-008 | Bounded context snapshot and drift detection | missing | None                                                              | No context file or drift tracking |
 
@@ -80,19 +80,19 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## Unified Spec Coverage
 
-| ID       | Requirement                                         | Status  | Evidence                                                                                                        | Gap Notes                        |
-| -------- | --------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| SPEC-001 | Event bus for workflow state transitions            | missing | None                                                                                                            | No event system                  |
-| SPEC-002 | State store for workflow progress and artifacts     | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                   | None                             |
-| SPEC-003 | TELIS policy engine and context manager             | done    | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                | None                             |
-| SPEC-004 | Evidence store for Quint claims and DRRs            | partial | runtime/quint/store.py, tests/test_runtime_quint_evidence.py                                                    | DRR not implemented              |
-| SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                                                                      | Only a minimal plugin manager    |
-| SPEC-006 | Plugin pipeline for policy/adapters/observability   | partial | runtime/plugins/manager.py                                                                                      | No plugin implementations        |
-| SPEC-007 | Failure isolation with bounded retries              | partial | runtime/engine.py                                                                                               | No circuit breakers or isolation |
-| SPEC-008 | Artifact index with checksum and provenance         | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                   | None                             |
-| SPEC-009 | Context fingerprint tracking                        | missing | None                                                                                                            | Not implemented                  |
-| SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                                                                            | Not implemented                  |
-| SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py | None                             |
+| ID       | Requirement                                         | Status  | Evidence                                                                                                            | Gap Notes                        |
+| -------- | --------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| SPEC-001 | Event bus for workflow state transitions            | missing | None                                                                                                                | No event system                  |
+| SPEC-002 | State store for workflow progress and artifacts     | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                       | None                             |
+| SPEC-003 | TELIS policy engine and context manager             | done    | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                    | None                             |
+| SPEC-004 | Evidence store for Quint claims and DRRs            | done    | runtime/quint/store.py, runtime/quint/drr.py, tests/test_runtime_quint_evidence.py, tests/test_runtime_quint_drr.py | None                             |
+| SPEC-005 | Control plane/data plane split                      | partial | runtime/plugins/manager.py                                                                                          | Only a minimal plugin manager    |
+| SPEC-006 | Plugin pipeline for policy/adapters/observability   | partial | runtime/plugins/manager.py                                                                                          | No plugin implementations        |
+| SPEC-007 | Failure isolation with bounded retries              | partial | runtime/engine.py                                                                                                   | No circuit breakers or isolation |
+| SPEC-008 | Artifact index with checksum and provenance         | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                       | None                             |
+| SPEC-009 | Context fingerprint tracking                        | missing | None                                                                                                                | Not implemented                  |
+| SPEC-010 | Gates recorded as DRRs with evidence links          | missing | None                                                                                                                | Not implemented                  |
+| SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py     | None                             |
 
 ## Governance Coverage
 
@@ -108,7 +108,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 are now covered by integration tests and runtime persistence.
-- Real BMAD workflow execution is still missing; QUINT evidence store, ADI promotion, WLNK, congruence, and decay exist but DRR remains missing.
+- Real BMAD workflow execution is still missing; QUINT evidence store, ADI promotion, WLNK, congruence, decay, and DRR now exist.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, and runtime schemas are implemented; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up

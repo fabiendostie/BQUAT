@@ -35,10 +35,12 @@ class RuntimeStorageTests(unittest.TestCase):
         run_dir = storage.init_run_dir(root, "run-3")
         artifacts = storage.read_artifact_index(run_dir)
         evidence = storage.read_evidence_links(run_dir)
+        drrs = storage.read_drrs(run_dir)
         gates = storage.read_human_gates(run_dir)
         events = storage.read_events(run_dir)
         self.assertEqual(artifacts["artifacts"], [])
         self.assertEqual(evidence, {"evidence": []})
+        self.assertEqual(drrs, {"drrs": []})
         self.assertEqual(gates, {"gates": []})
         self.assertEqual(events, {"events": []})
 
@@ -56,6 +58,14 @@ class RuntimeStorageTests(unittest.TestCase):
         payload = {"evidence": [{"id": "e1"}]}
         storage.write_evidence_links(run_dir, payload)
         loaded = storage.read_evidence_links(run_dir)
+        self.assertEqual(loaded, payload)
+
+    def test_drr_round_trip(self) -> None:
+        root = _sandbox_root()
+        run_dir = storage.init_run_dir(root, "run-5b")
+        payload = {"drrs": [{"id": "d1"}]}
+        storage.write_drrs(run_dir, payload)
+        loaded = storage.read_drrs(run_dir)
         self.assertEqual(loaded, payload)
 
     def test_gates_round_trip(self) -> None:
