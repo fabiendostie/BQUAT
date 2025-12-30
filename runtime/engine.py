@@ -450,12 +450,44 @@ def _clear_tool_block(manifest: Dict[str, Any]) -> None:
         manifest.pop("blocked_tool", None)
 
 
+def _clear_human_block(manifest: Dict[str, Any]) -> None:
+    if manifest.get("blocked_reason") == "human_gate":
+        manifest.pop("blocked_reason", None)
+        manifest.pop("blocked_gate", None)
+
+
 def _gate_id(spec: models.WorkflowSpec) -> str:
     return f"{spec.module}:{spec.workflow}:hitl"
 
 
 def _load_spec_from_manifest(manifest: Dict[str, Any]) -> models.WorkflowSpec:
     return models.WorkflowSpec.from_mapping(manifest["workflow"])
+
+
+def _record_human_gate(
+    run_dir: Path,
+    spec: models.WorkflowSpec,
+    decision: gates.GateDecision,
+    status: str,
+    notes: str = "",
+    approved_by: Optional[str] = None,
+    approved_at: Optional[str] = None,
+) -> None:
+    gates_payload = storage.read_human_gates(run_dir)
+    gates_payload = gates.record_gate(
+        gates_payload,
+        _gate_id(spec),
+        status,
+        decision.required,
+        decision.reason,
+        spec.phase,
+        f"{spec.module}/{spec.workflow}",
+        utc_now(),
+        approved_by=approved_by,
+        approved_at=approved_at,
+        notes=notes,
+    )
+    storage.write_human_gates(run_dir, gates_payload)
 
 
 class WorkflowEngine:
@@ -519,15 +551,37 @@ class WorkflowEngine:
         run_dir = self._run_dir(run_id)
         manifest = storage.read_manifest(run_dir)
         spec = _load_spec_from_manifest(manifest)
+        decision = gates.gate_required(
+            spec.human,
+            self.config,
+            phase=spec.phase,
+            workflow=spec.workflow,
+        )
+        approved_at = utc_now()
         approvals = storage.read_approvals(run_dir)
         approvals = gates.record_approval(
             approvals,
             _gate_id(spec),
             approved_by,
-            utc_now(),
+            approved_at,
             notes,
         )
         storage.write_approvals(run_dir, approvals)
+        _record_human_gate(
+            run_dir,
+            spec,
+            decision,
+            status="approved",
+            notes=notes,
+            approved_by=approved_by,
+            approved_at=approved_at,
+        )
+        _append_event(
+            run_dir,
+            "HumanGateApproved",
+            manifest["run_id"],
+            {"gate_id": _gate_id(spec), "approved_by": approved_by, "notes": notes},
+        )
         return approvals
 
     def run(
@@ -567,13 +621,38 @@ class WorkflowEngine:
 
         _clear_manual_block(manifest)
         _clear_tool_block(manifest)
+        _clear_human_block(manifest)
 
-        decision = gates.gate_required(spec.human, self.config)
+        decision = gates.gate_required(
+            spec.human,
+            self.config,
+            phase=spec.phase,
+            workflow=spec.workflow,
+        )
         approvals = storage.read_approvals(run_dir)
         if decision.required and not gates.has_approval(approvals, _gate_id(spec)):
             manifest["status"] = "blocked"
+            manifest["blocked_reason"] = "human_gate"
+            manifest["blocked_gate"] = _gate_id(spec)
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            _record_human_gate(
+                run_dir,
+                spec,
+                decision,
+                status="blocked",
+            )
+            _append_event(
+                run_dir,
+                "HumanGateRequired",
+                manifest["run_id"],
+                {
+                    "gate_id": _gate_id(spec),
+                    "phase": spec.phase,
+                    "workflow": f"{spec.module}/{spec.workflow}",
+                    "reason": decision.reason,
+                },
+            )
             _append_event(
                 run_dir,
                 "WorkflowBlocked",
@@ -625,13 +704,38 @@ class WorkflowEngine:
 
         _clear_manual_block(manifest)
         _clear_tool_block(manifest)
+        _clear_human_block(manifest)
 
-        decision = gates.gate_required(spec.human, self.config)
+        decision = gates.gate_required(
+            spec.human,
+            self.config,
+            phase=spec.phase,
+            workflow=spec.workflow,
+        )
         approvals = storage.read_approvals(run_dir)
         if decision.required and not gates.has_approval(approvals, _gate_id(spec)):
             manifest["status"] = "blocked"
+            manifest["blocked_reason"] = "human_gate"
+            manifest["blocked_gate"] = _gate_id(spec)
             manifest["updated_at"] = utc_now()
             storage.write_manifest(run_dir, manifest)
+            _record_human_gate(
+                run_dir,
+                spec,
+                decision,
+                status="blocked",
+            )
+            _append_event(
+                run_dir,
+                "HumanGateRequired",
+                manifest["run_id"],
+                {
+                    "gate_id": _gate_id(spec),
+                    "phase": spec.phase,
+                    "workflow": f"{spec.module}/{spec.workflow}",
+                    "reason": decision.reason,
+                },
+            )
             _append_event(
                 run_dir,
                 "WorkflowBlocked",

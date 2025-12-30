@@ -68,6 +68,10 @@ class RuntimeModelTests(unittest.TestCase):
             approved_by="tester",
             approved_at="2025-12-21T11:45:11-05:00",
             notes="ok",
+            phase="Phase 2 Planning",
+            workflow="bmm/prd",
+            reason="explicit human gate",
+            recorded_at="2025-12-21T11:45:11-05:00",
         )
         data = gate.to_dict()
         loaded = models.HumanGate.from_dict(data)

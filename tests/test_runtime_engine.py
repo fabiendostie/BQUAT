@@ -117,9 +117,20 @@ class RuntimeEngineTests(unittest.TestCase):
         eng = engine.WorkflowEngine(self._config(), [spec], storage_root=tmp)
         manifest = eng.run("bmm", "prd")
         self.assertEqual(manifest["status"], "blocked")
+        self.assertEqual(manifest.get("blocked_reason"), "human_gate")
+
+        gates_payload = storage.read_human_gates(tmp / manifest["run_id"])
+        self.assertEqual(len(gates_payload.get("gates", [])), 1)
+        gate_entry = gates_payload["gates"][0]
+        self.assertEqual(gate_entry.get("status"), "blocked")
+        self.assertEqual(gate_entry.get("reason"), "explicit human gate")
 
         run_id = manifest["run_id"]
         eng.approve_gate(run_id, approved_by="tester")
+        gates_payload = storage.read_human_gates(tmp / run_id)
+        gate_entry = gates_payload["gates"][0]
+        self.assertEqual(gate_entry.get("status"), "approved")
+        self.assertEqual(gate_entry.get("approved_by"), "tester")
         resumed = eng.resume(run_id)
         self.assertEqual(resumed["status"], "completed")
 

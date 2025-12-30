@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-27T04:12:25-05:00
+Last updated: 2025-12-29T23:43:38-05:00
 
 ## Purpose
 
@@ -180,13 +180,15 @@ Output layout enforcement:
 
 ## Human Gate Contract
 
-Human gates are blocking checkpoints. The runtime must enforce them before moving to the next step.
+Human gates are blocking checkpoints. The runtime must enforce them before moving to the next step based on
+StepSpec.human_gate plus the HITL policy (phase/risk rules in config runtime.hitl.policy).
 
 - required: always block
 - conditional: block only if policy enables
 - optional: no block
 
-Approvals are stored in approvals.json with audit metadata.
+Approvals are stored in approvals.json with audit metadata. Gate audit records are stored in gates.json and include
+status, reason, phase/workflow, and approval details.
 
 ## Evidence Contract (QUINT)
 

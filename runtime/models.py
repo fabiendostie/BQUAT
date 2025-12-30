@@ -202,6 +202,10 @@ class HumanGate:
     approved_by: Optional[str] = None
     approved_at: Optional[str] = None
     notes: str = ""
+    phase: Optional[str] = None
+    workflow: Optional[str] = None
+    reason: Optional[str] = None
+    recorded_at: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -215,6 +219,10 @@ class HumanGate:
             approved_by=data.get("approved_by"),
             approved_at=data.get("approved_at"),
             notes=data.get("notes", ""),
+            phase=data.get("phase"),
+            workflow=data.get("workflow"),
+            reason=data.get("reason"),
+            recorded_at=data.get("recorded_at"),
         )
 
 

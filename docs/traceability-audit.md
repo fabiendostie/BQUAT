@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-29T20:44:38-05:00
+Last updated: 2025-12-29T23:50:08-05:00
 
 ## Purpose
 
@@ -75,7 +75,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | GUIDE-004 | PII filter and data privacy guardrails          | missing | None                                                                                                                                         | No guardrail hooks                        |
 | GUIDE-005 | Moderation filters for unsafe inputs            | missing | None                                                                                                                                         | No moderation checks                      |
 | GUIDE-006 | Rules-based protections (blocklists/regex)      | missing | None                                                                                                                                         | No rules gate                             |
-| GUIDE-007 | HITL on high-risk actions and retry thresholds  | partial | runtime/gates.py                                                                                                                             | Gate depends on workflow metadata only    |
+| GUIDE-007 | HITL on high-risk actions and retry thresholds  | done    | runtime/gates.py, runtime/engine.py, config/runtime.yaml, tests/test_runtime_gates.py                                                        | None                                      |
 | GUIDE-008 | Optimistic execution with concurrent guardrails | missing | None                                                                                                                                         | No guardrail concurrency model            |
 
 ## Unified Spec Coverage
@@ -109,7 +109,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 are now covered by integration tests and runtime persistence.
 - Real BMAD workflow execution is still missing; QUINT evidence store, ADI promotion, WLNK, congruence, decay, and DRR now exist.
-- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, runtime schemas, and provider reliability/rate-limit handling now exist; enforcement coverage beyond current tools remains pending.
+- Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, runtime schemas, provider reliability/rate-limit handling, and HITL gate enforcement now exist; enforcement coverage beyond current tools remains pending.
 
 ## Required Follow-up
 

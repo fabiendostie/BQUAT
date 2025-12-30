@@ -9,7 +9,41 @@
       "risk_policy": { "high_requires_approval": true, "medium_requires_approval": false },
     },
   "automation": { "phases": ["Phase 4 Implementation", "Phase 4 Production", "Testing/QA"] },
-  "hitl": { "mode": "blocking", "require_conditional": false, "approval_interface": "cli" },
+  "hitl":
+    {
+      "mode": "blocking",
+      "require_conditional": false,
+      "approval_interface": "cli",
+      "policy":
+        {
+          "required_phases":
+            [
+              "Phase 2 Planning",
+              "Phase 2 Design",
+              "Phase 3 Solutioning",
+              "Phase 3 Technical",
+              "Phase 4 Production",
+            ],
+          "conditional_phases": ["Phase 4 Implementation", "Testing/QA"],
+          "high_risk_keywords":
+            ["install", "uninstall", "deploy", "release", "migration", "delete", "remove"],
+          "conditional_keywords":
+            [
+              "code-review",
+              "correct-course",
+              "sprint-planning",
+              "create-story",
+              "dev-story",
+              "test",
+              "qa",
+              "security",
+              "audit",
+              "review",
+            ],
+          "conditional_required": true,
+          "recommended_required": false,
+        },
+    },
   "providers":
     {
       "default": "ollama",

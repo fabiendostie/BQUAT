@@ -170,6 +170,10 @@ HUMAN_GATE_SCHEMA: Dict[str, Any] = {
         "approved_by": {"type": ["string", "null"]},
         "approved_at": {"type": ["string", "null"]},
         "notes": {"type": "string"},
+        "reason": {"type": ["string", "null"]},
+        "phase": {"type": ["string", "null"]},
+        "workflow": {"type": ["string", "null"]},
+        "recorded_at": {"type": ["string", "null"]},
     },
 }
 

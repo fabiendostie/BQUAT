@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-29T23:14:48-05:00
+Last updated: 2025-12-30T00:08:33-05:00
 
 ## Purpose
 
@@ -88,7 +88,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-AGENT-004   | Practical Guide | PII filter and data privacy guardrails                           | Runtime | missing | Planned: PII guardrail tests                                                                                                                 |
 | REQ-AGENT-005   | Practical Guide | Moderation filters for unsafe inputs                             | Runtime | missing | Planned: moderation tests                                                                                                                    |
 | REQ-AGENT-006   | Practical Guide | Rules-based protections (blocklists/regex)                       | Runtime | missing | Planned: rules gate tests                                                                                                                    |
-| REQ-AGENT-007   | Practical Guide | HITL on high-risk actions and retry thresholds                   | Runtime | partial | runtime/gates.py                                                                                                                             |
+| REQ-AGENT-007   | Practical Guide | HITL on high-risk actions and retry thresholds                   | Runtime | done    | runtime/gates.py, runtime/engine.py, runtime/tools/pipeline.py, config/runtime.yaml, tests/test_runtime_gates.py                             |
 | REQ-AGENT-008   | Practical Guide | Optimistic execution with concurrent guardrails                  | Runtime | missing | Planned: guardrail concurrency tests                                                                                                         |
 | REQ-SPEC-001    | Unified Spec    | Event bus for workflow state transitions                         | Runtime | missing | Planned: event bus tests                                                                                                                     |
 | REQ-SPEC-002    | Unified Spec    | State store for workflow progress and artifacts                  | Runtime | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                                |
@@ -221,10 +221,10 @@ Deliverables:
 
 ### WS9: HITL gate enforcement
 
-1. Define gate policy by phase and risk level.
-2. Enforce blocking gates at planning, architecture, release.
-3. Enforce conditional gates for implementation review, tests, security risk.
-4. Add CLI approvals and audit logs.
+1. Define gate policy by phase and risk level. (done: runtime/gates.py, config/runtime.yaml, tests/test_runtime_gates.py)
+2. Enforce blocking gates at planning, architecture, release. (done: runtime/gates.py, runtime/engine.py, tests/test_runtime_engine.py)
+3. Enforce conditional gates for implementation review, tests, security risk. (done: runtime/gates.py, config/runtime.yaml, tests/test_runtime_gates.py)
+4. Add CLI approvals and audit logs. (done: cli/main.py, runtime/engine.py, runtime/storage.py, tests/test_runtime_engine.py)
 
 Deliverables:
 
@@ -324,7 +324,7 @@ Deliverables:
 - [x] Implement TELIS LSP, shards, negotiation, cache, and validation gates (LSP adapter done)
 - [x] Implement QUINT evidence engine, WLNK, congruence, decay, and DRR
 - [ ] Harden provider routing with retries and circuit breakers
-- [ ] Enforce HITL gating with CLI approvals
+- [x] Enforce HITL gating with CLI approvals
 - [ ] Add artifact indexing and run timeline
 - [ ] Expand CLI (list, export, history)
 - [ ] Implement guardrails (PII, moderation, rules)

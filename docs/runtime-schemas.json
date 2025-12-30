@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-25T09:24:27-05:00",
+  "generated_at": "2025-12-29T23:43:38-05:00",
   "schemas": {
     "artifact_index": {
       "properties": {
@@ -185,11 +185,23 @@
         "notes": {
           "type": "string"
         },
+        "phase": {
+          "type": ["string", "null"]
+        },
+        "reason": {
+          "type": ["string", "null"]
+        },
+        "recorded_at": {
+          "type": ["string", "null"]
+        },
         "required": {
           "type": "boolean"
         },
         "status": {
           "type": "string"
+        },
+        "workflow": {
+          "type": ["string", "null"]
         }
       },
       "required": ["gate_id", "status", "required", "notes"],
