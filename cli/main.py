@@ -126,7 +126,9 @@ def cmd_status(args: argparse.Namespace) -> int:
 
 def cmd_providers(args: argparse.Namespace) -> int:
     config = _load_config(args.config)
-    providers = list(config.get("providers", {}).keys())
+    providers = [
+        key for key in config.get("providers", {}).keys() if key not in {"default", "reliability"}
+    ]
     print(json.dumps({"providers": providers}))
     return 0
 

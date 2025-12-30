@@ -13,6 +13,17 @@
   "providers":
     {
       "default": "ollama",
+      "reliability":
+        {
+          "enabled": true,
+          "timeout_seconds": 60,
+          "max_retries": 2,
+          "backoff_seconds": 0.5,
+          "backoff_factor": 2.0,
+          "backoff_max_seconds": 8.0,
+          "jitter_seconds": 0.2,
+          "circuit_breaker": { "enabled": true, "failure_threshold": 3, "reset_seconds": 30 },
+        },
       "mock": { "type": "mock", "model": "mock" },
       "ollama": { "type": "ollama", "base_url": "http://localhost:11434", "model": "llama3" },
       "litellm": { "type": "litellm", "base_url": "http://localhost:4000", "model": "gpt-4" },

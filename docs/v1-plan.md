@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-28T17:04:07-05:00
+Last updated: 2025-12-29T02:18:47-05:00
 
 ## Purpose
 
@@ -79,7 +79,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-QUINT-003   | QUINT           | WLNK assurance scoring                                           | QUINT   | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py                                                                            |
 | REQ-QUINT-004   | QUINT           | Congruence scoring for external evidence                         | QUINT   | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py                                                                            |
 | REQ-QUINT-005   | QUINT           | Evidence decay and revalidation                                  | QUINT   | done    | runtime/quint/decay.py, tests/test_runtime_quint_decay.py                                                                                    |
-| REQ-QUINT-006   | QUINT           | DRR generation for major decisions                               | QUINT   | done    | runtime/quint/drr.py, tests/test_runtime_quint_drr.py                                                                                          |
+| REQ-QUINT-006   | QUINT           | DRR generation for major decisions                               | QUINT   | done    | runtime/quint/drr.py, tests/test_runtime_quint_drr.py                                                                                        |
 | REQ-QUINT-007   | QUINT           | Surface vs grounding separation                                  | QUINT   | missing | Planned: summary vs storage tests                                                                                                            |
 | REQ-QUINT-008   | QUINT           | Bounded context snapshot and drift detection                     | QUINT   | missing | Planned: context drift tests                                                                                                                 |
 | REQ-AGENT-001   | Practical Guide | Model/tool/instructions triad per agent                          | Runtime | partial | runtime/agents.py, runtime/prompts.py                                                                                                        |
@@ -96,7 +96,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-SPEC-004    | Unified Spec    | Evidence store for Quint claims and DRRs                         | QUINT   | done    | runtime/quint/store.py, runtime/quint/drr.py, tests/test_runtime_quint_evidence.py, tests/test_runtime_quint_drr.py                          |
 | REQ-SPEC-005    | Unified Spec    | Control plane/data plane split                                   | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
 | REQ-SPEC-006    | Unified Spec    | Plugin pipeline for policy/adapters/observability                | Runtime | partial | runtime/plugins/manager.py                                                                                                                   |
-| REQ-SPEC-007    | Unified Spec    | Failure isolation with bounded retries                           | Runtime | partial | runtime/engine.py                                                                                                                            |
+| REQ-SPEC-007    | Unified Spec    | Failure isolation with bounded retries                           | Runtime | partial | runtime/engine.py, runtime/providers/reliability.py, tests/test_runtime_provider_reliability.py                                              |
 | REQ-SPEC-008    | Unified Spec    | Artifact index with checksum and provenance                      | Runtime | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                                |
 | REQ-SPEC-009    | Unified Spec    | Context fingerprint tracking                                     | Runtime | missing | Planned: context fingerprint tests                                                                                                           |
 | REQ-SPEC-010    | Unified Spec    | Gates recorded as DRRs with evidence links                       | Runtime | missing | Planned: gate DRR tests                                                                                                                      |
@@ -209,9 +209,9 @@ Deliverables:
 ### WS8: Provider routing and reliability
 
 1. Normalize provider request/response models.
-2. Implement retries, backoff, and timeouts.
-3. Add circuit-breaker logic and rate limit handling.
-4. Implement streaming support and chunked responses.
+2. Implement retries, backoff, and timeouts. (done: runtime/providers/reliability.py, tests/test_runtime_provider_reliability.py)
+3. Add circuit-breaker logic and rate limit handling. (partial: circuit breaker done; rate limit handling pending)
+4. Implement streaming support and chunked responses. (done: runtime/providers/registry.py, runtime/providers/http.py, tests/test_runtime_providers.py)
 5. Add provider-specific response parsing.
 
 Deliverables:

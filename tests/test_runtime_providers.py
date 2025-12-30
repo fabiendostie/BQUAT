@@ -75,6 +75,17 @@ class RuntimeProviderTests(unittest.TestCase):
         payload = post_json_mock.call_args[0][1]
         self.assertEqual(payload.get("model"), "gpt-override")
 
+    @patch("runtime.providers.registry.post_json_stream")
+    def test_openai_streaming(self, post_json_stream_mock) -> None:
+        post_json_stream_mock.return_value = [
+            {"choices": [{"delta": {"content": "hi"}}]},
+            {"choices": [{"delta": {"content": "!"}}]},
+        ]
+        provider = OpenAIProvider("https://api.openai.com", "key", "gpt-default")
+        response = provider.invoke_stream(ProviderRequest(model="", messages=[], stream=True))
+        self.assertEqual(response.content, "hi!")
+        self.assertEqual(response.chunks, ["hi", "!"])
+
     @patch("runtime.providers.registry.post_json")
     def test_litellm_provider(self, post_json_mock) -> None:
         post_json_mock.return_value = {"choices": [{"message": {"content": "ok"}}]}
