@@ -75,6 +75,17 @@ class RuntimeProviderTests(unittest.TestCase):
         payload = post_json_mock.call_args[0][1]
         self.assertEqual(payload.get("model"), "gpt-override")
 
+    @patch("runtime.providers.registry.post_json")
+    def test_openai_error_raises(self, post_json_mock) -> None:
+        post_json_mock.return_value = {
+            "error": {"message": "Rate limited", "type": "rate_limit_error"}
+        }
+        provider = OpenAIProvider("https://api.openai.com", "key", "gpt-default")
+        with self.assertRaises(ProviderError) as ctx:
+            provider.invoke(ProviderRequest(model="", messages=[]))
+        self.assertTrue(ctx.exception.retriable)
+        self.assertEqual(ctx.exception.error_type, "rate_limit_error")
+
     @patch("runtime.providers.registry.post_json_stream")
     def test_openai_streaming(self, post_json_stream_mock) -> None:
         post_json_stream_mock.return_value = [

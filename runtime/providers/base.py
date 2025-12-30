@@ -22,7 +22,17 @@ class ProviderResponse:
 
 
 class ProviderError(RuntimeError):
-    pass
+    def __init__(
+        self,
+        message: str,
+        status_code: Optional[int] = None,
+        retriable: bool = True,
+        error_type: str = "",
+    ) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.retriable = retriable
+        self.error_type = error_type
 
 
 class Provider:

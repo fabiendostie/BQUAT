@@ -137,4 +137,6 @@ class ReliableProvider(Provider):
 
 
 def _should_retry(exc: BaseException) -> bool:
-    return isinstance(exc, (ProviderError, TimeoutError, OSError))
+    if isinstance(exc, ProviderError):
+        return exc.retriable
+    return isinstance(exc, (TimeoutError, OSError))

@@ -5,7 +5,7 @@ from dataclasses import replace
 from typing import Any, Dict, List, Optional
 
 from runtime.providers.base import Provider, ProviderError, ProviderRequest, ProviderResponse
-from runtime.providers.http import post_json, post_json_stream
+from runtime.providers.http import parse_error_payload, post_json, post_json_stream
 from runtime.providers.reliability import CircuitBreaker, ReliableProvider, RetryPolicy
 
 
@@ -21,7 +21,7 @@ def _model_from_request(request: ProviderRequest, fallback: str) -> str:
 
 def _require(value: str, message: str) -> None:
     if not value:
-        raise ProviderError(message)
+        raise ProviderError(message, retriable=False)
 
 
 def _timeout_seconds(request: ProviderRequest, fallback: int = 60) -> int:
@@ -37,6 +37,22 @@ def _compact_messages(messages: List[Dict[str, str]]) -> str:
         content = msg.get("content", "")
         parts.append(f"{role}: {content}")
     return "\n".join(parts)
+
+
+def _raise_for_provider_error(provider: str, payload: Dict[str, Any]) -> None:
+    message, error_type = parse_error_payload(payload, "")
+    if not message:
+        return
+    retriable = _is_rate_limit_error(error_type)
+    raise ProviderError(f"{provider} error: {message}", retriable=retriable, error_type=error_type)
+
+
+def _is_rate_limit_error(error_type: str) -> bool:
+    lowered = error_type.lower()
+    if not lowered:
+        return False
+    tokens = ("rate_limit", "resource_exhausted", "quota", "overloaded")
+    return any(token in lowered for token in tokens)
 
 
 def _merge_reliability_config(
@@ -142,10 +158,13 @@ class MockProvider(Provider):
 
 
 class OpenAIProvider(Provider):
-    def __init__(self, base_url: str, api_key: str, model: str) -> None:
+    def __init__(
+        self, base_url: str, api_key: str, model: str, provider_name: str = "openai"
+    ) -> None:
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.model = model
+        self.provider_name = provider_name
 
     def invoke(self, request: ProviderRequest) -> ProviderResponse:
         url = f"{self.base_url}/v1/chat/completions"
@@ -163,6 +182,7 @@ class OpenAIProvider(Provider):
             {"Authorization": f"Bearer {self.api_key}"},
             timeout_seconds=_timeout_seconds(request),
         )
+        _raise_for_provider_error(self.provider_name, data)
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
         return ProviderResponse(content=content, raw=data)
 
@@ -185,6 +205,8 @@ class OpenAIProvider(Provider):
             {"Authorization": f"Bearer {self.api_key}"},
             timeout_seconds=_timeout_seconds(request),
         ):
+            if "error" in chunk:
+                _raise_for_provider_error(self.provider_name, chunk)
             raw_chunks.append(chunk)
             choice = chunk.get("choices", [{}])[0]
             delta = choice.get("delta", {}) if isinstance(choice, dict) else {}
@@ -195,11 +217,13 @@ class OpenAIProvider(Provider):
 
 
 class GroqProvider(OpenAIProvider):
-    pass
+    def __init__(self, base_url: str, api_key: str, model: str) -> None:
+        super().__init__(base_url, api_key, model, provider_name="groq")
 
 
 class LiteLLMProvider(OpenAIProvider):
-    pass
+    def __init__(self, base_url: str, api_key: str, model: str) -> None:
+        super().__init__(base_url, api_key, model, provider_name="litellm")
 
 
 class OllamaProvider(Provider):
@@ -215,6 +239,7 @@ class OllamaProvider(Provider):
             "stream": False,
         }
         data = post_json(url, payload, timeout_seconds=_timeout_seconds(request))
+        _raise_for_provider_error("ollama", data)
         content = data.get("message", {}).get("content", "")
         return ProviderResponse(content=content, raw=data)
 
@@ -228,6 +253,8 @@ class OllamaProvider(Provider):
         chunks: List[str] = []
         raw_chunks: List[Dict[str, Any]] = []
         for chunk in post_json_stream(url, payload, timeout_seconds=_timeout_seconds(request)):
+            if "error" in chunk:
+                _raise_for_provider_error("ollama", chunk)
             raw_chunks.append(chunk)
             message = chunk.get("message", {}) if isinstance(chunk, dict) else {}
             text = message.get("content") if isinstance(message, dict) else None
@@ -256,6 +283,7 @@ class AnthropicProvider(Provider):
             "anthropic-version": "2023-06-01",
         }
         data = post_json(url, payload, headers=headers, timeout_seconds=_timeout_seconds(request))
+        _raise_for_provider_error("anthropic", data)
         content = ""
         content_items = data.get("content")
         if isinstance(content_items, list) and content_items:
@@ -283,6 +311,7 @@ class GeminiProvider(Provider):
             ]
         }
         data = post_json(url, payload, timeout_seconds=_timeout_seconds(request))
+        _raise_for_provider_error("gemini", data)
         content = ""
         candidates = data.get("candidates", [])
         if isinstance(candidates, list) and candidates:

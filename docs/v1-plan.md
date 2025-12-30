@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-29T02:18:47-05:00
+Last updated: 2025-12-29T20:43:22-05:00
 
 ## Purpose
 
@@ -210,9 +210,9 @@ Deliverables:
 
 1. Normalize provider request/response models.
 2. Implement retries, backoff, and timeouts. (done: runtime/providers/reliability.py, tests/test_runtime_provider_reliability.py)
-3. Add circuit-breaker logic and rate limit handling. (partial: circuit breaker done; rate limit handling pending)
+3. Add circuit-breaker logic and rate limit handling. (done: runtime/providers/reliability.py, runtime/providers/http.py, tests/test_runtime_http.py)
 4. Implement streaming support and chunked responses. (done: runtime/providers/registry.py, runtime/providers/http.py, tests/test_runtime_providers.py)
-5. Add provider-specific response parsing.
+5. Add provider-specific response parsing. (done: runtime/providers/registry.py, runtime/providers/http.py, tests/test_runtime_providers.py)
 
 Deliverables:
 

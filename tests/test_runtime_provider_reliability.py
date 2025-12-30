@@ -85,6 +85,22 @@ class RuntimeProviderReliabilityTests(unittest.TestCase):
         self.assertIsNotNone(provider.last_request)
         self.assertEqual(provider.last_request.timeout_seconds, 12)
 
+    def test_non_retriable_error(self) -> None:
+        class NonRetryProvider(Provider):
+            def __init__(self) -> None:
+                self.calls = 0
+
+            def invoke(self, request: ProviderRequest) -> ProviderResponse:
+                self.calls += 1
+                raise ProviderError("invalid", retriable=False)
+
+        provider = NonRetryProvider()
+        retry_policy = RetryPolicy(max_attempts=3, backoff_seconds=0.0, jitter_seconds=0.0)
+        reliable = ReliableProvider(provider, retry_policy=retry_policy)
+        with self.assertRaises(ProviderError):
+            reliable.invoke(ProviderRequest(model="", messages=[]))
+        self.assertEqual(provider.calls, 1)
+
 
 if __name__ == "__main__":
     unittest.main()
