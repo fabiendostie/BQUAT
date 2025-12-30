@@ -16,7 +16,7 @@ Build production-grade agent workflows by unifying BMAD-METHOD, TELIS, and QUINT
 
 ## Project status
 
-- Last refreshed: 2025-12-21 (America/Toronto)
+- Last refreshed: 2025-12-30 (America/Toronto)
 - Primary branch: development
 - Release branch: main
 - Release target: v1.0 (see docs/v1-plan.md)
@@ -71,8 +71,8 @@ Configured in config/runtime.yaml. The runtime ships with a registry abstraction
 ## Workflow and gates
 
 - Workflows are mapped into runtime steps with explicit outputs and artifact templates.
-- HITL gates are blocking by default; approval is required to proceed.
-- Gate decisions are recorded for resumable execution.
+- HITL gates are policy-based and blocking by default; approval is required to proceed.
+- Gate decisions are recorded to `gates.json` alongside approvals for resumable execution.
 
 ## Quick start
 
@@ -128,6 +128,8 @@ Target command: `npx bmad-method@alpha install`.
 - v1.0 release plan and checklist: docs/v1-plan.md
 - Traceability audit and requirement coverage: docs/traceability-audit.md
 - Runtime step contract: docs/runtime-step-contract.md
+- Tool execution pipeline: docs/tool-execution-pipeline.md
+- Runtime schemas: docs/runtime-schemas.json
 - Documentation index: docs/unified-framework-documentation-index.md
 - Agent and workflow registries: methodology/registry-agents.md, methodology/registry-workflows.md
 - Agent menu bindings: methodology/registry-agent-menus.md
