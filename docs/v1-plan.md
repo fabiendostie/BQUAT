@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-29T20:43:22-05:00
+Last updated: 2025-12-29T23:14:48-05:00
 
 ## Purpose
 
@@ -208,7 +208,7 @@ Deliverables:
 
 ### WS8: Provider routing and reliability
 
-1. Normalize provider request/response models.
+1. Normalize provider request/response models. (done: runtime/providers/base.py, runtime/providers/registry.py, tests/test_runtime_providers.py)
 2. Implement retries, backoff, and timeouts. (done: runtime/providers/reliability.py, tests/test_runtime_provider_reliability.py)
 3. Add circuit-breaker logic and rate limit handling. (done: runtime/providers/reliability.py, runtime/providers/http.py, tests/test_runtime_http.py)
 4. Implement streaming support and chunked responses. (done: runtime/providers/registry.py, runtime/providers/http.py, tests/test_runtime_providers.py)
