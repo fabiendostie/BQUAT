@@ -92,6 +92,7 @@ RUN_STEP_SCHEMA: Dict[str, Any] = {
         "outputs": {"type": "array", "items": {"type": "string"}},
         "tools": {"type": "array", "items": {"type": "object"}},
         "validation": {"type": "object"},
+        "guardrails": {"type": "object"},
     },
 }
 

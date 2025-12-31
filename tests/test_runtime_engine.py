@@ -85,6 +85,13 @@ class RecordingExecutor(engine.StepExecutor):
         self.steps.append(step.get("name"))
 
 
+class GuardrailExecutor(engine.StepExecutor):
+    def execute(self, step: dict, context: dict) -> None:
+        run_dir = Path(context["run_dir"])
+        (run_dir / "guardrail.txt").write_text("Contact me at test@example.com", encoding="ascii")
+        step["outputs"] = ["guardrail.txt"]
+
+
 class RuntimeEngineTests(unittest.TestCase):
     def _config(self, max_retries: int = 0, require_conditional: bool = False) -> dict:
         return {
@@ -223,6 +230,42 @@ class RuntimeEngineTests(unittest.TestCase):
         eng = engine.WorkflowEngine(config, [spec], storage_root=tmp)
         manifest = eng.run("bmm", "prd")
         self.assertEqual(manifest["status"], "completed")
+
+    def test_guardrail_blocks_output_pii(self) -> None:
+        tmp = _sandbox_root()
+        spec = self._spec(human_gate="optional")
+        config = self._config()
+        config["guardrails"] = {
+            "enabled": True,
+            "stages": ["outputs"],
+            "pii": {"enabled": True},
+            "moderation": {"enabled": False},
+            "rules": {"enabled": False},
+        }
+        eng = engine.WorkflowEngine(config, [spec], storage_root=tmp)
+        created = eng.create_run("bmm", "prd")
+        run_dir = tmp / created["run_id"]
+        step_spec = models.StepSpec(
+            id="step-1",
+            name="guardrails",
+            description="",
+            phase=spec.phase,
+            inputs={},
+            outputs=["{output_folder}/prd.md"],
+            templates=[],
+            tools=[],
+            validation=spec.validation,
+            evidence=spec.evidence,
+            human_gate=spec.human,
+            retries={"max": 0, "backoff_seconds": 0},
+        )
+        manifest = storage.read_manifest(run_dir)
+        manifest["step_specs"] = [step_spec.to_dict()]
+        manifest["steps"] = []
+        storage.write_manifest(run_dir, manifest)
+        result = eng.run("bmm", "prd", run_id=created["run_id"], executor=GuardrailExecutor())
+        self.assertEqual(result["status"], "failed")
+        self.assertIn("guardrail failed", result["steps"][0]["error"])
 
     def test_load_mapping_records(self) -> None:
         tmp = _sandbox_root()

@@ -16,7 +16,7 @@ Build production-grade agent workflows by unifying BMAD-METHOD, TELIS, and QUINT
 
 ## Project status
 
-- Last refreshed: 2025-12-30T23:26:13-05:00 (America/Toronto)
+- Last refreshed: 2025-12-30T23:54:34-05:00 (America/Toronto)
 - Primary branch: development
 - Release branch: main
 - Release target: v1.0 (see docs/v1-plan.md)

@@ -10,6 +10,7 @@ from uuid import uuid4
 
 from runtime import config as runtime_config
 from runtime import gates, models, storage, workflow_parser
+from runtime.guardrails import checks as guardrails
 from runtime.plugins.manager import PluginManager
 from runtime.telis.manager import TelisPolicyEngine
 from runtime.time_provider import get_current_time
@@ -864,6 +865,24 @@ class WorkflowEngine:
                 try:
                     if self.plugins:
                         self.plugins.before_step(step, manifest)
+                    report = guardrails.evaluate_guardrails(
+                        "inputs",
+                        step,
+                        step_spec,
+                        self.config,
+                        run_dir,
+                    )
+                    if report:
+                        step.setdefault("guardrails", {})["inputs"] = report.to_dict()
+                        if report.status == "failed":
+                            _append_event(
+                                run_dir,
+                                "GuardrailFailed",
+                                manifest["run_id"],
+                                {"stage": report.stage, "violations": report.violations},
+                                step_id=step_id,
+                            )
+                            raise guardrails.GuardrailViolation(report)
                     run_tool_calls(
                         step=step,
                         step_spec=step_spec,
@@ -886,6 +905,24 @@ class WorkflowEngine:
                             "telis_context": telis_context,
                         },
                     )
+                    report = guardrails.evaluate_guardrails(
+                        "outputs",
+                        step,
+                        step_spec,
+                        self.config,
+                        run_dir,
+                    )
+                    if report:
+                        step.setdefault("guardrails", {})["outputs"] = report.to_dict()
+                        if report.status == "failed":
+                            _append_event(
+                                run_dir,
+                                "GuardrailFailed",
+                                manifest["run_id"],
+                                {"stage": report.stage, "violations": report.violations},
+                                step_id=step_id,
+                            )
+                            raise guardrails.GuardrailViolation(report)
                     elapsed = time.time() - started
                     if elapsed > timeout_seconds:
                         raise TimeoutError("step timeout")

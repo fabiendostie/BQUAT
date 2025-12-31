@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-30T17:17:51-05:00
+Last updated: 2025-12-30T23:53:48-05:00
 
 ## Purpose
 
@@ -81,6 +81,7 @@ At execution time, each step is converted into a RunStep entry stored in the run
 - outputs
 - tools (tool execution results)
 - telis_context (resolved TELIS context payload)
+- guardrails (input/output guardrail reports)
 
 ## Step State Machine
 
@@ -215,12 +216,14 @@ Evidence links are stored in evidence.json and cross-linked to artifacts.
 2. Create or update RunStep with status=running and started_at.
 3. Persist run state after each step update and on errors.
 4. Enforce human gate if required.
-5. Execute tool calls through the tool execution pipeline and record results.
-6. Run validation gate; retry or fail on error.
-7. Write outputs and update artifact index.
-8. Record evidence links as required.
-9. Emit run timeline JSON from events, artifacts, gates, evidence, and DRRs.
-10. Mark RunStep completed and set ended_at.
+5. Run guardrails on inputs before tool execution.
+6. Execute tool calls through the tool execution pipeline and record results.
+7. Run guardrails on outputs after executor writes artifacts.
+8. Run validation gate; retry or fail on error.
+9. Write outputs and update artifact index.
+10. Record evidence links as required.
+11. Emit run timeline JSON from events, artifacts, gates, evidence, and DRRs.
+12. Mark RunStep completed and set ended_at.
 
 ## Resume Semantics
 
