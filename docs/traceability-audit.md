@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-29T23:50:08-05:00
+Last updated: 2025-12-30T02:04:41-05:00
 
 ## Purpose
 
@@ -110,6 +110,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 - WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 are now covered by integration tests and runtime persistence.
 - Real BMAD workflow execution is still missing; QUINT evidence store, ADI promotion, WLNK, congruence, decay, and DRR now exist.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, runtime schemas, provider reliability/rate-limit handling, and HITL gate enforcement now exist; enforcement coverage beyond current tools remains pending.
+- Artifact index now links gate/evidence metadata and emits run timeline JSON for auditability.
 
 ## Required Follow-up
 

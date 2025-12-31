@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List, Tuple
+
+from runtime.time_provider import get_current_time
 
 
 def ensure_dir(path: Path) -> Path:
@@ -123,3 +125,121 @@ def read_tool_results(run_dir: Path) -> Dict[str, Any]:
     if not target.exists():
         return {"results": []}
     return read_json(target)
+
+
+def write_timeline(run_dir: Path, timeline: Dict[str, Any]) -> Path:
+    target = run_dir / "timeline.json"
+    write_json(target, timeline)
+    return target
+
+
+def read_timeline(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "timeline.json"
+    if not target.exists():
+        return {"run_id": run_dir.name, "generated_at": "", "entries": []}
+    return read_json(target)
+
+
+def build_timeline(run_dir: Path) -> Dict[str, Any]:
+    run_id = run_dir.name
+    try:
+        manifest = read_manifest(run_dir)
+        run_id = str(manifest.get("run_id", run_id))
+    except FileNotFoundError:
+        pass
+
+    entries: List[Dict[str, Any]] = []
+
+    events_payload = read_events(run_dir)
+    for event in events_payload.get("events", []):
+        entries.append(
+            {
+                "type": "event",
+                "timestamp": event.get("timestamp", ""),
+                "event_type": event.get("event_type", ""),
+                "step_id": event.get("step_id"),
+                "payload": dict(event.get("payload", {})),
+            }
+        )
+
+    artifacts_payload = read_artifact_index(run_dir)
+    for artifact in artifacts_payload.get("artifacts", []):
+        entries.append(
+            {
+                "type": "artifact",
+                "timestamp": artifact.get("created_at", ""),
+                "artifact_id": artifact.get("artifact_id", ""),
+                "path": artifact.get("path", ""),
+                "artifact_type": artifact.get("artifact_type", ""),
+                "checksum": artifact.get("checksum", ""),
+                "workflow": artifact.get("workflow", ""),
+                "step": artifact.get("step"),
+                "metadata": dict(artifact.get("metadata", {})),
+            }
+        )
+
+    gates_payload = read_human_gates(run_dir)
+    for gate in gates_payload.get("gates", []):
+        entries.append(
+            {
+                "type": "gate",
+                "timestamp": gate.get("recorded_at") or gate.get("approved_at") or "",
+                "gate_id": gate.get("gate_id", ""),
+                "status": gate.get("status", ""),
+                "required": gate.get("required", False),
+                "approved_by": gate.get("approved_by"),
+                "approved_at": gate.get("approved_at"),
+                "reason": gate.get("reason"),
+                "phase": gate.get("phase"),
+                "workflow": gate.get("workflow"),
+            }
+        )
+
+    evidence_payload = read_evidence_links(run_dir)
+    for evidence in evidence_payload.get("evidence", []):
+        entries.append(
+            {
+                "type": "evidence",
+                "timestamp": evidence.get("date", ""),
+                "evidence_id": evidence.get("id", ""),
+                "level": evidence.get("level", ""),
+                "claim": evidence.get("claim", ""),
+                "source": evidence.get("source", ""),
+                "artifacts": list(evidence.get("artifacts", [])),
+                "carrier_ref": evidence.get("carrier_ref", ""),
+            }
+        )
+
+    drr_payload = read_drrs(run_dir)
+    for record in drr_payload.get("drrs", []):
+        entries.append(
+            {
+                "type": "drr",
+                "timestamp": record.get("date", ""),
+                "decision_id": record.get("decision_id", ""),
+                "status": record.get("status", ""),
+                "owner": record.get("owner", ""),
+                "markdown_path": record.get("markdown_path", ""),
+            }
+        )
+
+    entries.sort(key=_timeline_sort_key)
+    return {"run_id": run_id, "generated_at": get_current_time(), "entries": entries}
+
+
+def update_timeline(run_dir: Path) -> Path:
+    return write_timeline(run_dir, build_timeline(run_dir))
+
+
+def _timeline_sort_key(entry: Dict[str, Any]) -> Tuple[str, str, str]:
+    timestamp = entry.get("timestamp") or "9999-12-31T23:59:59Z"
+    entry_type = entry.get("type", "")
+    entry_id = str(
+        entry.get("event_type")
+        or entry.get("artifact_id")
+        or entry.get("gate_id")
+        or entry.get("evidence_id")
+        or entry.get("decision_id")
+        or ""
+    )
+    return timestamp, entry_type, entry_id

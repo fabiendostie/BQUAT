@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-30T00:08:33-05:00
+Last updated: 2025-12-30T02:05:10-05:00
 
 ## Purpose
 
@@ -325,7 +325,7 @@ Deliverables:
 - [x] Implement QUINT evidence engine, WLNK, congruence, decay, and DRR
 - [ ] Harden provider routing with retries and circuit breakers
 - [x] Enforce HITL gating with CLI approvals
-- [ ] Add artifact indexing and run timeline
+- [x] Add artifact indexing and run timeline
 - [ ] Expand CLI (list, export, history)
 - [ ] Implement guardrails (PII, moderation, rules)
 - [ ] Add observability and run reports

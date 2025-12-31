@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-29T23:43:38-05:00
+Last updated: 2025-12-30T02:01:23-05:00
 
 ## [Unreleased]
 
@@ -39,6 +39,8 @@ Last updated: 2025-12-29T23:43:38-05:00
 - Provider routing reliability with retries, backoff, circuit breaker, and streaming support.
 - Provider rate-limit handling with normalized error messages and retry hints.
 - HITL gate policy enforcement with audit logs and approval events.
+- Artifact index linkage to gate state and evidence IDs for audit trails.
+- Run timeline JSON emitted with event, artifact, gate, evidence, and DRR entries.
 
 ### Changed
 

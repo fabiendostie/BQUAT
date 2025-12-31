@@ -67,6 +67,21 @@ class RuntimeSchemaTests(unittest.TestCase):
         errors = schemas.validate_schema(schemas.EVENT_RECORD_SCHEMA, event.to_dict())
         self.assertEqual(errors, [])
 
+    def test_run_timeline_schema_valid(self) -> None:
+        timeline = {
+            "run_id": "run-1",
+            "generated_at": "2025-12-25T00:00:00-05:00",
+            "entries": [
+                {
+                    "type": "event",
+                    "timestamp": "2025-12-25T00:00:01-05:00",
+                    "event_type": "WorkflowStarted",
+                }
+            ],
+        }
+        errors = schemas.validate_schema(schemas.RUN_TIMELINE_SCHEMA, timeline)
+        self.assertEqual(errors, [])
+
     def test_missing_required_field_fails(self) -> None:
         bad = {"status": "pending"}
         errors = schemas.validate_schema(schemas.RUN_MANIFEST_SCHEMA, bad)

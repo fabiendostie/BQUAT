@@ -4,6 +4,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from runtime import engine, models, storage
+from runtime.quint import store
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -73,6 +74,19 @@ class RuntimeArtifactEventTests(unittest.TestCase):
         manifest["step_specs"] = [step_spec.to_dict()]
         manifest["steps"] = []
         storage.write_manifest(run_dir, manifest)
+        gate = models.HumanGate(
+            gate_id="bmm:artifact-test:hitl",
+            status="approved",
+            required=True,
+            approved_by="tester",
+            approved_at="2025-12-30T00:00:00-05:00",
+            notes="ok",
+            phase=spec.phase,
+            workflow="bmm/artifact-test",
+            reason="explicit human gate",
+            recorded_at="2025-12-30T00:00:00-05:00",
+        )
+        storage.write_human_gates(run_dir, {"gates": [gate.to_dict()]})
 
         executor = WritingExecutor("artifact.txt", "hello")
         result = eng.run("bmm", "artifact-test", run_id=created["run_id"], executor=executor)
@@ -85,6 +99,8 @@ class RuntimeArtifactEventTests(unittest.TestCase):
         self.assertTrue(record["path"].endswith("artifact.txt"))
         expected_checksum = hashlib.sha256(b"hello").hexdigest()
         self.assertEqual(record["checksum"], expected_checksum)
+        self.assertEqual(record["metadata"]["gate"]["gate_id"], "bmm:artifact-test:hitl")
+        self.assertEqual(record["metadata"]["gate"]["status"], "approved")
 
         events = storage.read_events(run_dir)["events"]
         event_types = {event.get("event_type") for event in events}
@@ -92,6 +108,32 @@ class RuntimeArtifactEventTests(unittest.TestCase):
         self.assertIn("WorkflowStepStarted", event_types)
         self.assertIn("WorkflowStepCompleted", event_types)
         self.assertIn("WorkflowCompleted", event_types)
+
+        evidence = store.EvidenceStore(run_dir)
+        link = models.EvidenceLink(
+            id="ev-123",
+            claim="artifact captured",
+            level="L1",
+            source="unit-test",
+            date="2025-12-30T00:00:00-05:00",
+            valid_until="2025-12-31T00:00:00-05:00",
+            congruence="CL1",
+            reliability=0.5,
+            wlnk=0.5,
+            carrier_ref="artifact.txt",
+            artifacts=[record["path"]],
+            notes="",
+        )
+        evidence.record(link)
+        updated = storage.read_artifact_index(run_dir)["artifacts"][0]
+        self.assertIn("ev-123", updated["metadata"]["evidence_ids"])
+
+        timeline = storage.read_timeline(run_dir)["entries"]
+        timeline_types = {entry.get("type") for entry in timeline}
+        self.assertIn("event", timeline_types)
+        self.assertIn("artifact", timeline_types)
+        self.assertIn("gate", timeline_types)
+        self.assertIn("evidence", timeline_types)
 
 
 if __name__ == "__main__":

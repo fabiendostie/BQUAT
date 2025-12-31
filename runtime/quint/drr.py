@@ -156,6 +156,7 @@ class DrrStore:
         drrs.append(rendered)
         payload["drrs"] = drrs
         storage.write_drrs(self.run_dir, payload)
+        storage.update_timeline(self.run_dir)
         return rendered
 
     def _write_markdown(self, record: DrrRecord) -> str:

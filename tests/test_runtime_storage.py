@@ -38,11 +38,13 @@ class RuntimeStorageTests(unittest.TestCase):
         drrs = storage.read_drrs(run_dir)
         gates = storage.read_human_gates(run_dir)
         events = storage.read_events(run_dir)
+        timeline = storage.read_timeline(run_dir)
         self.assertEqual(artifacts["artifacts"], [])
         self.assertEqual(evidence, {"evidence": []})
         self.assertEqual(drrs, {"drrs": []})
         self.assertEqual(gates, {"gates": []})
         self.assertEqual(events, {"events": []})
+        self.assertEqual(timeline["entries"], [])
 
     def test_artifact_index_round_trip(self) -> None:
         root = _sandbox_root()
@@ -90,6 +92,18 @@ class RuntimeStorageTests(unittest.TestCase):
         payload = {"results": [{"name": "getCurrentTime", "status": "completed"}]}
         storage.write_tool_results(run_dir, payload)
         loaded = storage.read_tool_results(run_dir)
+        self.assertEqual(loaded, payload)
+
+    def test_timeline_round_trip(self) -> None:
+        root = _sandbox_root()
+        run_dir = storage.init_run_dir(root, "run-9")
+        payload = {
+            "run_id": "run-9",
+            "generated_at": "2025-12-30T00:00:00-05:00",
+            "entries": [{"type": "event", "timestamp": "2025-12-30T00:01:00-05:00"}],
+        }
+        storage.write_timeline(run_dir, payload)
+        loaded = storage.read_timeline(run_dir)
         self.assertEqual(loaded, payload)
 
 

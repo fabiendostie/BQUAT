@@ -61,6 +61,46 @@ def build_evidence_link(
     )
 
 
+def _artifact_matches(reference: str, artifact: Dict[str, object]) -> bool:
+    if reference == artifact.get("artifact_id") or reference == artifact.get("path"):
+        return True
+    if "/" not in reference and "\\" not in reference:
+        path = str(artifact.get("path", ""))
+        return Path(path).name == reference
+    return False
+
+
+def _link_evidence_artifacts(run_dir: Path, record: Dict[str, object]) -> None:
+    evidence_id = record.get("id")
+    if not evidence_id:
+        return
+    references = record.get("artifacts", [])
+    if not isinstance(references, list) or not references:
+        return
+    payload = storage.read_artifact_index(run_dir)
+    artifacts = payload.get("artifacts", [])
+    if not isinstance(artifacts, list):
+        return
+    updated = False
+    for artifact in artifacts:
+        if not isinstance(artifact, dict):
+            continue
+        if not any(_artifact_matches(str(ref), artifact) for ref in references):
+            continue
+        metadata = dict(artifact.get("metadata", {}))
+        evidence_ids = metadata.get("evidence_ids", [])
+        if not isinstance(evidence_ids, list):
+            evidence_ids = []
+        if evidence_id not in evidence_ids:
+            evidence_ids.append(evidence_id)
+            metadata["evidence_ids"] = evidence_ids
+            artifact["metadata"] = metadata
+            updated = True
+    if updated:
+        payload["updated_at"] = get_current_time()
+        storage.write_artifact_index(run_dir, payload)
+
+
 class EvidenceStore:
     def __init__(self, run_dir: Path) -> None:
         self.run_dir = run_dir
@@ -81,6 +121,8 @@ class EvidenceStore:
         evidence.append(record)
         payload["evidence"] = evidence
         storage.write_evidence_links(self.run_dir, payload)
+        _link_evidence_artifacts(self.run_dir, record)
+        storage.update_timeline(self.run_dir)
         return record
 
     def invalidate(self, evidence_id: str, reason: str = "") -> Dict[str, object]:
@@ -96,5 +138,6 @@ class EvidenceStore:
                     record["notes"] = f"{notes} {reason}".strip()
                 payload["evidence"] = evidence
                 storage.write_evidence_links(self.run_dir, payload)
+                storage.update_timeline(self.run_dir)
                 return dict(record)
         raise KeyError(f"Evidence not found: {evidence_id}")

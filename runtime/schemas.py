@@ -189,6 +189,26 @@ EVENT_RECORD_SCHEMA: Dict[str, Any] = {
     },
 }
 
+TIMELINE_ENTRY_SCHEMA: Dict[str, Any] = {
+    "type": "object",
+    "required": ["type", "timestamp"],
+    "properties": {
+        "type": {"type": "string"},
+        "timestamp": {"type": "string"},
+    },
+    "additionalProperties": True,
+}
+
+RUN_TIMELINE_SCHEMA: Dict[str, Any] = {
+    "type": "object",
+    "required": ["run_id", "generated_at", "entries"],
+    "properties": {
+        "run_id": {"type": "string"},
+        "generated_at": {"type": "string"},
+        "entries": {"type": "array", "items": TIMELINE_ENTRY_SCHEMA},
+    },
+}
+
 RUN_MANIFEST_SCHEMA: Dict[str, Any] = {
     "type": "object",
     "required": [
@@ -223,6 +243,8 @@ SCHEMAS: Dict[str, Dict[str, Any]] = {
     "evidence_link": EVIDENCE_LINK_SCHEMA,
     "human_gate": HUMAN_GATE_SCHEMA,
     "event_record": EVENT_RECORD_SCHEMA,
+    "timeline_entry": TIMELINE_ENTRY_SCHEMA,
+    "run_timeline": RUN_TIMELINE_SCHEMA,
 }
 
 

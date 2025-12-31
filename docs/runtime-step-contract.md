@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-29T23:43:38-05:00
+Last updated: 2025-12-30T17:17:51-05:00
 
 ## Purpose
 
@@ -187,6 +187,15 @@ StepSpec.human_gate plus the HITL policy (phase/risk rules in config runtime.hit
 - conditional: block only if policy enables
 - optional: no block
 
+Operator note: HITL policy config keys live under config/runtime.yaml at hitl.policy.
+
+- required_phases: exact phase strings that always block.
+- conditional_phases: phase strings that block only when conditional_required is true.
+- high_risk_keywords: substring match against workflow id to force blocking.
+- conditional_keywords: substring match against workflow id gated by conditional_required.
+- conditional_required: boolean toggle for conditional blocks.
+- recommended_required: boolean toggle to enforce human_gate = recommended.
+
 Approvals are stored in approvals.json with audit metadata. Gate audit records are stored in gates.json and include
 status, reason, phase/workflow, and approval details.
 
@@ -210,7 +219,8 @@ Evidence links are stored in evidence.json and cross-linked to artifacts.
 6. Run validation gate; retry or fail on error.
 7. Write outputs and update artifact index.
 8. Record evidence links as required.
-9. Mark RunStep completed and set ended_at.
+9. Emit run timeline JSON from events, artifacts, gates, evidence, and DRRs.
+10. Mark RunStep completed and set ended_at.
 
 ## Resume Semantics
 

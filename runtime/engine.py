@@ -137,6 +137,7 @@ def _append_event(
     entries.append(record.to_dict())
     events["events"] = entries
     storage.write_events(run_dir, events)
+    storage.update_timeline(run_dir)
 
 
 def _artifact_checksum(path: Path) -> str:
@@ -166,6 +167,40 @@ def _resolve_artifact_path(value: str, root: Path, run_dir: Path) -> Optional[Pa
     return None
 
 
+def _evidence_ids_for_artifact(
+    evidence_payload: Dict[str, Any], artifact_id: str, path: str
+) -> List[str]:
+    evidence_ids: List[str] = []
+    for record in evidence_payload.get("evidence", []):
+        if not isinstance(record, dict):
+            continue
+        artifacts = record.get("artifacts", [])
+        if not isinstance(artifacts, list):
+            continue
+        if artifact_id in artifacts or path in artifacts:
+            evidence_id = record.get("id")
+            if evidence_id:
+                evidence_ids.append(str(evidence_id))
+    return evidence_ids
+
+
+def _gate_metadata(gates_payload: Dict[str, Any], gate_id: str) -> Dict[str, Any]:
+    for gate in gates_payload.get("gates", []):
+        if gate.get("gate_id") == gate_id:
+            return {
+                "gate_id": gate.get("gate_id", ""),
+                "status": gate.get("status", ""),
+                "required": gate.get("required", False),
+                "reason": gate.get("reason"),
+                "phase": gate.get("phase"),
+                "workflow": gate.get("workflow"),
+                "recorded_at": gate.get("recorded_at"),
+                "approved_by": gate.get("approved_by"),
+                "approved_at": gate.get("approved_at"),
+            }
+    return {}
+
+
 def _update_artifact_index(
     run_dir: Path,
     manifest: Dict[str, Any],
@@ -177,7 +212,15 @@ def _update_artifact_index(
     artifacts: List[Dict[str, Any]] = index.get("artifacts", [])
     existing = {(item.get("path"), item.get("checksum")) for item in artifacts}
     workflow = manifest.get("workflow", {})
-    workflow_id = f"{workflow.get('module')}/{workflow.get('workflow')}"
+    module_name = str(workflow.get("module", ""))
+    workflow_name = str(workflow.get("workflow", ""))
+    workflow_id = f"{module_name}/{workflow_name}"
+    gate_id = ""
+    if module_name and workflow_name:
+        gate_id = f"{module_name}:{workflow_name}:hitl"
+    evidence_payload = storage.read_evidence_links(run_dir)
+    gate_payload = storage.read_human_gates(run_dir)
+    gate_info = _gate_metadata(gate_payload, gate_id) if gate_id else {}
     created_at = step.get("ended_at") or utc_now()
     step_id = step.get("step_id")
 
@@ -201,15 +244,22 @@ def _update_artifact_index(
         key = (rel_path, checksum)
         if key in existing:
             continue
+        artifact_id = _artifact_id(rel_path, checksum, artifact_type)
+        metadata = {"step_name": step.get("name", "")}
+        evidence_ids = _evidence_ids_for_artifact(evidence_payload, artifact_id, rel_path)
+        if evidence_ids:
+            metadata["evidence_ids"] = evidence_ids
+        if gate_info:
+            metadata["gate"] = gate_info
         record = models.ArtifactRecord(
-            artifact_id=_artifact_id(rel_path, checksum, artifact_type),
+            artifact_id=artifact_id,
             path=rel_path,
             artifact_type=artifact_type,
             checksum=checksum,
             workflow=workflow_id,
             created_at=created_at,
             step=step_id,
-            metadata={"step_name": step.get("name", "")},
+            metadata=metadata,
         )
         artifacts.append(record.to_dict())
         existing.add(key)
