@@ -16,6 +16,16 @@ def init_run_dir(storage_root: Path, run_id: str) -> Path:
     return ensure_dir(storage_root / run_id)
 
 
+def list_runs(storage_root: Path) -> List[Path]:
+    if not storage_root.exists():
+        return []
+    runs: List[Path] = []
+    for entry in storage_root.iterdir():
+        if entry.is_dir() and (entry / "manifest.json").exists():
+            runs.append(entry)
+    return sorted(runs, key=lambda path: path.name)
+
+
 def write_json(path: Path, data: Dict[str, Any]) -> None:
     ensure_dir(path.parent)
     payload = json.dumps(data, indent=2, sort_keys=True)

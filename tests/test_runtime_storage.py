@@ -106,6 +106,14 @@ class RuntimeStorageTests(unittest.TestCase):
         loaded = storage.read_timeline(run_dir)
         self.assertEqual(loaded, payload)
 
+    def test_list_runs(self) -> None:
+        root = _sandbox_root()
+        run_dir = storage.init_run_dir(root, "run-10")
+        storage.write_manifest(run_dir, {"run_id": "run-10"})
+        storage.init_run_dir(root, "run-11")
+        runs = storage.list_runs(root)
+        self.assertEqual([path.name for path in runs], ["run-10"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -16,7 +16,7 @@ Build production-grade agent workflows by unifying BMAD-METHOD, TELIS, and QUINT
 
 ## Project status
 
-- Last refreshed: 2025-12-30 (America/Toronto)
+- Last refreshed: 2025-12-30T23:26:13-05:00 (America/Toronto)
 - Primary branch: development
 - Release branch: main
 - Release target: v1.0 (see docs/v1-plan.md)
@@ -106,6 +106,9 @@ python -m cli.main validate
 python -m cli.main run bmm prd --agent bmad --provider mock
 python -m cli.main approve <run-id> --by you
 python -m cli.main status <run-id>
+python -m cli.main list
+python -m cli.main history --limit 5
+python -m cli.main export <run-id> --output runs/export.json
 ```
 
 - If a workflow is outside configured automation phases and `--agent` is provided, the CLI prompts for manual vs automated execution.
