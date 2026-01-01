@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-30T02:04:41-05:00
+Last updated: 2025-12-31T00:15:20-05:00
 
 ## Purpose
 
@@ -71,10 +71,10 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 | --------- | ----------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | GUIDE-001 | Model, tools, instructions triad per agent      | partial | runtime/prompts.py, runtime/agents.py, runtime/tools/base.py                                                                                 | Tool schema exists; no per-agent registry |
 | GUIDE-002 | Standardized tool definitions and reuse         | partial | runtime/tools/base.py, runtime/tools/file_io.py, runtime/tools/repo_tool.py, tests/test_runtime_file_io.py, tests/test_runtime_repo_tools.py | No tool registry or catalog               |
-| GUIDE-003 | Tool risk ratings and safeguards                | partial | runtime/tools/base.py, runtime/tools/time_tool.py                                                                                            | No enforcement or HITL policy             |
-| GUIDE-004 | PII filter and data privacy guardrails          | missing | None                                                                                                                                         | No guardrail hooks                        |
-| GUIDE-005 | Moderation filters for unsafe inputs            | missing | None                                                                                                                                         | No moderation checks                      |
-| GUIDE-006 | Rules-based protections (blocklists/regex)      | missing | None                                                                                                                                         | No rules gate                             |
+| GUIDE-003 | Tool risk ratings and safeguards                | done    | runtime/tools/base.py, runtime/tools/pipeline.py, runtime/engine.py, runtime/guardrails/checks.py, tests/test_runtime_guardrails.py          | None                                      |
+| GUIDE-004 | PII filter and data privacy guardrails          | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py, tests/test_runtime_engine.py                              | None                                      |
+| GUIDE-005 | Moderation filters for unsafe inputs            | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                            | None                                      |
+| GUIDE-006 | Rules-based protections (blocklists/regex)      | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                            | None                                      |
 | GUIDE-007 | HITL on high-risk actions and retry thresholds  | done    | runtime/gates.py, runtime/engine.py, config/runtime.yaml, tests/test_runtime_gates.py                                                        | None                                      |
 | GUIDE-008 | Optimistic execution with concurrent guardrails | missing | None                                                                                                                                         | No guardrail concurrency model            |
 
@@ -111,6 +111,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 - Real BMAD workflow execution is still missing; QUINT evidence store, ADI promotion, WLNK, congruence, decay, and DRR now exist.
 - Tool schema and risk metadata exist; safe file IO/repo tools, LSP adapter, validation runner, tool execution pipeline, validation gates, runtime schemas, provider reliability/rate-limit handling, and HITL gate enforcement now exist; enforcement coverage beyond current tools remains pending.
 - Artifact index now links gate/evidence metadata and emits run timeline JSON for auditability.
+- Guardrails now enforce PII, moderation, and rules-based protections at input/output stages.
 
 ## Required Follow-up
 

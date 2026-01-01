@@ -2,7 +2,7 @@
 
 Status: Draft
 Owner: Core maintainers
-Last updated: 2025-12-30T23:55:29-05:00
+Last updated: 2025-12-31T17:46:55-05:00
 
 ## Purpose
 
@@ -84,10 +84,10 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-QUINT-008   | QUINT           | Bounded context snapshot and drift detection                     | QUINT   | missing | Planned: context drift tests                                                                                                                 |
 | REQ-AGENT-001   | Practical Guide | Model/tool/instructions triad per agent                          | Runtime | partial | runtime/agents.py, runtime/prompts.py                                                                                                        |
 | REQ-AGENT-002   | Practical Guide | Standardized tool definitions and reuse                          | Runtime | partial | runtime/tools/base.py, runtime/tools/file_io.py, runtime/tools/repo_tool.py, tests/test_runtime_file_io.py, tests/test_runtime_repo_tools.py |
-| REQ-AGENT-003   | Practical Guide | Tool risk ratings and safeguards                                 | Runtime | partial | runtime/tools/base.py, runtime/tools/time_tool.py, runtime/tools/pipeline.py                                                                 |
-| REQ-AGENT-004   | Practical Guide | PII filter and data privacy guardrails                           | Runtime | missing | Planned: PII guardrail tests                                                                                                                 |
-| REQ-AGENT-005   | Practical Guide | Moderation filters for unsafe inputs                             | Runtime | missing | Planned: moderation tests                                                                                                                    |
-| REQ-AGENT-006   | Practical Guide | Rules-based protections (blocklists/regex)                       | Runtime | missing | Planned: rules gate tests                                                                                                                    |
+| REQ-AGENT-003   | Practical Guide | Tool risk ratings and safeguards                                 | Runtime | done    | runtime/tools/base.py, runtime/tools/pipeline.py, runtime/engine.py, runtime/guardrails/checks.py, tests/test_runtime_guardrails.py          |
+| REQ-AGENT-004   | Practical Guide | PII filter and data privacy guardrails                           | Runtime | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py, tests/test_runtime_engine.py                              |
+| REQ-AGENT-005   | Practical Guide | Moderation filters for unsafe inputs                             | Runtime | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                            |
+| REQ-AGENT-006   | Practical Guide | Rules-based protections (blocklists/regex)                       | Runtime | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                            |
 | REQ-AGENT-007   | Practical Guide | HITL on high-risk actions and retry thresholds                   | Runtime | done    | runtime/gates.py, runtime/engine.py, runtime/tools/pipeline.py, config/runtime.yaml, tests/test_runtime_gates.py                             |
 | REQ-AGENT-008   | Practical Guide | Optimistic execution with concurrent guardrails                  | Runtime | missing | Planned: guardrail concurrency tests                                                                                                         |
 | REQ-SPEC-001    | Unified Spec    | Event bus for workflow state transitions                         | Runtime | missing | Planned: event bus tests                                                                                                                     |
