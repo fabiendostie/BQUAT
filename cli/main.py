@@ -8,6 +8,7 @@ from typing import Any, Dict, Optional
 
 from runtime import config as runtime_config
 from runtime import engine, execution, models, storage
+from runtime.logging.report import RunReportGenerator
 from runtime.providers.registry import ProviderRegistry
 
 
@@ -186,17 +187,24 @@ def cmd_export(args: argparse.Namespace) -> int:
     root = runtime_config.storage_root(config)
     run_dir = root / args.run_id
     storage.update_timeline(run_dir)
-    payload = {
-        "manifest": storage.read_manifest(run_dir),
-        "approvals": storage.read_approvals(run_dir),
-        "gates": storage.read_human_gates(run_dir),
-        "events": storage.read_events(run_dir),
-        "artifacts": storage.read_artifact_index(run_dir),
-        "tool_results": storage.read_tool_results(run_dir),
-        "evidence": storage.read_evidence_links(run_dir),
-        "drr": storage.read_drrs(run_dir),
-        "timeline": storage.read_timeline(run_dir),
-    }
+
+    if getattr(args, "report", False):
+        generator = RunReportGenerator(run_dir)
+        report = generator.generate()
+        payload = report.to_dict()
+    else:
+        payload = {
+            "manifest": storage.read_manifest(run_dir),
+            "approvals": storage.read_approvals(run_dir),
+            "gates": storage.read_human_gates(run_dir),
+            "events": storage.read_events(run_dir),
+            "artifacts": storage.read_artifact_index(run_dir),
+            "tool_results": storage.read_tool_results(run_dir),
+            "evidence": storage.read_evidence_links(run_dir),
+            "drr": storage.read_drrs(run_dir),
+            "timeline": storage.read_timeline(run_dir),
+        }
+
     rendered = json.dumps(payload, indent=2, sort_keys=True)
     if args.output:
         target = Path(args.output)
@@ -267,6 +275,9 @@ def build_parser() -> argparse.ArgumentParser:
     export = sub.add_parser("export", help="Export run data")
     export.add_argument("run_id")
     export.add_argument("--output")
+    export.add_argument(
+        "--report", action="store_true", help="Generate summary report with statistics"
+    )
     export.set_defaults(func=cmd_export)
 
     providers = sub.add_parser("providers", help="List providers")

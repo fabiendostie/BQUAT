@@ -43,6 +43,12 @@ Last updated: 2025-12-30T23:55:00-05:00
 - Run timeline JSON emitted with event, artifact, gate, evidence, and DRR entries.
 - CLI commands for workflow listing, run history summaries, and export bundles.
 - Guardrails for PII, moderation, and rules-based checks with runtime enforcement.
+- Observability module with structured logging, event emission, and run report generation.
+- StructuredLogger for JSON-formatted run/step/gate/evidence/validation logs.
+- EventEmitter with CallbackHandler and ObservabilityPlugin for external tooling integration.
+- RunReportGenerator for comprehensive run reports with summary statistics.
+- CLI export command extended with --report flag for summary report generation.
+- Observability config section in runtime.yaml (enabled by default).
 
 ### Changed
 

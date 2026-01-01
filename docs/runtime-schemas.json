@@ -25,10 +25,7 @@
                 "type": "string"
               },
               "step": {
-                "type": [
-                  "string",
-                  "null"
-                ]
+                "type": ["string", "null"]
               },
               "workflow": {
                 "type": "string"
@@ -54,11 +51,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "run_id",
-        "artifacts",
-        "updated_at"
-      ],
+      "required": ["run_id", "artifacts", "updated_at"],
       "type": "object"
     },
     "artifact_record": {
@@ -82,10 +75,7 @@
           "type": "string"
         },
         "step": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "workflow": {
           "type": "string"
@@ -114,21 +104,13 @@
           "type": "string"
         },
         "step_id": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "timestamp": {
           "type": "string"
         }
       },
-      "required": [
-        "event_type",
-        "run_id",
-        "timestamp",
-        "payload"
-      ],
+      "required": ["event_type", "run_id", "timestamp", "payload"],
       "type": "object"
     },
     "evidence_link": {
@@ -192,16 +174,10 @@
     "human_gate": {
       "properties": {
         "approved_at": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "approved_by": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "gate_id": {
           "type": "string"
@@ -210,22 +186,13 @@
           "type": "string"
         },
         "phase": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "reason": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "recorded_at": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "required": {
           "type": "boolean"
@@ -234,18 +201,10 @@
           "type": "string"
         },
         "workflow": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         }
       },
-      "required": [
-        "gate_id",
-        "status",
-        "required",
-        "notes"
-      ],
+      "required": ["gate_id", "status", "required", "notes"],
       "type": "object"
     },
     "run_manifest": {
@@ -333,16 +292,10 @@
                 "type": "integer"
               },
               "ended_at": {
-                "type": [
-                  "string",
-                  "null"
-                ]
+                "type": ["string", "null"]
               },
               "error": {
-                "type": [
-                  "string",
-                  "null"
-                ]
+                "type": ["string", "null"]
               },
               "guardrails": {
                 "type": "object"
@@ -360,19 +313,13 @@
                 "type": "array"
               },
               "started_at": {
-                "type": [
-                  "string",
-                  "null"
-                ]
+                "type": ["string", "null"]
               },
               "status": {
                 "type": "string"
               },
               "step_id": {
-                "type": [
-                  "string",
-                  "null"
-                ]
+                "type": ["string", "null"]
               },
               "tools": {
                 "items": {
@@ -384,15 +331,7 @@
                 "type": "object"
               }
             },
-            "required": [
-              "name",
-              "status",
-              "attempts",
-              "inputs",
-              "outputs",
-              "tools",
-              "validation"
-            ],
+            "required": ["name", "status", "attempts", "inputs", "outputs", "tools", "validation"],
             "type": "object"
           },
           "type": "array"
@@ -473,16 +412,10 @@
           "type": "integer"
         },
         "ended_at": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "error": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "guardrails": {
           "type": "object"
@@ -500,19 +433,13 @@
           "type": "array"
         },
         "started_at": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "status": {
           "type": "string"
         },
         "step_id": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "tools": {
           "items": {
@@ -524,15 +451,7 @@
           "type": "object"
         }
       },
-      "required": [
-        "name",
-        "status",
-        "attempts",
-        "inputs",
-        "outputs",
-        "tools",
-        "validation"
-      ],
+      "required": ["name", "status", "attempts", "inputs", "outputs", "tools", "validation"],
       "type": "object"
     },
     "run_timeline": {
@@ -548,10 +467,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "type",
-              "timestamp"
-            ],
+            "required": ["type", "timestamp"],
             "type": "object"
           },
           "type": "array"
@@ -563,11 +479,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "run_id",
-        "generated_at",
-        "entries"
-      ],
+      "required": ["run_id", "generated_at", "entries"],
       "type": "object"
     },
     "step_spec": {
@@ -641,10 +553,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "type",
-        "timestamp"
-      ],
+      "required": ["type", "timestamp"],
       "type": "object"
     },
     "workflow_spec": {

@@ -137,6 +137,32 @@ def read_tool_results(run_dir: Path) -> Dict[str, Any]:
     return read_json(target)
 
 
+def write_logs(run_dir: Path, logs: Dict[str, Any]) -> Path:
+    target = run_dir / "logs.json"
+    write_json(target, logs)
+    return target
+
+
+def read_logs(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "logs.json"
+    if not target.exists():
+        return {"run_id": run_dir.name, "logs": [], "updated_at": ""}
+    return read_json(target)
+
+
+def write_report(run_dir: Path, report: Dict[str, Any]) -> Path:
+    target = run_dir / "report.json"
+    write_json(target, report)
+    return target
+
+
+def read_report(run_dir: Path) -> Dict[str, Any]:
+    target = run_dir / "report.json"
+    if not target.exists():
+        return {}
+    return read_json(target)
+
+
 def write_timeline(run_dir: Path, timeline: Dict[str, Any]) -> Path:
     target = run_dir / "timeline.json"
     write_json(target, timeline)

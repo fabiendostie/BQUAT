@@ -20,6 +20,10 @@ TARGETS = [
     ROOT / "runtime" / "plugins" / "base.py",
     ROOT / "runtime" / "plugins" / "manager.py",
     ROOT / "runtime" / "tools" / "time_tool.py",
+    ROOT / "runtime" / "logging" / "models.py",
+    ROOT / "runtime" / "logging" / "structured.py",
+    ROOT / "runtime" / "logging" / "emitter.py",
+    ROOT / "runtime" / "logging" / "report.py",
     ROOT / "cli" / "main.py",
 ]
 COVERAGE_THRESHOLD = 85.0

@@ -1,6 +1,13 @@
 {
   "runtime":
     { "storage_root": "runs", "log_level": "info", "max_retries": 1, "step_timeout_seconds": 1800 },
+  "observability":
+    {
+      "enabled": true,
+      "logging": { "enabled": true, "level": "info" },
+      "events": { "enabled": true },
+      "reports": { "auto_generate": true },
+    },
   "tools":
     {
       "allowlist": [],
