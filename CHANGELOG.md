@@ -48,6 +48,9 @@ Last updated: 2025-12-30T23:55:00-05:00
 - EventEmitter with CallbackHandler and ObservabilityPlugin for external tooling integration.
 - RunReportGenerator for comprehensive run reports with summary statistics.
 - CLI export command extended with --report flag for summary report generation.
+- Provider contract tests verifying interface compliance for all 7 providers.
+- TELIS + QUINT integration tests for combined policy and evidence flow.
+- E2E workflow tests covering human gates, artifacts, events, timeline, and reports.
 - Observability config section in runtime.yaml (enabled by default).
 
 ### Changed
