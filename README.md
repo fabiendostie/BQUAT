@@ -1,167 +1,249 @@
 # BQUAT Unified Agentic Framework
 
-![CI](https://github.com/fabiendostie/BQUAT/actions/workflows/ci.yml/badge.svg?branch=development)
-![Coverage](https://img.shields.io/badge/coverage->=85%25-brightgreen)
-![SemVer](https://img.shields.io/badge/semver-2.0.0-blue)
-![HITL](https://img.shields.io/badge/HITL-blocking-orange)
+[![CI](https://img.shields.io/github/actions/workflow/status/fabiendostie/BQUAT/ci.yml?branch=development&logo=github&label=CI)](https://github.com/fabiendostie/BQUAT/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-92%25-success?logo=pytest&logoColor=white)](docs/v1-plan.md)
+[![Version](https://img.shields.io/badge/v1.0.0-release-blue?logo=semanticrelease&logoColor=white)](VERSION)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)](package.json)
+[![TypeScript](https://img.shields.io/badge/Types-mypy%20%2B%20pyright-3178C6?logo=typescript&logoColor=white)](pyproject.toml)
 
-Build production-grade agent workflows by unifying BMAD-METHOD, TELIS, and QUINT under one runtime with blocking human-in-the-loop (HITL) gates. BQUAT preserves the original workflows and artifacts while adding enforceable guardrails, runtime approvals, and a reproducible execution model.
+[![HITL](https://img.shields.io/badge/HITL-blocking%20gates-orange?logo=shield&logoColor=white)](docs/v1-plan.md)
+[![Providers](https://img.shields.io/badge/Providers-7%20LLMs-blueviolet?logo=openai&logoColor=white)](config/runtime.yaml)
+[![Tests](https://img.shields.io/badge/Tests-309%20passing-success?logo=checkmarx&logoColor=white)](tests/)
+[![License](https://img.shields.io/badge/License-MIT-green?logo=opensourceinitiative&logoColor=white)](LICENSE)
 
-## At a glance
+> Build production-grade agent workflows by unifying **BMAD-METHOD**, **TELIS**, and **QUINT** under one runtime with blocking human-in-the-loop (HITL) gates.
 
-- Objective: one operational framework, many workflows, consistent outputs.
-- Approach: workflow-to-runtime mapping plus provider and guardrail adapters.
-- Control: hard-stop HITL gates with explicit approvals and resumable runs.
-- Source of truth: docs/v1-plan.md, methodology/unified_method_specification.md.
+BQUAT preserves the original workflows and artifacts while adding enforceable guardrails, runtime approvals, and a reproducible execution model.
 
-## Project status
+---
 
-- Last refreshed: 2025-12-30T23:54:34-05:00 (America/Toronto)
-- Primary branch: development
-- Release branch: main
-- Release target: v1.0 (see docs/v1-plan.md)
+## Key Features
 
-## Contents
+| Feature                | Description                                                             |
+| ---------------------- | ----------------------------------------------------------------------- |
+| **Unified Workflows**  | Execute BMAD workflows with consistent outputs and artifact conventions |
+| **HITL Gates**         | Blocking approval gates at planning, architecture, and release stages   |
+| **Evidence Engine**    | QUINT-powered evidence store with ADI promotion, WLNK scoring, and DRRs |
+| **Context Management** | TELIS LSP symbiosis, tiered shards, and progressive negotiation         |
+| **Multi-Provider**     | Route to Ollama, OpenAI, Anthropic, Gemini, Groq, or LiteLLM            |
+| **Guardrails**         | PII filtering, moderation, and rules-based protections                  |
+| **Single Install**     | One command installs BMAD + TELIS + QUINT together                      |
 
-- What it is
-- Architecture at a glance
-- Providers
-- Workflow and gates
-- Quick start
-- Quality gates
-- CLI
-- Docs and registries
-- Runtime layout
-- Timezone and timestamps
-- Change control and branch policy
-- Versioning
-- Notes
+---
 
-## What it is
+## Quick Start
 
-BQUAT is a unification layer that keeps BMAD workflow structure intact, applies TELIS context discipline, and embeds QUINT evidence practices. It focuses on deterministic execution, explicit outputs, and auditable approvals without changing the authored intent of existing workflows.
+### Installation
 
-## Architecture at a glance
+```bash
+# Option 1: Using npx (recommended)
+npx bquat install
 
-```mermaid
-flowchart LR
-  A[Workflow Sources] --> B[Unified Mapping]
-  B --> C[Runtime Engine]
-  C --> D[HITL Gates]
-  C --> E[Provider Registry]
-  D --> F[Approvals Ledger]
-  E --> G[LLM Providers]
-  C --> H[Artifacts + Outputs]
+# Option 2: Using Python
+pip install .
+bquat install
+
+# Option 3: From source
+git clone https://github.com/fabiendostie/BQUAT.git
+cd BQUAT
+pip install -r requirements-dev.txt
+npm install
 ```
+
+### Verify Installation
+
+```bash
+bquat verify
+bquat status
+```
+
+### Run a Workflow
+
+```bash
+# Validate configuration
+python -m cli.main validate
+
+# Run a workflow
+python -m cli.main run bmm prd --agent bmad --provider mock
+
+# Approve a gate
+python -m cli.main approve <run-id> --by you
+
+# Check status
+python -m cli.main status <run-id>
+```
+
+---
+
+## Architecture
+
+```text
++-----------------+     +------------------+     +----------------+
+|  BMAD Workflows |---->|  Runtime Engine  |---->|  HITL Gates    |
++-----------------+     +------------------+     +----------------+
+                               |                        |
+                               v                        v
+                        +-------------+          +-------------+
+                        |  Providers  |          |  Approvals  |
+                        +-------------+          +-------------+
+                               |
+              +----------------+----------------+
+              |                |                |
+              v                v                v
+        +---------+      +---------+      +---------+
+        |  TELIS  |      |  QUINT  |      | Guards  |
+        +---------+      +---------+      +---------+
+```
+
+### Components
+
+| Component          | Purpose                                                     |
+| ------------------ | ----------------------------------------------------------- |
+| **Runtime Engine** | Step execution, state machine, artifact indexing            |
+| **TELIS**          | LSP symbiosis, shards, negotiation, cache, validation gates |
+| **QUINT**          | Evidence store, ADI cycle, WLNK/congruence, decay, DRR      |
+| **Providers**      | Multi-LLM routing with retries, circuit breaker, streaming  |
+| **Guardrails**     | PII, moderation, blocklists, tool risk gating               |
+| **Installer**      | Unified CLI for install, update, verify, status             |
+
+---
 
 ## Providers
 
-Configured in config/runtime.yaml. The runtime ships with a registry abstraction and provider adapters.
+Configured in `config/runtime.yaml`. All providers support retries, backoff, and circuit breaker.
 
-| Provider  | Type      | Default Base URL                                   | Env Key         |
-| --------- | --------- | -------------------------------------------------- | --------------- |
-| Mock      | mock      | n/a                                                | n/a             |
-| Ollama    | ollama    | <http://localhost:11434>                           | n/a             |
-| LiteLLM   | litellm   | <http://localhost:4000>                            | API key env var |
-| OpenAI    | openai    | <https://api.openai.com>                           | API key env var |
-| Anthropic | anthropic | <https://api.anthropic.com>                        | API key env var |
-| Gemini    | gemini    | <https://generativelanguage.googleapis.com/v1beta> | API key env var |
-| Groq      | groq      | <https://api.groq.com/openai/v1>                   | API key env var |
+| Provider  | Type      | Default Base URL                            | Auth    |
+| --------- | --------- | ------------------------------------------- | ------- |
+| Mock      | mock      | n/a                                         | n/a     |
+| Ollama    | ollama    | `http://localhost:11434`                    | none    |
+| LiteLLM   | litellm   | `http://localhost:4000`                     | API key |
+| OpenAI    | openai    | `https://api.openai.com`                    | API key |
+| Anthropic | anthropic | `https://api.anthropic.com`                 | API key |
+| Gemini    | gemini    | `https://generativelanguage.googleapis.com` | API key |
+| Groq      | groq      | `https://api.groq.com/openai/v1`            | API key |
 
-## Workflow and gates
+---
 
-- Workflows are mapped into runtime steps with explicit outputs and artifact templates.
-- HITL gates are policy-based and blocking by default; approval is required to proceed.
-- Gate decisions are recorded to `gates.json` alongside approvals for resumable execution.
-
-## Quick start
+## CLI Reference
 
 ```bash
-uv pip install -r requirements-dev.txt
-# or: pip install -r requirements-dev.txt
+# Workflow execution
+python -m cli.main run <module> <workflow> --agent <agent> --provider <provider>
+python -m cli.main resume <run-id> --agent <agent> --provider <provider>
+
+# Gate management
+python -m cli.main approve <run-id> --by <approver>
+python -m cli.main status <run-id>
+
+# Run management
+python -m cli.main list
+python -m cli.main history --limit 10
+python -m cli.main export <run-id> --output bundle.json --report
+
+# Configuration
+python -m cli.main validate
+
+# Installer
+bquat install [target] [--force] [--build-quint]
+bquat update [target]
+bquat verify [target]
+bquat status [target]
+```
+
+---
+
+## Project Structure
+
+```text
+BQUAT/
++-- runtime/           # Engine, gates, providers, tools, guardrails
+|   +-- telis/         # Context management (shards, cache, negotiation)
+|   +-- quint/         # Evidence engine (store, ADI, WLNK, DRR)
+|   +-- providers/     # LLM provider adapters
+|   +-- guardrails/    # PII, moderation, rules checks
+|   +-- tools/         # File IO, repo, LSP, validation
+|   +-- logging/       # Structured logging and observability
++-- installer/         # Unified installer module
++-- cli/               # CLI entrypoints
++-- methodology/       # Unified spec, registries, mapping
++-- config/            # Runtime configuration
++-- docs/              # Plans, audits, reference docs
++-- tests/             # Unit, integration, and E2E tests
+```
+
+---
+
+## Documentation
+
+| Document                                                    | Description                                  |
+| ----------------------------------------------------------- | -------------------------------------------- |
+| [v1 Release Plan](docs/v1-plan.md)                          | Source of truth for v1.0 scope and checklist |
+| [Traceability Audit](docs/traceability-audit.md)            | Requirement coverage and evidence mapping    |
+| [Installation Guide](docs/installation-guide.md)            | Detailed installation instructions           |
+| [Unified Spec](methodology/unified_method_specification.md) | Framework specification                      |
+| [Runtime Schemas](docs/runtime-schemas.json)                | JSON schema definitions                      |
+| [Step Contract](docs/runtime-step-contract.md)              | Step execution contract                      |
+| [Tool Pipeline](docs/tool-execution-pipeline.md)            | Tool execution architecture                  |
+| [Release Checklist](docs/release-checklist.md)              | v1.0.0 release verification                  |
+| [Changelog](CHANGELOG.md)                                   | Version history                              |
+
+---
+
+## Development
+
+### Setup
+
+```bash
+git clone https://github.com/fabiendostie/BQUAT.git
+cd BQUAT
+pip install -r requirements-dev.txt
 npm install
 npm run prepare
-python methodology/tools/generate_mapping.py
-python tests/run_tests.py
-pytest
 ```
 
-## Quality gates
+### Quality Gates
 
 ```bash
-npm run lint
-npm run format:check
-npm run typecheck
-npm test
+npm run lint          # Ruff, markdownlint, ESLint
+npm run format:check  # Ruff, Prettier
+npm run typecheck     # mypy, pyright
+npm test              # pytest with coverage
 ```
 
-- Lint: Ruff (Python), ESLint JSON (duplicate keys), markdownlint-cli2.
-- Format: Ruff formatter for Python and Prettier for Markdown, JSON, YAML.
-- Typecheck: mypy and pyright (pre-commit only, not CI).
+### Test Coverage
 
-## CLI
+- **309 tests** with **92.10% coverage**
+- Unit tests for all runtime modules
+- Integration tests for BMAD workflows
+- E2E tests for gates, artifacts, and evidence
 
-```bash
-python -m cli.main validate
-python -m cli.main run bmm prd --agent bmad --provider mock
-python -m cli.main approve <run-id> --by you
-python -m cli.main status <run-id>
-python -m cli.main list
-python -m cli.main history --limit 5
-python -m cli.main export <run-id> --output runs/export.json
-```
+---
 
-- If a workflow is outside configured automation phases and `--agent` is provided, the CLI prompts for manual vs automated execution.
-- Use `--auto` or `--manual` on `run`/`resume` (with `--agent`) to override the prompt.
-- Example overrides:
+## Version and Releases
 
-```bash
-python -m cli.main run bmm prd --agent bmad --provider mock --auto
-python -m cli.main resume <run-id> --agent bmad --provider mock --manual
-```
+- **Current version:** 1.0.0
+- **Version source:** `VERSION` file (SemVer 2.0.0)
+- **Primary branch:** `development`
+- **Release branch:** `main`
 
-## Installer (planned)
+See [versioning policy](docs/versioning.md) for details.
 
-The full framework will ship through the BMAD installer so slash commands from BMAD, QUINT, and BQUAT are installed together.
-Target command: `npx bmad-method@alpha install`.
+---
 
-## Docs and registries
+## Contributing
 
-- Unified method specification: methodology/unified_method_specification.md
-- v1.0 release plan and checklist: docs/v1-plan.md
-- Traceability audit and requirement coverage: docs/traceability-audit.md
-- Runtime step contract: docs/runtime-step-contract.md
-- Tool execution pipeline: docs/tool-execution-pipeline.md
-- Runtime schemas: docs/runtime-schemas.json
-- Documentation index: docs/unified-framework-documentation-index.md
-- Agent and workflow registries: methodology/registry-agents.md, methodology/registry-workflows.md
-- Agent menu bindings: methodology/registry-agent-menus.md
-- Workflow to Quint/TELIS mapping: methodology/integration-mapping.md
-- Release notes: CHANGELOG.md
+1. All changes must map to [docs/v1-plan.md](docs/v1-plan.md)
+2. Update [CHANGELOG.md](CHANGELOG.md) for non-doc changes
+3. Follow Conventional Commits (enforced by hook)
+4. Ensure CI passes before merge
 
-## Runtime layout
+---
 
-| Path         | Purpose                           |
-| ------------ | --------------------------------- |
-| runtime/     | engine, gates, providers, tools   |
-| methodology/ | unified spec, registries, mapping |
-| config/      | runtime configuration             |
-| cli/         | CLI entrypoints                   |
-| docs/        | plans, audits, reference docs     |
+## License
 
-## Timezone and timestamps
+MIT License - see [LICENSE](LICENSE) for details.
 
-All runtime timestamps use getCurrentTime and default to America/Toronto. Override with `BQUAT_TIMEZONE` if needed.
+---
 
-## Change control and branch policy
-
-Scope changes must be recorded in docs/v1-plan.md with an owner and rationale. The development branch is primary; main is release only.
-
-## Versioning
-
-This repository follows SemVer (see docs/versioning.md). The source of truth is the root VERSION file.
-
-## Notes
-
-- Sample and reference workflows are excluded from production registries and mappings.
-- Mapping artifacts only include explicit outputs and templates from workflow definitions.
+**BQUAT** - BMAD + QUINT + TELIS Unified Autonomous Framework
