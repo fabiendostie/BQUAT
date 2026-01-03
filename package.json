@@ -1,7 +1,11 @@
 {
   "name": "bquat",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "BQUAT unified installer - BMAD + TELIS + QUINT autonomous framework",
+  "bin": {
+    "bquat": "./bin/bquat.js"
+  },
   "scripts": {
     "prepare": "husky",
     "format": "python -m ruff format . && prettier --write \"**/*.{md,json,yml,yaml}\"",
@@ -10,7 +14,7 @@
     "lint:json": "eslint \"**/*.json\" \"**/*.jsonc\" --max-warnings=0",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "lint:py": "python -m ruff check .",
-    "typecheck": "python -m mypy runtime cli methodology/tools && pyright",
+    "typecheck": "python -m mypy runtime cli methodology/tools installer && pyright",
     "test": "python tests/run_tests.py && pytest",
     "test:python": "python tests/run_tests.py",
     "test:pytest": "pytest"

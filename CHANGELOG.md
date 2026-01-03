@@ -3,12 +3,19 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2025-12-30T23:55:00-05:00
+Last updated: 2026-01-02T12:00:00-05:00
 
 ## [Unreleased]
 
 ### Added
 
+- Unified installer module with BMAD + TELIS + QUINT integration.
+- Installer CLI with install, update, verify, and status commands.
+- Installation manifest tracking with component versions and file checksums.
+- Installation verification checklist with 10 integrity checks.
+- Node.js wrapper for npx support (npx bquat install).
+- IDE slash commands generation (bquat-status, bquat-run, bquat-evidence).
+- Installation guide and installer integration documentation.
 - Tool execution pipeline with registry, risk gating, HITL metadata, and tool results persistence.
 - Tool adapters for safe file IO, repo operations, time, and LSP (Pyright/TypeScript) queries.
 - Validation runners (AST, typecheck, lint) and engine validation gates with retries and output layout checks.
@@ -55,6 +62,8 @@ Last updated: 2025-12-30T23:55:00-05:00
 
 ### Changed
 
+- Bump version to 0.2.0 for unified installer release.
+- Add installer module to mypy typecheck in package.json.
 - Step contract and tool execution pipeline documentation updates.
 - Governance hardening with lint/typecheck/format hooks and changelog enforcement.
 - Allow duplicate changelog headings across releases in markdownlint config.
