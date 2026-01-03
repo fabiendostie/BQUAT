@@ -133,7 +133,7 @@ def write_manifest(manifest_path: Path, manifest: InstallManifest) -> None:
 
 def get_bquat_version() -> str:
     """Get the current BQUAT version."""
-    return "0.2.0"
+    return "1.0.0"
 
 
 def get_git_commit(repo_path: Path) -> str:

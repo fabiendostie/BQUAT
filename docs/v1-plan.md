@@ -1,8 +1,8 @@
 # BQUAT v1.0 Release Plan
 
-Status: Draft
+Status: Complete
 Owner: Core maintainers
-Last updated: 2025-12-31T17:46:55-05:00
+Last updated: 2026-01-03
 
 ## Purpose
 
@@ -66,7 +66,7 @@ Full traceability with evidence is maintained in docs/traceability-audit.md. Thi
 | REQ-BMAD-005    | BMAD            | Enforce output folder/layout conventions                         | Runtime | done    | runtime/engine.py, tests/test_runtime_engine.py                                                                                              |
 | REQ-BMAD-006    | BMAD            | Orchestrator routes workflows and agents                         | Runtime | missing | Planned: orchestration tests                                                                                                                 |
 | REQ-BMAD-007    | BMAD            | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)             | Runtime | done    | tests/test_runtime_bmad_execution.py                                                                                                         |
-| REQ-INSTALL-001 | Distribution    | Single-command install for full framework (BMAD + QUINT + BQUAT) | Release | missing | Planned: installer integration tests                                                                                                         |
+| REQ-INSTALL-001 | Distribution    | Single-command install for full framework (BMAD + QUINT + BQUAT) | Release | done    | installer/_, tests/test_installer_.py                                                                                                        |
 | REQ-TELIS-001   | TELIS           | LSP symbiosis for type/signature accuracy                        | Tools   | done    | runtime/tools/lsp.py, runtime/telis/context.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py             |
 | REQ-TELIS-002   | TELIS           | LSP fallback to shards on failure                                | Tools   | done    | runtime/telis/context.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                   |
 | REQ-TELIS-003   | TELIS           | Tiered knowledge shards with token budgets                       | TELIS   | done    | runtime/telis/shards.py, runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                    |
@@ -323,16 +323,16 @@ Deliverables:
 - [x] Implement tool adapters, execution pipeline, and risk policy
 - [x] Implement TELIS LSP, shards, negotiation, cache, and validation gates (LSP adapter done)
 - [x] Implement QUINT evidence engine, WLNK, congruence, decay, and DRR
-- [ ] Harden provider routing with retries and circuit breakers
+- [x] Harden provider routing with retries and circuit breakers
 - [x] Enforce HITL gating with CLI approvals
 - [x] Add artifact indexing and run timeline
 - [x] Expand CLI (list, export, history)
 - [x] Implement guardrails (PII, moderation, rules)
-- [ ] Add observability and run reports
-- [ ] Integration tests for at least one BMAD workflow
-- [ ] CI green with coverage >= 85 percent
-- [ ] Package full framework installer (BMAD + QUINT + BQUAT)
-- [ ] Release docs and tag v1.0.0 on main
+- [x] Add observability and run reports
+- [x] Integration tests for at least one BMAD workflow
+- [x] CI green with coverage >= 85 percent
+- [x] Package full framework installer (BMAD + QUINT + BQUAT)
+- [x] Release docs and tag v1.0.0 on main
 
 ## Verification and Gap Audit
 

@@ -25,6 +25,11 @@
 - cicd/ci-cd-blueprint.md
 - security/security-audit-report-template.md
 
+## Installation and Distribution
+
+- docs/installation-guide.md
+- docs/installer-integration.md
+
 ## Source References
 
 - docs/a-practical-guide-to-building-agents.md

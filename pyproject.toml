@@ -1,6 +1,6 @@
 [project]
 name = "bquat"
-version = "0.2.0"
+version = "1.0.0"
 description = "BQUAT unified installer - BMAD + TELIS + QUINT autonomous framework"
 requires-python = ">=3.11"
 dependencies = ["pyyaml>=6.0"]

@@ -3,9 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2026-01-02T12:00:00-05:00
+Last updated: 2026-01-03
 
 ## [Unreleased]
+
+## [1.0.0] - 2026-01-03
 
 ### Added
 
@@ -62,7 +64,7 @@ Last updated: 2026-01-02T12:00:00-05:00
 
 ### Changed
 
-- Bump version to 0.2.0 for unified installer release.
+- Bump version to 1.0.0 for v1.0 release.
 - Add installer module to mypy typecheck in package.json.
 - Step contract and tool execution pipeline documentation updates.
 - Governance hardening with lint/typecheck/format hooks and changelog enforcement.
