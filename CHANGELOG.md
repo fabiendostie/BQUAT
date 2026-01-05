@@ -24,6 +24,9 @@ Last updated: 2026-01-05
 - Interactive CLI mode with step executor for guided workflow execution.
 - Command-based installer structure with modular command handlers.
 - IDE integration documentation for VS Code and JetBrains.
+- Run artifact packaging utilities (zip/node/docker) with coverage tests.
+- CD workflow for release publishing to PyPI, npm, and GitHub.
+- Comprehensive coverage tests for CLI, agents, plugin manager, and packaging.
 
 ### Changed
 
@@ -31,6 +34,10 @@ Last updated: 2026-01-05
 - Updated traceability audit to reflect all requirements as done.
 - Enhanced plugin manager with two-phase execution (policy then observation).
 - Integrated event bus publishing throughout the workflow engine.
+- Config loader now supports JSON or YAML runtime configs.
+- npm package marked non-private to allow publishing.
+- Enforce LF line endings with repository gitattributes.
+- Resolve typecheck issues in orchestrator routing, guardrails, and interactive CLI.
 
 ## [1.0.0] - 2026-01-03
 

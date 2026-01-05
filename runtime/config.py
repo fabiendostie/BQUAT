@@ -13,7 +13,22 @@ def project_root_from_here() -> Path:
 
 def load_config(path: Optional[Path] = None) -> Dict[str, Any]:
     target = path or DEFAULT_CONFIG_PATH
-    return json.loads(target.read_text(encoding="ascii"))
+    raw = target.read_text(encoding="ascii")
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        try:
+            import yaml
+        except ImportError as exc:  # pragma: no cover - only if PyYAML missing
+            raise ValueError(
+                f"Config file '{target}' is not valid JSON and PyYAML is not installed."
+            ) from exc
+        data = yaml.safe_load(raw)
+        if data is None:
+            return {}
+        if not isinstance(data, dict):
+            raise ValueError(f"Config file '{target}' must define a mapping at the root.")
+        return data
 
 
 def storage_root(config: Dict[str, Any], root: Optional[Path] = None) -> Path:

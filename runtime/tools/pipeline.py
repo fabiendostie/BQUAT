@@ -274,16 +274,16 @@ def run_tool_calls(
                 error = "tool not in allowlist"
             else:
                 if plugins:
-                    decision = plugins.run_before_tool_policy(
+                    policy_decision = plugins.run_before_tool_policy(
                         call.name,
                         step,
                         manifest,
                         config=config,
                         run_dir=str(run_dir),
                     )
-                    if not decision.allow:
+                    if not policy_decision.allow:
                         status = "blocked"
-                        error = decision.reason or "policy blocked"
+                        error = policy_decision.reason or "policy blocked"
                 if status == "completed":
                     arg_error = _validate_args(definition.spec, call.args)
                     if arg_error:
@@ -321,8 +321,8 @@ def run_tool_calls(
                     recoverable=_is_recoverable_error(error),
                     required=call.required,
                 )
-                decision = isolator.isolate_tool_failure(failure_ctx)
-                if decision.action == "retry":
+                isolation_decision = isolator.isolate_tool_failure(failure_ctx)
+                if isolation_decision.action == "retry":
                     if retry_backoff > 0:
                         time.sleep(retry_backoff)
                     continue

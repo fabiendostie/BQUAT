@@ -8,13 +8,13 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, cast
 
 from runtime import storage
 from runtime.document_builder import DocumentBuilder
-from runtime.engine import WorkflowEngine
+from runtime.engine import WorkflowEngine, load_mapping_records
 from runtime.providers.base import Provider
-from runtime.providers.registry import get_provider
+from runtime.providers.registry import ProviderRegistry
 from runtime.step_executor import (
     BmadStepExecutor,
     find_step_files,
@@ -147,18 +147,20 @@ class InteractiveCLI:
         self._print_header(f"Starting: {workflow}")
 
         # Create or resume run
+        resolved_run_id: str
         if run_id:
-            run_dir = self.engine.runs_dir / run_id
+            resolved_run_id = run_id
+            run_dir = self.engine.storage_root / resolved_run_id
             if not run_dir.exists():
-                self.output(f"Run {run_id} not found.")
+                self.output(f"Run {resolved_run_id} not found.")
                 return None
             manifest = storage.read_manifest(run_dir)
         else:
             manifest = self.engine.create_run(module, workflow)
-            run_id = manifest["run_id"]
-            run_dir = self.engine.runs_dir / run_id
+            resolved_run_id = str(manifest["run_id"])
+            run_dir = self.engine.storage_root / resolved_run_id
 
-        self.output(f"Run ID: {run_id}")
+        self.output(f"Run ID: {resolved_run_id}")
         self.output(f"Run directory: {run_dir}")
 
         # Find step files
@@ -239,7 +241,11 @@ class InteractiveCLI:
             executor.execute(step_data, context)
 
             # Show response
-            result = step_data.get("result", {})
+            raw_result: object = step_data.get("result", {})
+            if isinstance(raw_result, dict):
+                result = cast(Dict[str, Any], raw_result)
+            else:
+                result = {}
             response = result.get("response")
             if response:
                 self.output("")
@@ -259,7 +265,13 @@ class InteractiveCLI:
                         break
                     context["user_input"] = follow_up
                     executor.execute(step_data, context)
-                    new_response = step_data.get("result", {}).get("response")
+                    raw_latest: object = step_data.get("result", {})
+                    latest_result: Dict[str, Any]
+                    if isinstance(raw_latest, dict):
+                        latest_result = cast(Dict[str, Any], raw_latest)
+                    else:
+                        latest_result = {}
+                    new_response = latest_result.get("response")
                     if new_response:
                         self.output("")
                         self.output(new_response[:1000])
@@ -293,7 +305,7 @@ class InteractiveCLI:
                     f"  {name}: {info['completed_sections']}/{info['total_sections']} sections"
                 )
 
-        return run_id
+        return resolved_run_id
 
     def _find_workflow_dir(self, module: str, workflow: str) -> Optional[Path]:
         """Find workflow directory in BMAD-METHOD."""
@@ -354,11 +366,13 @@ def run_interactive(
     from runtime.config import load_config
 
     config = load_config(config_path)
-    engine = WorkflowEngine(config=config)
+    mapping = load_mapping_records()
+    engine = WorkflowEngine(config=config, mapping_records=mapping)
 
     provider = None
     if provider_name:
-        provider = get_provider(provider_name, config.get("providers", {}))
+        registry = ProviderRegistry(config)
+        provider = registry.get(provider_name)
 
     cli = InteractiveCLI(
         engine=engine,
@@ -374,7 +388,8 @@ def main() -> int:
     from runtime.config import load_config
 
     config = load_config()
-    engine = WorkflowEngine(config=config)
+    mapping = load_mapping_records()
+    engine = WorkflowEngine(config=config, mapping_records=mapping)
 
     cli = InteractiveCLI(engine=engine)
     cli.run_interactive_session()

@@ -9,13 +9,14 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Callable, Dict, List, Optional, cast
 
 import yaml
 
 from runtime import storage
 from runtime.engine import StepExecutor
 from runtime.providers.base import Provider, ProviderRequest
+from runtime.time_provider import get_current_time
 
 
 @dataclass
@@ -441,14 +442,12 @@ class BmadStepExecutor(StepExecutor):
 
         # Record user input if provided
         if user_input:
-            from runtime.tools.time_tool import utc_now
-
             state.turns.append(
                 ConversationTurn(
                     role="user",
                     content=user_input,
                     step_id=state.current_step_id,
-                    timestamp=utc_now(),
+                    timestamp=get_current_time(),
                 )
             )
 
@@ -457,15 +456,13 @@ class BmadStepExecutor(StepExecutor):
         response_text = self._invoke_provider(prompt, conversation_history)
 
         if response_text:
-            from runtime.tools.time_tool import utc_now
-
             # Record assistant response
             state.turns.append(
                 ConversationTurn(
                     role="assistant",
                     content=response_text,
                     step_id=state.current_step_id,
-                    timestamp=utc_now(),
+                    timestamp=get_current_time(),
                 )
             )
 
@@ -529,8 +526,8 @@ class InteractiveStepExecutor(BmadStepExecutor):
         self,
         provider: Optional[Provider] = None,
         bmad_root: Optional[Path] = None,
-        input_callback: Optional[callable] = None,
-        output_callback: Optional[callable] = None,
+        input_callback: Optional[Callable[[str], str]] = None,
+        output_callback: Optional[Callable[[str], None]] = None,
     ) -> None:
         super().__init__(provider, bmad_root)
         self.input_callback = input_callback or input

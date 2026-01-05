@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from types import ModuleType
 from typing import Any, Dict, Optional
 
 from runtime import config as runtime_config
@@ -13,10 +14,13 @@ from runtime.orchestrator import engine as orchestrator_engine
 from runtime.orchestrator.graph import WorkflowNode
 from runtime.providers.registry import ProviderRegistry
 
+yaml: ModuleType | None
 try:
-    import yaml  # type: ignore
+    import yaml as yaml_module
 except ImportError:  # pragma: no cover - optional dependency
     yaml = None
+else:
+    yaml = yaml_module
 
 
 def _load_config(path: Optional[str]) -> Dict[str, Any]:

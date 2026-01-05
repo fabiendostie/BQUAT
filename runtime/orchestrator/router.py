@@ -23,7 +23,10 @@ class AgentRouter:
         orchestrator_cfg = (
             self.config.get("orchestrator", {}) if isinstance(self.config, dict) else {}
         )
-        default_agent = orchestrator_cfg.get("default_agent")
+        if isinstance(orchestrator_cfg, dict):
+            default_agent = orchestrator_cfg.get("default_agent")
+        else:
+            default_agent = None
         return str(default_agent or "bmad")
 
 
@@ -35,7 +38,11 @@ class ProviderRouter:
         if node.provider:
             return node.provider
         providers_cfg = self.config.get("providers", {}) if isinstance(self.config, dict) else {}
-        return str(providers_cfg.get("default", ""))
+        if isinstance(providers_cfg, dict):
+            default_provider = providers_cfg.get("default", "")
+        else:
+            default_provider = ""
+        return str(default_provider)
 
 
 class AgentProviderRouter:

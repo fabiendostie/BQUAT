@@ -1,6 +1,6 @@
 {
   "name": "baqt",
-  "private": true,
+  "private": false,
   "version": "1.0.0",
   "description": "BAQT unified installer - BMAD + TELIS + QUINT autonomous framework",
   "bin": {

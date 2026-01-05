@@ -1,0 +1,247 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (no actual publishing)"
+        required: false
+        default: "true"
+        type: boolean
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
+
+jobs:
+  # Build and test before deployment
+  build-and-test:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install build twine
+          npm ci
+
+      - name: Run tests
+        run: |
+          python tests/run_tests.py
+          pytest
+
+      - name: Lint and type check
+        run: |
+          npm run lint
+          npm run typecheck
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(cat VERSION)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build Python package
+        run: python -m build
+
+      - name: Build npm package
+        run: npm pack
+
+      - name: Upload Python artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
+      - name: Upload npm artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-dist
+          path: "*.tgz"
+
+  # Publish to PyPI
+  publish-pypi:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'false')
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
+  # Publish to npm
+  publish-npm:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'false')
+    environment: npm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # Create GitHub Release with artifacts
+  github-release:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Python artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
+      - name: Download npm artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: npm-dist
+          path: npm-dist/
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          # Extract version from tag
+          VERSION=${GITHUB_REF#refs/tags/v}
+
+          # Extract changelog section for this version
+          sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | head -n -1 > release_notes.md
+
+          # Append artifact checksums
+          echo "" >> release_notes.md
+          echo "## Checksums" >> release_notes.md
+          echo '```' >> release_notes.md
+          sha256sum dist/* npm-dist/* >> release_notes.md
+          echo '```' >> release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: release_notes.md
+          files: |
+            dist/*
+            npm-dist/*
+          fail_on_unmatched_files: false
+
+  # Deploy documentation (optional)
+  deploy-docs:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Build documentation
+        run: |
+          pip install mkdocs mkdocs-material
+          # Create mkdocs.yml if not exists
+          if [ ! -f mkdocs.yml ]; then
+            cat > mkdocs.yml << 'EOF'
+          site_name: BAQT Documentation
+          theme:
+            name: material
+          nav:
+            - Home: README.md
+            - Installation: docs/installation-guide.md
+            - Release Plan: docs/v1-plan.md
+            - Architecture: docs/unified-framework-documentation-index.md
+          docs_dir: .
+          EOF
+          fi
+          mkdocs build -d site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "site"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Notify on completion
+  notify:
+    needs: [publish-pypi, publish-npm, github-release]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check status
+        run: |
+          if [ "${{ needs.publish-pypi.result }}" == "success" ] && \
+             [ "${{ needs.publish-npm.result }}" == "success" ] && \
+             [ "${{ needs.github-release.result }}" == "success" ]; then
+            echo "All deployments successful!"
+            exit 0
+          else
+            echo "Some deployments failed or were skipped"
+            echo "PyPI: ${{ needs.publish-pypi.result }}"
+            echo "npm: ${{ needs.publish-npm.result }}"
+            echo "GitHub Release: ${{ needs.github-release.result }}"
+          fi

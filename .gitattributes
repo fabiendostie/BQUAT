@@ -1,0 +1,21 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
+*.tgz binary
+*.gz binary
+*.ico binary
+*.exe binary
+*.dll binary
+*.jar binary
+*.pyc binary
+*.pyd binary
+*.whl binary
+*.so binary
+*.dylib binary
+*.mp4 binary
+*.mov binary
+*.webm binary

@@ -880,17 +880,17 @@ class WorkflowEngine:
         _clear_human_block(manifest)
 
         if self.plugins:
-            decision = self.plugins.run_before_run_policy(
+            policy_decision = self.plugins.run_before_run_policy(
                 manifest,
                 config=self.config,
                 run_dir=str(run_dir),
             )
-            if not decision.allow:
+            if not policy_decision.allow:
                 manifest["status"] = "blocked"
                 manifest["blocked_reason"] = "policy"
-                manifest["blocked_policy"] = decision.block_type or "policy"
-                manifest["blocked_policy_reason"] = decision.reason
-                manifest["blocked_policy_metadata"] = dict(decision.metadata)
+                manifest["blocked_policy"] = policy_decision.block_type or "policy"
+                manifest["blocked_policy_reason"] = policy_decision.reason
+                manifest["blocked_policy_metadata"] = dict(policy_decision.metadata)
                 manifest["updated_at"] = utc_now()
                 storage.write_manifest(run_dir, manifest)
                 _append_event(
@@ -899,23 +899,23 @@ class WorkflowEngine:
                     manifest["run_id"],
                     {
                         "reason": "policy",
-                        "policy_reason": decision.reason,
-                        "policy_type": decision.block_type,
-                        "policy_metadata": decision.metadata,
+                        "policy_reason": policy_decision.reason,
+                        "policy_type": policy_decision.block_type,
+                        "policy_metadata": policy_decision.metadata,
                     },
                     bus=event_bus,
                 )
                 self.plugins.on_validation(manifest, "blocked")
                 return manifest
 
-        decision = gates.gate_required(
+        gate_decision = gates.gate_required(
             spec.human,
             self.config,
             phase=spec.phase,
             workflow=spec.workflow,
         )
         approvals = storage.read_approvals(run_dir)
-        if decision.required and not gates.has_approval(approvals, _gate_id(spec)):
+        if gate_decision.required and not gates.has_approval(approvals, _gate_id(spec)):
             manifest["status"] = "blocked"
             manifest["blocked_reason"] = "human_gate"
             manifest["blocked_gate"] = _gate_id(spec)
@@ -924,7 +924,7 @@ class WorkflowEngine:
             _record_human_gate(
                 run_dir,
                 spec,
-                decision,
+                gate_decision,
                 status="blocked",
                 event_bus=event_bus,
             )
@@ -936,7 +936,7 @@ class WorkflowEngine:
                     "gate_id": _gate_id(spec),
                     "phase": spec.phase,
                     "workflow": f"{spec.module}/{spec.workflow}",
-                    "reason": decision.reason,
+                    "reason": gate_decision.reason,
                 },
                 bus=event_bus,
             )
@@ -949,8 +949,8 @@ class WorkflowEngine:
                     run_dir=str(run_dir),
                     payload={
                         "gate_id": _gate_id(spec),
-                        "required": decision.required,
-                        "reason": decision.reason,
+                        "required": gate_decision.required,
+                        "reason": gate_decision.reason,
                         "phase": spec.phase,
                         "workflow": f"{spec.module}/{spec.workflow}",
                     },
@@ -1030,17 +1030,17 @@ class WorkflowEngine:
         _clear_human_block(manifest)
 
         if self.plugins:
-            decision = self.plugins.run_before_run_policy(
+            policy_decision = self.plugins.run_before_run_policy(
                 manifest,
                 config=self.config,
                 run_dir=str(run_dir),
             )
-            if not decision.allow:
+            if not policy_decision.allow:
                 manifest["status"] = "blocked"
                 manifest["blocked_reason"] = "policy"
-                manifest["blocked_policy"] = decision.block_type or "policy"
-                manifest["blocked_policy_reason"] = decision.reason
-                manifest["blocked_policy_metadata"] = dict(decision.metadata)
+                manifest["blocked_policy"] = policy_decision.block_type or "policy"
+                manifest["blocked_policy_reason"] = policy_decision.reason
+                manifest["blocked_policy_metadata"] = dict(policy_decision.metadata)
                 manifest["updated_at"] = utc_now()
                 storage.write_manifest(run_dir, manifest)
                 _append_event(
@@ -1049,23 +1049,23 @@ class WorkflowEngine:
                     manifest["run_id"],
                     {
                         "reason": "policy",
-                        "policy_reason": decision.reason,
-                        "policy_type": decision.block_type,
-                        "policy_metadata": decision.metadata,
+                        "policy_reason": policy_decision.reason,
+                        "policy_type": policy_decision.block_type,
+                        "policy_metadata": policy_decision.metadata,
                     },
                     bus=event_bus,
                 )
                 self.plugins.on_validation(manifest, "blocked")
                 return manifest
 
-        decision = gates.gate_required(
+        gate_decision = gates.gate_required(
             spec.human,
             self.config,
             phase=spec.phase,
             workflow=spec.workflow,
         )
         approvals = storage.read_approvals(run_dir)
-        if decision.required and not gates.has_approval(approvals, _gate_id(spec)):
+        if gate_decision.required and not gates.has_approval(approvals, _gate_id(spec)):
             manifest["status"] = "blocked"
             manifest["blocked_reason"] = "human_gate"
             manifest["blocked_gate"] = _gate_id(spec)
@@ -1074,7 +1074,7 @@ class WorkflowEngine:
             _record_human_gate(
                 run_dir,
                 spec,
-                decision,
+                gate_decision,
                 status="blocked",
                 event_bus=event_bus,
             )
@@ -1086,7 +1086,7 @@ class WorkflowEngine:
                     "gate_id": _gate_id(spec),
                     "phase": spec.phase,
                     "workflow": f"{spec.module}/{spec.workflow}",
-                    "reason": decision.reason,
+                    "reason": gate_decision.reason,
                 },
                 bus=event_bus,
             )
@@ -1099,8 +1099,8 @@ class WorkflowEngine:
                     run_dir=str(run_dir),
                     payload={
                         "gate_id": _gate_id(spec),
-                        "required": decision.required,
-                        "reason": decision.reason,
+                        "required": gate_decision.required,
+                        "reason": gate_decision.reason,
                         "phase": spec.phase,
                         "workflow": f"{spec.module}/{spec.workflow}",
                     },

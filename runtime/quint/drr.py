@@ -202,7 +202,7 @@ class DrrStore:
     def _record_summary(self, summary: DrrSummary) -> None:
         path = self.run_dir / "drr-summaries.json"
         if path.exists():
-            payload = storage.read_json(path)
+            payload: Dict[str, object] = storage.read_json(path)
         else:
             payload = {"summaries": []}
         summaries = payload.get("summaries", [])

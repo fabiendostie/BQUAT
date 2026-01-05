@@ -178,7 +178,10 @@ class TelisPolicyEngine:
                 phases_raw = cached.metadata.get("phases", [])
                 phases = list(phases_raw) if isinstance(phases_raw, list) else []
                 cached_metadata = dict(cached.metadata)
-                lsp_calls = cached_metadata.get("lsp_calls")
+                raw_source = cached_metadata.get("source")
+                source = str(raw_source) if raw_source is not None else None
+                raw_lsp_calls = cached_metadata.get("lsp_calls")
+                lsp_calls = list(raw_lsp_calls) if isinstance(raw_lsp_calls, list) else None
                 if not lsp_calls:
                     lsp_calls = _build_lsp_calls(
                         telis_policy.use_lsp,
@@ -188,7 +191,7 @@ class TelisPolicyEngine:
                         character,
                         doc_path,
                         doc_text,
-                        cached_metadata.get("source"),
+                        source,
                     )
                     if lsp_calls:
                         cached_metadata["lsp_calls"] = lsp_calls

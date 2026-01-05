@@ -16,8 +16,9 @@ def get_priority(plugin: Plugin) -> int:
     Data plane plugins default to 100 (run after control plane).
     Legacy plugins default to 50 (run between).
     """
-    if hasattr(plugin, "priority"):
-        return plugin.priority
+    priority = getattr(plugin, "priority", None)
+    if isinstance(priority, int):
+        return priority
     if isinstance(plugin, ControlPlanePlugin):
         return 0
     if isinstance(plugin, DataPlanePlugin):

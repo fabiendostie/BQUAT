@@ -47,19 +47,21 @@ async def evaluate_guardrails_async(
         return None
 
     texts = checks._collect_texts(stage, step, step_spec, run_dir)
-    tasks: List[asyncio.Future] = []
+    tasks: List[asyncio.Task[List[Dict[str, Any]]]] = []
 
     pii_cfg = guardrails_cfg.get("pii", {})
     if pii_cfg.get("enabled", True):
-        tasks.append(asyncio.to_thread(_evaluate_pii, texts, pii_cfg))
+        tasks.append(asyncio.create_task(asyncio.to_thread(_evaluate_pii, texts, pii_cfg)))
 
     moderation_cfg = guardrails_cfg.get("moderation", {})
     if moderation_cfg.get("enabled", True):
-        tasks.append(asyncio.to_thread(_evaluate_moderation, texts, moderation_cfg))
+        tasks.append(
+            asyncio.create_task(asyncio.to_thread(_evaluate_moderation, texts, moderation_cfg))
+        )
 
     rules_cfg = guardrails_cfg.get("rules", {})
     if rules_cfg.get("enabled", True):
-        tasks.append(asyncio.to_thread(_evaluate_rules, texts, rules_cfg))
+        tasks.append(asyncio.create_task(asyncio.to_thread(_evaluate_rules, texts, rules_cfg)))
 
     violations: List[Dict[str, Any]] = []
     if tasks:
@@ -67,7 +69,8 @@ async def evaluate_guardrails_async(
         for result in results:
             if isinstance(result, Exception):
                 continue
-            violations.extend(result)
+            if isinstance(result, list):
+                violations.extend(result)
 
     status = "failed" if violations else "passed"
     return GuardrailReport(

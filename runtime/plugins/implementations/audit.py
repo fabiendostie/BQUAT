@@ -29,6 +29,7 @@ class AuditPlugin(DataPlanePlugin):
         if self._run_dir:
             audit_path = self._run_dir / "audit.json"
             try:
+                payload: Dict[str, Any]
                 if audit_path.exists():
                     payload = json.loads(audit_path.read_text(encoding="utf-8"))
                 else:

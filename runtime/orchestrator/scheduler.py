@@ -8,7 +8,10 @@ class ResourceScheduler:
 
     def __init__(self, config: Dict[str, object]) -> None:
         orchestrator_cfg = config.get("orchestrator", {}) if isinstance(config, dict) else {}
-        limits = orchestrator_cfg.get("provider_limits", {})
+        if isinstance(orchestrator_cfg, dict):
+            limits = orchestrator_cfg.get("provider_limits", {})
+        else:
+            limits = {}
         self._limits = (
             {str(key): int(value) for key, value in dict(limits).items()} if limits else {}
         )
