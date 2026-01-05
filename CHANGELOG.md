@@ -40,6 +40,7 @@ Last updated: 2026-01-05
 - Resolve typecheck issues in orchestrator routing, guardrails, and interactive CLI.
 - Refresh installer command documentation formatting and examples.
 - Add PyYAML type stubs to unblock mypy in CI.
+- Configure explicit setuptools package discovery to fix build packaging.
 
 ## [1.0.0] - 2026-01-03
 

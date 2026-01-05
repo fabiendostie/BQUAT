@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "baqt"
 version = "1.0.0"
@@ -7,6 +11,21 @@ dependencies = ["pyyaml>=6.0"]
 
 [project.scripts]
 baqt = "installer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cli*", "installer*", "runtime*"]
+exclude = [
+  "BMAD-METHOD*",
+  "cicd*",
+  "config*",
+  "methodology*",
+  "node_modules*",
+  "quint-code*",
+  "runs*",
+  "security*",
+  "tests*",
+]
 
 [tool.ruff]
 line-length = 100
