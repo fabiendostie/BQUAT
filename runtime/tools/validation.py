@@ -18,9 +18,11 @@ from runtime.tools.file_io import resolve_path
 
 _yaml: Any | None
 try:
-    import yaml as _yaml
+    import yaml as yaml_module
 except Exception:
     _yaml = None
+else:
+    _yaml = yaml_module
 
 ValidationStatus = Literal["passed", "failed", "skipped"]
 

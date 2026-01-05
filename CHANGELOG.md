@@ -39,6 +39,7 @@ Last updated: 2026-01-05
 - Enforce LF line endings with repository gitattributes.
 - Resolve typecheck issues in orchestrator routing, guardrails, and interactive CLI.
 - Refresh installer command documentation formatting and examples.
+- Add PyYAML type stubs to unblock mypy in CI.
 
 ## [1.0.0] - 2026-01-03
 
