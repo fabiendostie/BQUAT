@@ -1,4 +1,4 @@
-"""CLI entry point for BQUAT installer."""
+"""CLI entry point for BAQT installer."""
 
 from __future__ import annotations
 
@@ -7,20 +7,20 @@ import json
 import sys
 from pathlib import Path
 
-from .core import BquatInstaller, InstallConfig
+from .core import BaqtInstaller, InstallConfig
 from .verify import verify_installation
 
 
 def main(argv: list[str] | None = None) -> int:
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
-        prog="bquat",
-        description="BQUAT unified installer - BMAD + TELIS + QUINT",
+        prog="baqt",
+        description="BAQT unified installer - BMAD + TELIS + QUINT",
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # Install command
-    install_parser = subparsers.add_parser("install", help="Install BQUAT to a directory")
+    install_parser = subparsers.add_parser("install", help="Install BAQT to a directory")
     install_parser.add_argument(
         "target",
         nargs="?",
@@ -98,9 +98,9 @@ def main(argv: list[str] | None = None) -> int:
 
 def cmd_version() -> int:
     """Show version information."""
-    from .manifest import get_bquat_version
+    from .manifest import get_baqt_version
 
-    print(f"BQUAT version {get_bquat_version()}")
+    print(f"BAQT version {get_baqt_version()}")
     return 0
 
 
@@ -118,7 +118,7 @@ def cmd_install(args: argparse.Namespace) -> int:
         force=args.force,
     )
 
-    installer = BquatInstaller()
+    installer = BaqtInstaller()
     result = installer.install(config)
 
     if args.json:
@@ -131,7 +131,7 @@ def cmd_install(args: argparse.Namespace) -> int:
         if result.manifest:
             output["manifest"] = {
                 "install_id": result.manifest.install_id,
-                "bquat_version": result.manifest.bquat_version,
+                "baqt_version": result.manifest.baqt_version,
                 "component_count": len(result.manifest.components),
                 "file_count": len(result.manifest.files),
             }
@@ -160,7 +160,7 @@ def cmd_update(args: argparse.Namespace) -> int:
     """Execute update command."""
     target = Path(args.target).resolve()
 
-    installer = BquatInstaller()
+    installer = BaqtInstaller()
     result = installer.update(target)
 
     if args.json:
@@ -196,7 +196,7 @@ def cmd_verify(args: argparse.Namespace) -> int:
     if args.json:
         print(json.dumps(report.to_dict(), indent=2))
     else:
-        print("BQUAT Installation Verification")
+        print("BAQT Installation Verification")
         print("================================")
         print(f"Target: {target}")
         print()
@@ -215,20 +215,20 @@ def cmd_status(args: argparse.Namespace) -> int:
     """Execute status command."""
     target = Path(args.target).resolve()
 
-    installer = BquatInstaller()
+    installer = BaqtInstaller()
     status = installer.status(target)
 
     if args.json:
         print(json.dumps(status, indent=2))
     else:
         if not status["installed"]:
-            print(f"No BQUAT installation found at {target}")
+            print(f"No BAQT installation found at {target}")
             return 1
 
-        print("BQUAT Installation Status")
+        print("BAQT Installation Status")
         print("=========================")
         print(f"Install ID: {status['install_id']}")
-        print(f"Version: {status['bquat_version']}")
+        print(f"Version: {status['baqt_version']}")
         print(f"Installed: {status['installed_at']}")
         print(f"Updated: {status['updated_at']}")
         print()

@@ -170,6 +170,7 @@ class EvidenceLink:
     reliability: float
     wlnk: float
     carrier_ref: str
+    context_fingerprint_id: Optional[str] = None
     artifacts: List[str] = field(default_factory=list)
     notes: str = ""
 
@@ -189,6 +190,7 @@ class EvidenceLink:
             reliability=float(data.get("reliability", 0.0)),
             wlnk=float(data.get("wlnk", 0.0)),
             carrier_ref=data.get("carrier_ref", ""),
+            context_fingerprint_id=data.get("context_fingerprint_id"),
             artifacts=list(data.get("artifacts", [])),
             notes=data.get("notes", ""),
         )

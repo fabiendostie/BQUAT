@@ -21,6 +21,11 @@ class PlanExecutor(StepExecutor):
         plan = agent.build_plan(spec)
         telis_context = cast(Optional[Dict[str, Any]], context.get("telis_context"))
         prompt = plan.prompt
+        definition = agents.get_default_agent_registry().get(self.agent_name)
+        if definition:
+            instructions = definition.get_all_instructions()
+            if instructions:
+                prompt = f"{prompt}\n\nTool instructions:\n{instructions}"
         if telis_context and telis_context.get("context"):
             prompt = f"{prompt}\n\nTELIS context:\n{telis_context['context']}"
 

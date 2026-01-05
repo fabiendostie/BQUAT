@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BQUAT is a unified agentic framework that combines BMAD-METHOD (workflow), TELIS (token-efficient context), and QUINT (evidence-based reasoning) under one runtime with blocking human-in-the-loop (HITL) gates.
+BAQT is a unified agentic framework that combines BMAD-METHOD (workflow), TELIS (token-efficient context), and QUINT (evidence-based reasoning) under one runtime with blocking human-in-the-loop (HITL) gates.
 
 **Key docs:** `docs/v1-plan.md` (release plan), `methodology/unified_method_specification.md` (unified spec), `docs/runtime-step-contract.md` (step contract), `docs/tool-execution-pipeline.md` (tool pipeline).
 
@@ -55,7 +55,7 @@ python -m cli.main export <run-id> --output runs/export.json
 
 ## Critical Patterns
 
-**Time handling:** Always use `runtime/time_provider.py` -> `get_current_time()` for timestamps (never `datetime.now()`). All timestamps use `BQUAT_TIMEZONE` env var (defaults to America/Toronto).
+**Time handling:** Always use `runtime/time_provider.py` -> `get_current_time()` for timestamps (never `datetime.now()`). All timestamps use `BAQT_TIMEZONE` env var (defaults to America/Toronto).
 
 **Data models:** Frozen dataclasses for immutable specs (WorkflowSpec, StepSpec, ArtifactRecord). Mutable dataclasses for runtime state (RunStep, RunManifest). Standard `to_dict()` / `from_dict()` serialization.
 

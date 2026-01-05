@@ -338,13 +338,17 @@ def validate_lint(
         if not _module_available("ruff"):
             return _result("lint", "skipped", "ruff", stderr="ruff missing")
         command = [sys.executable, "-m", "ruff", "check", str(target)]
-        return _run_command(
+        result = _run_command(
             "lint",
             "ruff",
             command,
             cwd=base,
             timeout_seconds=timeout_seconds,
         )
+        # Handle case where ruff module exists but binary is missing
+        if result.status == "failed" and "FileNotFoundError" in (result.stderr or ""):
+            return _result("lint", "skipped", "ruff", stderr="ruff binary not found")
+        return result
     return _result("lint", "skipped", "unsupported", stderr=f"unsupported language: {lang}")
 
 

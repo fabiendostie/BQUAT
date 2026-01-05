@@ -9,10 +9,16 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 
 from runtime import config as runtime_config
 from runtime import gates, storage
+from runtime.failure.isolation import FailureIsolator, ToolFailureContext
 from runtime.models import StepSpec
+from runtime.plugins.manager import PluginManager
 from runtime.time_provider import get_current_time
-from runtime.tools import file_io, repo_tool, time_tool, validation
 from runtime.tools.base import ToolCall, normalize_risk
+from runtime.tools.registry import (
+    ToolMetadata,
+    ToolRegistry,
+    build_default_registry,
+)
 
 ToolHandler = Callable[[Dict[str, Any], "ToolExecutionContext"], Any]
 
@@ -78,16 +84,16 @@ def _policy_config(config: Dict[str, Any]) -> Dict[str, Any]:
     return config.get("tools", {})
 
 
-def _allowlist(config: Dict[str, Any], registry: Dict[str, ToolDefinition]) -> Iterable[str]:
+def _allowlist(config: Dict[str, Any], registry: ToolRegistry) -> Iterable[str]:
     tools_cfg = _policy_config(config)
     allowlist = tools_cfg.get("allowlist")
     if allowlist is None:
-        return registry.keys()
+        return registry.list_names()
     if isinstance(allowlist, list) and not allowlist:
-        return registry.keys()
+        return registry.list_names()
     if isinstance(allowlist, list):
         return allowlist
-    return registry.keys()
+    return registry.list_names()
 
 
 def _blocklist(config: Dict[str, Any]) -> Iterable[str]:
@@ -101,6 +107,28 @@ def _blocklist(config: Dict[str, Any]) -> Iterable[str]:
 def _timeout_seconds(config: Dict[str, Any]) -> int:
     tools_cfg = _policy_config(config)
     return int(tools_cfg.get("timeout_seconds", 30))
+
+
+def _tool_retry_backoff_seconds(config: Dict[str, Any]) -> float:
+    cfg = config.get("failure_isolation", {})
+    try:
+        return float(cfg.get("tool_retry_backoff_seconds", 0))
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _is_recoverable_error(error: str) -> bool:
+    if not error:
+        return True
+    lowered = error.lower()
+    non_recoverable = (
+        "missing required args",
+        "unknown tool",
+        "blocklisted tool",
+        "allowlist",
+        "approval required",
+    )
+    return not any(token in lowered for token in non_recoverable)
 
 
 def _risk_policy(config: Dict[str, Any]) -> Dict[str, Any]:
@@ -138,66 +166,19 @@ def _gate_id(tool_name: str, step: Dict[str, Any], step_spec: Optional[StepSpec]
     return f"tool:{tool_name}:{step_id}"
 
 
-def build_default_registry(root: Optional[Path] = None) -> Dict[str, ToolDefinition]:
-    def handler_time(args: Dict[str, Any], _ctx: ToolExecutionContext) -> Any:
-        return time_tool.get_current_time(args.get("timezone", "America/Toronto"))
+def build_default_registry_for_pipeline() -> ToolRegistry:
+    """Build a ToolRegistry compatible with the tool pipeline."""
+    return build_default_registry()
 
-    def handler_read(args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        return {"content": file_io.read_text_file(args["path"], root=ctx.root)}
 
-    def handler_write(args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        file_io.write_text_file(
-            args["path"],
-            args.get("content", ""),
-            root=ctx.root,
-            create_dirs=bool(args.get("create_dirs", True)),
-        )
-        return {"path": args["path"]}
-
-    def handler_list(args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        return {"entries": file_io.list_directory(args["path"], root=ctx.root)}
-
-    def handler_status(_args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        return {"output": repo_tool.git_status(root=ctx.root)}
-
-    def handler_diff(args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        return {"output": repo_tool.git_diff(args.get("path"), root=ctx.root)}
-
-    def handler_validate_ast(args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        result = validation.validate_ast(
-            args["path"],
-            language=args.get("language"),
-            root=ctx.root,
-        )
-        return result.to_dict()
-
-    def handler_typecheck(args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        result = validation.validate_typecheck(
-            args["path"],
-            language=args.get("language"),
-            root=ctx.root,
-        )
-        return result.to_dict()
-
-    def handler_lint(args: Dict[str, Any], ctx: ToolExecutionContext) -> Any:
-        result = validation.validate_lint(
-            args["path"],
-            language=args.get("language"),
-            root=ctx.root,
-        )
-        return result.to_dict()
-
-    return {
-        "getCurrentTime": ToolDefinition(time_tool.TOOL_SPEC, handler_time),
-        "readTextFile": ToolDefinition(file_io.READ_TOOL_SPEC, handler_read),
-        "writeTextFile": ToolDefinition(file_io.WRITE_TOOL_SPEC, handler_write),
-        "listDirectory": ToolDefinition(file_io.LIST_TOOL_SPEC, handler_list),
-        "gitStatus": ToolDefinition(repo_tool.STATUS_TOOL_SPEC, handler_status),
-        "gitDiff": ToolDefinition(repo_tool.DIFF_TOOL_SPEC, handler_diff),
-        "validateAst": ToolDefinition(validation.AST_TOOL_SPEC, handler_validate_ast),
-        "typecheck": ToolDefinition(validation.TYPECHECK_TOOL_SPEC, handler_typecheck),
-        "lint": ToolDefinition(validation.LINT_TOOL_SPEC, handler_lint),
-    }
+def _normalize_registry(registry: ToolRegistry | Dict[str, ToolDefinition]) -> ToolRegistry:
+    if isinstance(registry, ToolRegistry):
+        return registry
+    normalized = ToolRegistry()
+    for name, definition in registry.items():
+        metadata = ToolMetadata.from_spec(name=name, spec=definition.spec)
+        normalized.register(name, definition.handler, metadata)
+    return normalized
 
 
 def _execute_with_timeout(
@@ -226,7 +207,9 @@ def run_tool_calls(
     manifest: Dict[str, Any],
     run_dir: Path,
     config: Dict[str, Any],
-    registry: Optional[Dict[str, ToolDefinition]] = None,
+    registry: Optional[ToolRegistry | Dict[str, ToolDefinition]] = None,
+    allowed_tools: Optional[List[str]] = None,
+    plugins: Optional[PluginManager] = None,
 ) -> List[ToolResult]:
     if step_spec and step_spec.tools:
         calls = list(step_spec.tools)
@@ -235,11 +218,15 @@ def run_tool_calls(
     if not calls:
         return []
 
-    tool_registry = registry or build_default_registry()
+    tool_registry = _normalize_registry(registry or build_default_registry_for_pipeline())
     allowlist = set(_allowlist(config, tool_registry))
+    if allowed_tools:
+        allowlist &= set(allowed_tools)
     blocklist = set(_blocklist(config))
     policy = _risk_policy(config)
     timeout_seconds = _timeout_seconds(config)
+    isolator = FailureIsolator(config)
+    retry_backoff = _tool_retry_backoff_seconds(config)
     approvals = storage.read_approvals(run_dir)
     root = _project_root()
     context = ToolExecutionContext(
@@ -255,50 +242,91 @@ def run_tool_calls(
     for raw in calls:
         call = ToolCall.from_dict(raw)
         definition = tool_registry.get(call.name)
-        started = _now()
-        start_perf = time.perf_counter()
         risk = "low"
         if definition:
             risk = _tool_risk(raw, definition.spec)
+        gate = call.gate or _gate_id(call.name, step, step_spec)
+        step_id = step.get("step_id") or (step_spec.id if step_spec else "") or ""
+        attempt = 0
         status = "completed"
         error = ""
         output = None
-        gate = call.gate or _gate_id(call.name, step, step_spec)
+        started = _now()
+        ended = started
+        duration_ms = 0
 
-        if not definition:
-            status = "skipped"
-            error = "unknown tool"
-        elif call.name in blocklist:
-            status = "blocked"
-            error = "blocklisted tool"
-        elif call.name not in allowlist:
-            status = "blocked"
-            error = "tool not in allowlist"
-        else:
-            arg_error = _validate_args(definition.spec, call.args)
-            if arg_error:
-                status = "failed"
-                error = arg_error
-            elif _requires_approval(risk, policy) and not gates.has_approval(approvals, gate):
+        while True:
+            attempt += 1
+            started = _now()
+            start_perf = time.perf_counter()
+            status = "completed"
+            error = ""
+            output = None
+
+            if not definition:
+                status = "skipped"
+                error = "unknown tool"
+            elif call.name in blocklist:
                 status = "blocked"
-                error = "approval required"
+                error = "blocklisted tool"
+            elif call.name not in allowlist:
+                status = "blocked"
+                error = "tool not in allowlist"
             else:
-                try:
-                    output = _execute_with_timeout(
-                        definition.handler,
-                        call.args,
-                        context,
-                        timeout_seconds,
+                if plugins:
+                    decision = plugins.run_before_tool_policy(
+                        call.name,
+                        step,
+                        manifest,
+                        config=config,
+                        run_dir=str(run_dir),
                     )
-                except FutureTimeout:
-                    status = "failed"
-                    error = "timeout"
-                except Exception as exc:  # noqa: BLE001
-                    status = "failed"
-                    error = str(exc)
+                    if not decision.allow:
+                        status = "blocked"
+                        error = decision.reason or "policy blocked"
+                if status == "completed":
+                    arg_error = _validate_args(definition.spec, call.args)
+                    if arg_error:
+                        status = "failed"
+                        error = arg_error
+                    elif _requires_approval(risk, policy) and not gates.has_approval(
+                        approvals, gate
+                    ):
+                        status = "blocked"
+                        error = "approval required"
+                    else:
+                        try:
+                            output = _execute_with_timeout(
+                                definition.handler,
+                                call.args,
+                                context,
+                                timeout_seconds,
+                            )
+                        except FutureTimeout:
+                            status = "failed"
+                            error = "timeout"
+                        except Exception as exc:  # noqa: BLE001
+                            status = "failed"
+                            error = str(exc)
 
-        ended = _now()
-        duration_ms = int((time.perf_counter() - start_perf) * 1000)
+            ended = _now()
+            duration_ms = int((time.perf_counter() - start_perf) * 1000)
+
+            if status == "failed":
+                failure_ctx = ToolFailureContext(
+                    tool_name=call.name,
+                    step_id=step_id,
+                    attempt=attempt,
+                    error=error,
+                    recoverable=_is_recoverable_error(error),
+                    required=call.required,
+                )
+                decision = isolator.isolate_tool_failure(failure_ctx)
+                if decision.action == "retry":
+                    if retry_backoff > 0:
+                        time.sleep(retry_backoff)
+                    continue
+            break
         result = ToolResult(
             name=call.name,
             status=status,
@@ -308,9 +336,25 @@ def run_tool_calls(
             duration_ms=duration_ms,
             result=output,
             error=error,
-            step_id=step.get("step_id") or (step_spec.id if step_spec else "") or "",
+            step_id=step_id,
         )
         results.append(result)
+
+        if plugins:
+            plugins.run_data_hooks(
+                "tool_executed",
+                manifest=manifest,
+                step=step,
+                config=config,
+                run_dir=str(run_dir),
+                payload={
+                    "tool_name": call.name,
+                    "status": status,
+                    "risk": risk,
+                    "duration_ms": duration_ms,
+                    "error": error,
+                },
+            )
 
         if status == "blocked" and error == "approval required":
             _record_results(run_dir, results)

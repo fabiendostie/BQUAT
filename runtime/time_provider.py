@@ -4,7 +4,7 @@ import os
 
 from runtime.tools.time_tool import get_current_time as tool_current_time
 
-DEFAULT_TIMEZONE = os.environ.get("BQUAT_TIMEZONE", "America/Toronto")
+DEFAULT_TIMEZONE = os.environ.get("BAQT_TIMEZONE", "America/Toronto")
 
 
 def get_current_time() -> str:

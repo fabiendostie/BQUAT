@@ -9,7 +9,14 @@ from typing import Any, Dict, Optional
 from runtime import config as runtime_config
 from runtime import engine, execution, models, storage
 from runtime.logging.report import RunReportGenerator
+from runtime.orchestrator import engine as orchestrator_engine
+from runtime.orchestrator.graph import WorkflowNode
 from runtime.providers.registry import ProviderRegistry
+
+try:
+    import yaml  # type: ignore
+except ImportError:  # pragma: no cover - optional dependency
+    yaml = None
 
 
 def _load_config(path: Optional[str]) -> Dict[str, Any]:
@@ -76,6 +83,44 @@ def _workflow_payload(spec: models.WorkflowSpec) -> Dict[str, Any]:
     }
 
 
+def _load_plan_file(path: str) -> Dict[str, Any]:
+    content = Path(path).read_text(encoding="ascii")
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        if yaml is None:
+            raise RuntimeError("PyYAML is required to load YAML plans") from None
+        data = yaml.safe_load(content)
+        return data if isinstance(data, dict) else {}
+
+
+def _load_orchestration_nodes(path: str) -> list[WorkflowNode]:
+    data = _load_plan_file(path)
+    workflows = data.get("workflows", [])
+    nodes: list[WorkflowNode] = []
+    if not isinstance(workflows, list):
+        return nodes
+    for item in workflows:
+        if not isinstance(item, dict):
+            continue
+        module = str(item.get("module", ""))
+        workflow = str(item.get("workflow", ""))
+        if not module or not workflow:
+            continue
+        deps = item.get("depends_on") or item.get("dependencies") or []
+        dependencies = [str(dep) for dep in deps] if isinstance(deps, list) else []
+        nodes.append(
+            WorkflowNode(
+                module=module,
+                workflow=workflow,
+                dependencies=dependencies,
+                agent=item.get("agent"),
+                provider=item.get("provider"),
+            )
+        )
+    return nodes
+
+
 def _summarize_run(manifest: Dict[str, Any]) -> Dict[str, Any]:
     workflow = manifest.get("workflow", {})
     steps = manifest.get("steps", [])
@@ -110,6 +155,19 @@ def cmd_run(args: argparse.Namespace) -> int:
     if decision:
         config = _with_automation_override(config)
         eng = _engine(config)
+    if getattr(args, "orchestrate", False):
+        orchestrator = orchestrator_engine.WorkflowOrchestrator(config)
+        node = WorkflowNode(
+            module=args.module,
+            workflow=args.workflow,
+            agent=args.agent,
+            provider=args.provider,
+        )
+        plan = orchestrator.plan_execution([node])
+        manifests = orchestrator.execute_plan(plan)
+        manifest = manifests[0]
+        print(json.dumps({"run_id": manifest["run_id"], "status": manifest["status"]}))
+        return 0
     executor = None
     if args.agent:
         provider = None
@@ -117,7 +175,13 @@ def cmd_run(args: argparse.Namespace) -> int:
             registry = ProviderRegistry(config)
             provider = registry.get(args.provider)
         executor = execution.PlanExecutor(args.agent, provider)
-    manifest = eng.run(args.module, args.workflow, run_id=args.run_id, executor=executor)
+    manifest = eng.run(
+        args.module,
+        args.workflow,
+        run_id=args.run_id,
+        executor=executor,
+        agent_name=args.agent,
+    )
     print(json.dumps({"run_id": manifest["run_id"], "status": manifest["status"]}))
     return 0
 
@@ -138,8 +202,26 @@ def cmd_resume(args: argparse.Namespace) -> int:
             registry = ProviderRegistry(config)
             provider = registry.get(args.provider)
         executor = execution.PlanExecutor(args.agent, provider)
-    manifest = eng.resume(args.run_id, executor=executor)
+    manifest = eng.resume(
+        args.run_id,
+        executor=executor,
+        agent_name=args.agent,
+    )
     print(json.dumps({"run_id": manifest["run_id"], "status": manifest["status"]}))
+    return 0
+
+
+def cmd_orchestrate(args: argparse.Namespace) -> int:
+    config = _load_config(args.config)
+    orchestrator = orchestrator_engine.WorkflowOrchestrator(config)
+    nodes = _load_orchestration_nodes(args.plan)
+    plan = orchestrator.plan_execution(nodes)
+    manifests = orchestrator.execute_plan(plan)
+    runs = [
+        {"run_id": manifest.get("run_id", ""), "status": manifest.get("status", "")}
+        for manifest in manifests
+    ]
+    print(json.dumps({"runs": runs}))
     return 0
 
 
@@ -225,8 +307,72 @@ def cmd_providers(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_interactive(args: argparse.Namespace) -> int:
+    """Run an interactive BMAD workflow session."""
+    from cli.interactive import InteractiveCLI
+
+    config = _load_config(args.config)
+    eng = _engine(config)
+
+    provider = None
+    if args.provider:
+        registry = ProviderRegistry(config)
+        provider = registry.get(args.provider)
+
+    cli = InteractiveCLI(
+        engine=eng,
+        provider=provider,
+        bmad_root=Path("BMAD-METHOD"),
+    )
+
+    if args.module and args.workflow:
+        # Run specific workflow
+        run_id = cli.run_workflow(args.module, args.workflow, args.run_id)
+        if run_id:
+            print(json.dumps({"run_id": run_id, "status": "completed"}))
+            return 0
+        return 1
+    else:
+        # Full interactive session
+        cli.run_interactive_session()
+        return 0
+
+
+def cmd_start(args: argparse.Namespace) -> int:
+    """Start a BMAD workflow from brainstorming."""
+    from cli.interactive import InteractiveCLI
+
+    config = _load_config(args.config)
+    eng = _engine(config)
+
+    provider = None
+    if args.provider:
+        registry = ProviderRegistry(config)
+        provider = registry.get(args.provider)
+
+    cli = InteractiveCLI(
+        engine=eng,
+        provider=provider,
+        bmad_root=Path("BMAD-METHOD"),
+    )
+
+    # Start from brainstorming by default
+    module = args.module or "core"
+    workflow = args.workflow or "brainstorming"
+
+    print(f"Starting BMAD workflow: {module}/{workflow}")
+    print("This will guide you through document creation.")
+    print("")
+
+    run_id = cli.run_workflow(module, workflow)
+    if run_id:
+        print(json.dumps({"run_id": run_id, "status": "completed"}))
+        return 0
+    return 1
+
+
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="bquat")
+    parser = argparse.ArgumentParser(prog="baqt")
     parser.add_argument("--config", help="Path to runtime config JSON")
 
     sub = parser.add_subparsers(dest="command", required=True)
@@ -240,6 +386,7 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--run-id")
     run.add_argument("--agent", choices=["bmad", "telis", "quint"])
     run.add_argument("--provider")
+    run.add_argument("--orchestrate", action="store_true")
     run_select = run.add_mutually_exclusive_group()
     run_select.add_argument("--auto", action="store_true")
     run_select.add_argument("--manual", action="store_true")
@@ -253,6 +400,10 @@ def build_parser() -> argparse.ArgumentParser:
     resume_select.add_argument("--auto", action="store_true")
     resume_select.add_argument("--manual", action="store_true")
     resume.set_defaults(func=cmd_resume)
+
+    orchestrate = sub.add_parser("orchestrate", help="Run a workflow plan")
+    orchestrate.add_argument("--plan", required=True, help="Path to workflow plan file")
+    orchestrate.set_defaults(func=cmd_orchestrate)
 
     approve = sub.add_parser("approve", help="Approve a human gate")
     approve.add_argument("run_id")
@@ -282,6 +433,23 @@ def build_parser() -> argparse.ArgumentParser:
 
     providers = sub.add_parser("providers", help="List providers")
     providers.set_defaults(func=cmd_providers)
+
+    # Interactive mode for step-by-step workflow execution
+    interactive = sub.add_parser("interactive", help="Run interactive BMAD workflow session")
+    interactive.add_argument("--module", help="BMAD module (e.g., bmm, core)")
+    interactive.add_argument("--workflow", help="Workflow name (e.g., prd, brainstorming)")
+    interactive.add_argument("--run-id", help="Resume existing run")
+    interactive.add_argument("--provider", help="LLM provider to use")
+    interactive.set_defaults(func=cmd_interactive)
+
+    # Quick start from brainstorming
+    start = sub.add_parser("start", help="Start BMAD workflow from brainstorming")
+    start.add_argument("--module", default="core", help="BMAD module (default: core)")
+    start.add_argument(
+        "--workflow", default="brainstorming", help="Workflow (default: brainstorming)"
+    )
+    start.add_argument("--provider", help="LLM provider to use")
+    start.set_defaults(func=cmd_start)
 
     return parser
 

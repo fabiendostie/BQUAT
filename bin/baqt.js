@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * BQUAT CLI wrapper for npx support.
+ * BAQT CLI wrapper for npx support.
  *
  * This script invokes the Python installer CLI, enabling usage like:
- *   npx bquat install
- *   npx bquat verify
- *   npx bquat status
+ *   npx baqt install
+ *   npx baqt verify
+ *   npx baqt status
  */
 
 const { spawn } = require("child_process");

@@ -3,15 +3,31 @@ from __future__ import annotations
 import hashlib
 import json
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
+from runtime import agents as agent_registry
 from runtime import config as runtime_config
 from runtime import gates, models, storage, workflow_parser
+from runtime.events.bus import EventBus
+from runtime.events.handlers import (
+    JsonPersistenceHandler,
+    LoggingHandler,
+    ObservabilityBridgeHandler,
+    TimelineHandler,
+)
+from runtime.events.types import BusEvent
+from runtime.failure.isolation import FailureIsolator
 from runtime.guardrails import checks as guardrails
+from runtime.guardrails import concurrent as guardrails_concurrent
+from runtime.logging import EventEmitter, StructuredLogger
 from runtime.plugins.manager import PluginManager
+from runtime.quint import drift as quint_drift
+from runtime.quint import fingerprint as quint_fingerprint
+from runtime.quint import snapshot as quint_snapshot
 from runtime.telis.manager import TelisPolicyEngine
 from runtime.time_provider import get_current_time
 from runtime.tools import file_io
@@ -119,13 +135,60 @@ def _output_layout_issues(outputs: List[str]) -> List[str]:
     return issues
 
 
+def _init_event_bus(run_dir: Path, run_id: str, config: Dict[str, Any]) -> EventBus:
+    bus = EventBus()
+    bus.subscribe(JsonPersistenceHandler(run_dir))
+    bus.subscribe(TimelineHandler(run_dir))
+
+    observability_cfg = config.get("observability", {})
+    if observability_cfg.get("enabled", True) and observability_cfg.get("events", {}).get(
+        "enabled", True
+    ):
+        emitter = EventEmitter(run_id)
+
+        def emit(event_type: str, payload: Dict[str, Any]) -> None:
+            source = str(payload.get("source", "engine"))
+            step_id = payload.get("step_id")
+            emitter.emit(event_type, source, payload, step_id=step_id)
+
+        bus.subscribe(ObservabilityBridgeHandler(emit))
+
+    logging_cfg = observability_cfg.get("logging", {})
+    if observability_cfg.get("enabled", True) and logging_cfg.get("enabled", True):
+        logger = StructuredLogger(
+            run_dir,
+            run_id,
+            min_level=str(logging_cfg.get("level", "info")),
+        )
+
+        def log(level: str, event_type: str, payload: Dict[str, Any]) -> None:
+            logger.log(level, "event", event_type, step_id=payload.get("step_id"), payload=payload)
+
+        bus.subscribe(LoggingHandler(log))
+
+    return bus
+
+
 def _append_event(
     run_dir: Path,
     event_type: str,
     run_id: str,
     payload: Optional[Dict[str, Any]] = None,
     step_id: Optional[str] = None,
+    bus: Optional[EventBus] = None,
+    source: str = "engine",
 ) -> None:
+    if bus is not None:
+        event = BusEvent(
+            event_type=event_type,
+            run_id=run_id,
+            timestamp=utc_now(),
+            payload=dict(payload or {}),
+            step_id=step_id,
+            source=source,
+        )
+        bus.publish(event)
+        return
     events = storage.read_events(run_dir)
     entries: List[Dict[str, Any]] = events.get("events", [])
     record = models.EventRecord(
@@ -478,6 +541,32 @@ def _step_retry_policy(
     return max(0, int(max_retries)), max(0, int(backoff_seconds))
 
 
+def _isolate_step_failures(config: Dict[str, Any]) -> bool:
+    failure_cfg = config.get("failure_isolation", {})
+    return bool(failure_cfg.get("isolate_step_failures", False))
+
+
+def _record_isolated_failure(
+    manifest: Dict[str, Any],
+    step: Dict[str, Any],
+    error: str,
+    tool_name: str,
+    impact: Optional[Dict[str, Any]] = None,
+) -> None:
+    entry = {
+        "step_id": step.get("step_id") or step.get("name", ""),
+        "step_name": step.get("name", ""),
+        "error": error,
+        "tool_name": tool_name,
+        "recorded_at": utc_now(),
+    }
+    if impact:
+        entry["impact"] = dict(impact)
+    failures = manifest.setdefault("isolated_failures", [])
+    if isinstance(failures, list):
+        failures.append(entry)
+
+
 def _automation_allowed(spec: models.WorkflowSpec, config: Dict[str, Any]) -> bool:
     automation_cfg = config.get("automation", {})
     if automation_cfg.get("override"):
@@ -515,6 +604,78 @@ def _load_spec_from_manifest(manifest: Dict[str, Any]) -> models.WorkflowSpec:
     return models.WorkflowSpec.from_mapping(manifest["workflow"])
 
 
+def _apply_agent_definition(manifest: Dict[str, Any], agent_name: str) -> None:
+    registry = agent_registry.get_default_agent_registry()
+    definition = registry.get(agent_name)
+    if not definition:
+        return
+    manifest["agent"] = agent_name
+    manifest["agent_tools"] = list(definition.tools)
+    manifest["agent_instructions"] = dict(definition.instructions)
+
+
+def _ensure_context_snapshot(
+    run_dir: Path,
+    manifest: Dict[str, Any],
+    telis: Optional[TelisPolicyEngine],
+    config: Dict[str, Any],
+    event_bus: Optional[EventBus],
+) -> None:
+    if manifest.get("context_snapshot_id"):
+        return
+    snapshot = quint_snapshot.build_snapshot(manifest, run_dir, telis, config)
+    store = quint_snapshot.SnapshotStore(run_dir)
+    recorded = store.record(snapshot)
+    manifest["context_snapshot_id"] = recorded.get("snapshot_id", "")
+    storage.write_manifest(run_dir, manifest)
+    _append_event(
+        run_dir,
+        "ContextSnapshotCreated",
+        manifest.get("run_id", run_dir.name),
+        {"snapshot_id": recorded.get("snapshot_id")},
+        bus=event_bus,
+    )
+
+
+def _evaluate_context_drift(
+    run_dir: Path,
+    manifest: Dict[str, Any],
+    telis: Optional[TelisPolicyEngine],
+    config: Dict[str, Any],
+    event_bus: Optional[EventBus],
+) -> None:
+    snapshot_id = manifest.get("context_snapshot_id")
+    if not snapshot_id:
+        return
+    store = quint_snapshot.SnapshotStore(run_dir)
+    stored = store.get(snapshot_id)
+    if not stored:
+        return
+    base_snapshot = quint_snapshot.ContextSnapshot.from_dict(stored)
+    current_snapshot = quint_snapshot.build_snapshot(manifest, run_dir, telis, config)
+    store.record(current_snapshot)
+    _append_event(
+        run_dir,
+        "ContextSnapshotCreated",
+        manifest.get("run_id", run_dir.name),
+        {"snapshot_id": current_snapshot.snapshot_id},
+        bus=event_bus,
+    )
+    drifts = quint_drift.detect_drift(base_snapshot, current_snapshot)
+    if not drifts:
+        return
+    drift_store = quint_drift.DriftStore(run_dir)
+    drift_store.record(drifts)
+    quint_drift.mark_evidence_drifted(run_dir, drifts)
+    _append_event(
+        run_dir,
+        "EvidenceDrifted",
+        manifest.get("run_id", run_dir.name),
+        {"drifts": [drift.to_dict() for drift in drifts]},
+        bus=event_bus,
+    )
+
+
 def _record_human_gate(
     run_dir: Path,
     spec: models.WorkflowSpec,
@@ -523,8 +684,41 @@ def _record_human_gate(
     notes: str = "",
     approved_by: Optional[str] = None,
     approved_at: Optional[str] = None,
+    event_bus: Optional[EventBus] = None,
 ) -> None:
     gates_payload = storage.read_human_gates(run_dir)
+    existing_drr_id = None
+    for gate in gates_payload.get("gates", []):
+        if gate.get("gate_id") == _gate_id(spec):
+            existing_drr_id = gate.get("drr_id")
+            break
+    if not existing_drr_id:
+        evidence_payload = storage.read_evidence_links(run_dir)
+        evidence_links = []
+        for record in evidence_payload.get("evidence", []):
+            if isinstance(record, dict) and record.get("id"):
+                try:
+                    evidence_links.append(models.EvidenceLink.from_dict(record))
+                except Exception:  # noqa: BLE001, S110
+                    continue
+        drr_record = gates.record_gate_as_drr(
+            run_dir=run_dir,
+            gate_id=_gate_id(spec),
+            phase=spec.phase,
+            workflow=f"{spec.module}/{spec.workflow}",
+            policy_reason=decision.reason,
+            supporting_evidence=evidence_links,
+            approved_by=approved_by,
+            approval_notes=notes,
+        )
+        existing_drr_id = drr_record.decision_id
+        _append_event(
+            run_dir,
+            "GateDrrCreated",
+            run_dir.name,
+            {"gate_id": _gate_id(spec), "drr_id": existing_drr_id},
+            bus=event_bus,
+        )
     gates_payload = gates.record_gate(
         gates_payload,
         _gate_id(spec),
@@ -537,6 +731,7 @@ def _record_human_gate(
         approved_by=approved_by,
         approved_at=approved_at,
         notes=notes,
+        drr_id=existing_drr_id,
     )
     storage.write_human_gates(run_dir, gates_payload)
 
@@ -601,6 +796,7 @@ class WorkflowEngine:
     ) -> Dict[str, Any]:
         run_dir = self._run_dir(run_id)
         manifest = storage.read_manifest(run_dir)
+        event_bus = _init_event_bus(run_dir, manifest["run_id"], self.config)
         spec = _load_spec_from_manifest(manifest)
         decision = gates.gate_required(
             spec.human,
@@ -626,12 +822,14 @@ class WorkflowEngine:
             notes=notes,
             approved_by=approved_by,
             approved_at=approved_at,
+            event_bus=event_bus,
         )
         _append_event(
             run_dir,
             "HumanGateApproved",
             manifest["run_id"],
             {"gate_id": _gate_id(spec), "approved_by": approved_by, "notes": notes},
+            bus=event_bus,
         )
         return approvals
 
@@ -641,6 +839,7 @@ class WorkflowEngine:
         workflow: str,
         run_id: Optional[str] = None,
         executor: Optional[StepExecutor] = None,
+        agent_name: Optional[str] = None,
     ) -> Dict[str, Any]:
         if run_id:
             run_dir = self._run_dir(run_id)
@@ -652,7 +851,12 @@ class WorkflowEngine:
             run_dir = self._run_dir(run_id)
             manifest = self._build_manifest(run_id, spec)
 
+        if agent_name:
+            _apply_agent_definition(manifest, agent_name)
+
         _ensure_steps(manifest)
+        event_bus = _init_event_bus(run_dir, manifest["run_id"], self.config)
+        _ensure_context_snapshot(run_dir, manifest, self.telis, self.config, event_bus)
 
         if not _automation_allowed(spec, self.config):
             manifest["status"] = "blocked"
@@ -665,6 +869,7 @@ class WorkflowEngine:
                 "WorkflowBlocked",
                 manifest["run_id"],
                 {"reason": "manual_phase", "phase": spec.phase},
+                bus=event_bus,
             )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
@@ -673,6 +878,35 @@ class WorkflowEngine:
         _clear_manual_block(manifest)
         _clear_tool_block(manifest)
         _clear_human_block(manifest)
+
+        if self.plugins:
+            decision = self.plugins.run_before_run_policy(
+                manifest,
+                config=self.config,
+                run_dir=str(run_dir),
+            )
+            if not decision.allow:
+                manifest["status"] = "blocked"
+                manifest["blocked_reason"] = "policy"
+                manifest["blocked_policy"] = decision.block_type or "policy"
+                manifest["blocked_policy_reason"] = decision.reason
+                manifest["blocked_policy_metadata"] = dict(decision.metadata)
+                manifest["updated_at"] = utc_now()
+                storage.write_manifest(run_dir, manifest)
+                _append_event(
+                    run_dir,
+                    "WorkflowBlocked",
+                    manifest["run_id"],
+                    {
+                        "reason": "policy",
+                        "policy_reason": decision.reason,
+                        "policy_type": decision.block_type,
+                        "policy_metadata": decision.metadata,
+                    },
+                    bus=event_bus,
+                )
+                self.plugins.on_validation(manifest, "blocked")
+                return manifest
 
         decision = gates.gate_required(
             spec.human,
@@ -692,6 +926,7 @@ class WorkflowEngine:
                 spec,
                 decision,
                 status="blocked",
+                event_bus=event_bus,
             )
             _append_event(
                 run_dir,
@@ -703,12 +938,29 @@ class WorkflowEngine:
                     "workflow": f"{spec.module}/{spec.workflow}",
                     "reason": decision.reason,
                 },
+                bus=event_bus,
             )
+            if self.plugins:
+                self.plugins.run_data_hooks(
+                    "gate_triggered",
+                    manifest=manifest,
+                    step=None,
+                    config=self.config,
+                    run_dir=str(run_dir),
+                    payload={
+                        "gate_id": _gate_id(spec),
+                        "required": decision.required,
+                        "reason": decision.reason,
+                        "phase": spec.phase,
+                        "workflow": f"{spec.module}/{spec.workflow}",
+                    },
+                )
             _append_event(
                 run_dir,
                 "WorkflowBlocked",
                 manifest["run_id"],
                 {"reason": "human_gate", "gate_id": _gate_id(spec)},
+                bus=event_bus,
             )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
@@ -725,17 +977,36 @@ class WorkflowEngine:
             "WorkflowStarted",
             manifest["run_id"],
             {"workflow": manifest["workflow"]},
+            bus=event_bus,
         )
+        if self.plugins:
+            self.plugins.run_data_hooks(
+                "run_started",
+                manifest=manifest,
+                step=None,
+                config=self.config,
+                run_dir=str(run_dir),
+            )
 
         step_executor = executor or NoopExecutor()
-        return self._execute_steps(run_dir, manifest, step_executor)
+        return self._execute_steps(run_dir, manifest, step_executor, event_bus)
 
-    def resume(self, run_id: str, executor: Optional[StepExecutor] = None) -> Dict[str, Any]:
+    def resume(
+        self,
+        run_id: str,
+        executor: Optional[StepExecutor] = None,
+        agent_name: Optional[str] = None,
+    ) -> Dict[str, Any]:
         run_dir = self._run_dir(run_id)
         manifest = storage.read_manifest(run_dir)
         spec = _load_spec_from_manifest(manifest)
 
+        if agent_name:
+            _apply_agent_definition(manifest, agent_name)
+
         _ensure_steps(manifest)
+        event_bus = _init_event_bus(run_dir, manifest["run_id"], self.config)
+        _ensure_context_snapshot(run_dir, manifest, self.telis, self.config, event_bus)
 
         if not _automation_allowed(spec, self.config):
             manifest["status"] = "blocked"
@@ -748,6 +1019,7 @@ class WorkflowEngine:
                 "WorkflowBlocked",
                 manifest["run_id"],
                 {"reason": "manual_phase", "phase": spec.phase},
+                bus=event_bus,
             )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
@@ -756,6 +1028,35 @@ class WorkflowEngine:
         _clear_manual_block(manifest)
         _clear_tool_block(manifest)
         _clear_human_block(manifest)
+
+        if self.plugins:
+            decision = self.plugins.run_before_run_policy(
+                manifest,
+                config=self.config,
+                run_dir=str(run_dir),
+            )
+            if not decision.allow:
+                manifest["status"] = "blocked"
+                manifest["blocked_reason"] = "policy"
+                manifest["blocked_policy"] = decision.block_type or "policy"
+                manifest["blocked_policy_reason"] = decision.reason
+                manifest["blocked_policy_metadata"] = dict(decision.metadata)
+                manifest["updated_at"] = utc_now()
+                storage.write_manifest(run_dir, manifest)
+                _append_event(
+                    run_dir,
+                    "WorkflowBlocked",
+                    manifest["run_id"],
+                    {
+                        "reason": "policy",
+                        "policy_reason": decision.reason,
+                        "policy_type": decision.block_type,
+                        "policy_metadata": decision.metadata,
+                    },
+                    bus=event_bus,
+                )
+                self.plugins.on_validation(manifest, "blocked")
+                return manifest
 
         decision = gates.gate_required(
             spec.human,
@@ -775,6 +1076,7 @@ class WorkflowEngine:
                 spec,
                 decision,
                 status="blocked",
+                event_bus=event_bus,
             )
             _append_event(
                 run_dir,
@@ -786,12 +1088,29 @@ class WorkflowEngine:
                     "workflow": f"{spec.module}/{spec.workflow}",
                     "reason": decision.reason,
                 },
+                bus=event_bus,
             )
+            if self.plugins:
+                self.plugins.run_data_hooks(
+                    "gate_triggered",
+                    manifest=manifest,
+                    step=None,
+                    config=self.config,
+                    run_dir=str(run_dir),
+                    payload={
+                        "gate_id": _gate_id(spec),
+                        "required": decision.required,
+                        "reason": decision.reason,
+                        "phase": spec.phase,
+                        "workflow": f"{spec.module}/{spec.workflow}",
+                    },
+                )
             _append_event(
                 run_dir,
                 "WorkflowBlocked",
                 manifest["run_id"],
                 {"reason": "human_gate", "gate_id": _gate_id(spec)},
+                bus=event_bus,
             )
             if self.plugins:
                 self.plugins.on_validation(manifest, "blocked")
@@ -808,16 +1127,26 @@ class WorkflowEngine:
             "WorkflowResumed",
             manifest["run_id"],
             {"workflow": manifest["workflow"]},
+            bus=event_bus,
         )
+        if self.plugins:
+            self.plugins.run_data_hooks(
+                "run_started",
+                manifest=manifest,
+                step=None,
+                config=self.config,
+                run_dir=str(run_dir),
+            )
 
         step_executor = executor or NoopExecutor()
-        return self._execute_steps(run_dir, manifest, step_executor)
+        return self._execute_steps(run_dir, manifest, step_executor, event_bus)
 
     def _execute_steps(
         self,
         run_dir: Path,
         manifest: Dict[str, Any],
         executor: StepExecutor,
+        event_bus: Optional[EventBus] = None,
     ) -> Dict[str, Any]:
         steps = manifest.get("steps", [])
         start_idx = _resume_start_index(steps)
@@ -828,6 +1157,10 @@ class WorkflowEngine:
         spec_list = [models.StepSpec.from_dict(item) for item in manifest.get("step_specs", [])]
         spec_by_id = {spec.id: spec for spec in spec_list}
         timeout_seconds = _step_timeout_seconds(self.config)
+        allowed_tools: Optional[List[str]] = None
+        agent_tools = manifest.get("agent_tools")
+        if isinstance(agent_tools, list) and agent_tools:
+            allowed_tools = [str(item) for item in agent_tools]
 
         for idx in range(start_idx, len(steps)):
             step = steps[idx]
@@ -848,6 +1181,41 @@ class WorkflowEngine:
             max_retries, backoff_seconds = _step_retry_policy(step, step_spec, self.config)
             attempts = int(step.get("attempts", 0))
             while attempts <= max_retries:
+                if self.plugins:
+                    decision = self.plugins.run_before_step_policy(
+                        step,
+                        manifest,
+                        config=self.config,
+                        run_dir=str(run_dir),
+                    )
+                    if not decision.allow:
+                        _transition_step(step, "blocked")
+                        step["ended_at"] = utc_now()
+                        step["error"] = decision.reason or "policy blocked"
+                        manifest["status"] = "blocked"
+                        manifest["blocked_reason"] = "policy"
+                        manifest["blocked_policy"] = decision.block_type or "policy"
+                        manifest["blocked_policy_reason"] = decision.reason
+                        manifest["blocked_policy_metadata"] = dict(decision.metadata)
+                        manifest["updated_at"] = utc_now()
+                        storage.write_manifest(run_dir, manifest)
+                        _append_event(
+                            run_dir,
+                            "WorkflowStepBlocked",
+                            manifest["run_id"],
+                            {"step": step.get("name"), "reason": "policy"},
+                            step_id=step_id,
+                            bus=event_bus,
+                        )
+                        _append_event(
+                            run_dir,
+                            "WorkflowBlocked",
+                            manifest["run_id"],
+                            {"reason": "policy", "policy_reason": decision.reason},
+                            bus=event_bus,
+                        )
+                        self.plugins.on_validation(manifest, "blocked")
+                        return manifest
                 attempts += 1
                 step["attempts"] = attempts
                 _transition_step(step, "running")
@@ -860,52 +1228,181 @@ class WorkflowEngine:
                     manifest["run_id"],
                     {"step": step.get("name"), "attempt": attempts},
                     step_id=step_id,
+                    bus=event_bus,
                 )
+                if self.plugins:
+                    self.plugins.run_data_hooks(
+                        "step_started",
+                        manifest=manifest,
+                        step=step,
+                        config=self.config,
+                        run_dir=str(run_dir),
+                    )
 
                 try:
                     if self.plugins:
                         self.plugins.before_step(step, manifest)
-                    report = guardrails.evaluate_guardrails(
-                        "inputs",
-                        step,
-                        step_spec,
-                        self.config,
-                        run_dir,
+
+                    guardrails_cfg = self.config.get("guardrails", {})
+                    use_concurrent = bool(guardrails_cfg.get("concurrent", False))
+                    optimistic = bool(guardrails_cfg.get("optimistic", False))
+                    guardrail_eval = (
+                        guardrails_concurrent.evaluate_guardrails_concurrent
+                        if use_concurrent
+                        else guardrails.evaluate_guardrails
                     )
-                    if report:
-                        step.setdefault("guardrails", {})["inputs"] = report.to_dict()
-                        if report.status == "failed":
+                    input_report = None
+
+                    if use_concurrent and optimistic:
+                        with ThreadPoolExecutor(max_workers=1) as guardrail_executor:
+                            future = guardrail_executor.submit(
+                                guardrail_eval,
+                                "inputs",
+                                step,
+                                step_spec,
+                                self.config,
+                                run_dir,
+                            )
+                            run_tool_calls(
+                                step=step,
+                                step_spec=step_spec,
+                                manifest=manifest,
+                                run_dir=run_dir,
+                                config=self.config,
+                                registry=None,
+                                allowed_tools=allowed_tools,
+                                plugins=self.plugins,
+                            )
+                            telis_context = None
+                            if self.telis:
+                                telis_context = self.telis.resolve_for_step(
+                                    step, step_spec, manifest
+                                )
+                                if telis_context:
+                                    step["telis_context"] = telis_context
+                                    fingerprint = quint_fingerprint.fingerprint_from_telis_result(
+                                        step_id or step.get("name", ""),
+                                        telis_context,
+                                    )
+                                    store = quint_fingerprint.FingerprintStore(run_dir)
+                                    recorded = store.record(fingerprint)
+                                    step["context_fingerprint_id"] = recorded.get("fingerprint_id")
+                                    _append_event(
+                                        run_dir,
+                                        "ContextFingerprintCreated",
+                                        manifest["run_id"],
+                                        {"fingerprint_id": recorded.get("fingerprint_id")},
+                                        step_id=step_id,
+                                        bus=event_bus,
+                                    )
+                            if future.done():
+                                input_report = future.result()
+                                if input_report and input_report.status == "failed":
+                                    _append_event(
+                                        run_dir,
+                                        "GuardrailFailed",
+                                        manifest["run_id"],
+                                        {
+                                            "stage": input_report.stage,
+                                            "violations": input_report.violations,
+                                        },
+                                        step_id=step_id,
+                                        bus=event_bus,
+                                    )
+                                    raise guardrails.GuardrailViolation(input_report)
+                            started = time.time()
+                            executor.execute(
+                                step,
+                                {
+                                    "run_dir": run_dir,
+                                    "manifest": manifest,
+                                    "step_spec": step_spec,
+                                    "telis_context": telis_context,
+                                },
+                            )
+                            if input_report is None:
+                                input_report = future.result()
+                    else:
+                        input_report = guardrail_eval(
+                            "inputs",
+                            step,
+                            step_spec,
+                            self.config,
+                            run_dir,
+                        )
+                        if input_report:
+                            step.setdefault("guardrails", {})["inputs"] = input_report.to_dict()
+                            if input_report.status == "failed":
+                                _append_event(
+                                    run_dir,
+                                    "GuardrailFailed",
+                                    manifest["run_id"],
+                                    {
+                                        "stage": input_report.stage,
+                                        "violations": input_report.violations,
+                                    },
+                                    step_id=step_id,
+                                    bus=event_bus,
+                                )
+                                raise guardrails.GuardrailViolation(input_report)
+                        run_tool_calls(
+                            step=step,
+                            step_spec=step_spec,
+                            manifest=manifest,
+                            run_dir=run_dir,
+                            config=self.config,
+                            registry=None,
+                            allowed_tools=allowed_tools,
+                            plugins=self.plugins,
+                        )
+                        telis_context = None
+                        if self.telis:
+                            telis_context = self.telis.resolve_for_step(step, step_spec, manifest)
+                            if telis_context:
+                                step["telis_context"] = telis_context
+                                fingerprint = quint_fingerprint.fingerprint_from_telis_result(
+                                    step_id or step.get("name", ""),
+                                    telis_context,
+                                )
+                                store = quint_fingerprint.FingerprintStore(run_dir)
+                                recorded = store.record(fingerprint)
+                                step["context_fingerprint_id"] = recorded.get("fingerprint_id")
+                                _append_event(
+                                    run_dir,
+                                    "ContextFingerprintCreated",
+                                    manifest["run_id"],
+                                    {"fingerprint_id": recorded.get("fingerprint_id")},
+                                    step_id=step_id,
+                                    bus=event_bus,
+                                )
+                        started = time.time()
+                        executor.execute(
+                            step,
+                            {
+                                "run_dir": run_dir,
+                                "manifest": manifest,
+                                "step_spec": step_spec,
+                                "telis_context": telis_context,
+                            },
+                        )
+
+                    if input_report:
+                        step.setdefault("guardrails", {})["inputs"] = input_report.to_dict()
+                        if input_report.status == "failed":
                             _append_event(
                                 run_dir,
                                 "GuardrailFailed",
                                 manifest["run_id"],
-                                {"stage": report.stage, "violations": report.violations},
+                                {
+                                    "stage": input_report.stage,
+                                    "violations": input_report.violations,
+                                },
                                 step_id=step_id,
+                                bus=event_bus,
                             )
-                            raise guardrails.GuardrailViolation(report)
-                    run_tool_calls(
-                        step=step,
-                        step_spec=step_spec,
-                        manifest=manifest,
-                        run_dir=run_dir,
-                        config=self.config,
-                    )
-                    telis_context = None
-                    if self.telis:
-                        telis_context = self.telis.resolve_for_step(step, step_spec, manifest)
-                        if telis_context:
-                            step["telis_context"] = telis_context
-                    started = time.time()
-                    executor.execute(
-                        step,
-                        {
-                            "run_dir": run_dir,
-                            "manifest": manifest,
-                            "step_spec": step_spec,
-                            "telis_context": telis_context,
-                        },
-                    )
-                    report = guardrails.evaluate_guardrails(
+                            raise guardrails.GuardrailViolation(input_report)
+
+                    report = guardrail_eval(
                         "outputs",
                         step,
                         step_spec,
@@ -921,6 +1418,7 @@ class WorkflowEngine:
                                 manifest["run_id"],
                                 {"stage": report.stage, "violations": report.violations},
                                 step_id=step_id,
+                                bus=event_bus,
                             )
                             raise guardrails.GuardrailViolation(report)
                     elapsed = time.time() - started
@@ -929,6 +1427,15 @@ class WorkflowEngine:
                     validation_report = _run_validation_gate(step, step_spec)
                     if validation_report:
                         step["validation"] = validation_report
+                        if self.plugins:
+                            self.plugins.run_data_hooks(
+                                "validation_result",
+                                manifest=manifest,
+                                step=step,
+                                config=self.config,
+                                run_dir=str(run_dir),
+                                payload=validation_report,
+                            )
                         if validation_report["status"] == "failed":
                             message = _validation_error_message(validation_report)
                             raise RuntimeError(f"validation failed: {message}")
@@ -943,7 +1450,16 @@ class WorkflowEngine:
                         manifest["run_id"],
                         {"step": step.get("name"), "outputs": step.get("outputs", [])},
                         step_id=step_id,
+                        bus=event_bus,
                     )
+                    if self.plugins:
+                        self.plugins.run_data_hooks(
+                            "step_completed",
+                            manifest=manifest,
+                            step=step,
+                            config=self.config,
+                            run_dir=str(run_dir),
+                        )
                     if self.plugins:
                         self.plugins.after_step(step, manifest)
                     break
@@ -963,13 +1479,29 @@ class WorkflowEngine:
                         manifest["run_id"],
                         {"step": step.get("name"), "reason": "tool_gate"},
                         step_id=step_id,
+                        bus=event_bus,
                     )
                     _append_event(
                         run_dir,
                         "WorkflowBlocked",
                         manifest["run_id"],
                         {"reason": "tool_gate", "gate_id": exc.gate_id},
+                        bus=event_bus,
                     )
+                    if self.plugins:
+                        self.plugins.run_data_hooks(
+                            "gate_triggered",
+                            manifest=manifest,
+                            step=step,
+                            config=self.config,
+                            run_dir=str(run_dir),
+                            payload={
+                                "gate_id": exc.gate_id,
+                                "required": True,
+                                "reason": "tool_gate",
+                                "workflow": manifest.get("workflow", {}),
+                            },
+                        )
                     if self.plugins:
                         self.plugins.on_validation(manifest, "blocked")
                     return manifest
@@ -985,10 +1517,39 @@ class WorkflowEngine:
                         manifest["run_id"],
                         {"step": step.get("name"), "error": step.get("error")},
                         step_id=step_id,
+                        bus=event_bus,
                     )
+                    if self.plugins:
+                        self.plugins.run_data_hooks(
+                            "step_failed",
+                            manifest=manifest,
+                            step=step,
+                            config=self.config,
+                            run_dir=str(run_dir),
+                            payload={"error": step.get("error")},
+                        )
                     if self.plugins:
                         self.plugins.on_error(step, manifest, step["error"] or "error")
                     if attempts > max_retries:
+                        failed_tool = getattr(exc, "tool_name", "")
+                        isolator = FailureIsolator(self.config)
+                        impact = isolator.analyze_impact(
+                            failed_tool,
+                            step_id or step.get("name", ""),
+                            manifest,
+                        )
+                        step["failure_impact"] = impact.to_dict()
+                        if _isolate_step_failures(self.config):
+                            _record_isolated_failure(
+                                manifest,
+                                step,
+                                step.get("error", ""),
+                                failed_tool,
+                                impact.to_dict(),
+                            )
+                            manifest["updated_at"] = utc_now()
+                            storage.write_manifest(run_dir, manifest)
+                            break
                         manifest["status"] = "failed"
                         manifest["updated_at"] = utc_now()
                         storage.write_manifest(run_dir, manifest)
@@ -997,7 +1558,24 @@ class WorkflowEngine:
                             "WorkflowFailed",
                             manifest["run_id"],
                             {"reason": "step_failed", "step": step.get("name")},
+                            bus=event_bus,
                         )
+                        _evaluate_context_drift(
+                            run_dir,
+                            manifest,
+                            self.telis,
+                            self.config,
+                            event_bus,
+                        )
+                        if self.plugins:
+                            self.plugins.run_data_hooks(
+                                "run_failed",
+                                manifest=manifest,
+                                step=step,
+                                config=self.config,
+                                run_dir=str(run_dir),
+                                payload={"reason": "step_failed", "step": step.get("name")},
+                            )
                         if self.plugins:
                             self.plugins.on_validation(manifest, "failed")
                         if self.plugins:
@@ -1008,6 +1586,8 @@ class WorkflowEngine:
 
             storage.write_manifest(run_dir, manifest)
 
+        if manifest.get("isolated_failures"):
+            manifest["completed_with_errors"] = True
         manifest["status"] = "completed"
         manifest["updated_at"] = utc_now()
         storage.write_manifest(run_dir, manifest)
@@ -1016,7 +1596,23 @@ class WorkflowEngine:
             "WorkflowCompleted",
             manifest["run_id"],
             {"workflow": manifest.get("workflow", {})},
+            bus=event_bus,
         )
+        _evaluate_context_drift(
+            run_dir,
+            manifest,
+            self.telis,
+            self.config,
+            event_bus,
+        )
+        if self.plugins:
+            self.plugins.run_data_hooks(
+                "run_completed",
+                manifest=manifest,
+                step=None,
+                config=self.config,
+                run_dir=str(run_dir),
+            )
         if self.plugins:
             self.plugins.on_validation(manifest, "completed")
         if self.plugins:

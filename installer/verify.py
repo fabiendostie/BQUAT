@@ -1,4 +1,4 @@
-"""Verification checks for BQUAT installation."""
+"""Verification checks for BAQT installation."""
 
 from __future__ import annotations
 
@@ -45,14 +45,14 @@ class VerificationReport:
 
 
 class InstallationVerifier:
-    """Verifies BQUAT installation integrity."""
+    """Verifies BAQT installation integrity."""
 
-    BQUAT_DIR = "_bquat"
+    BAQT_DIR = "_baqt"
 
     def __init__(self, target_dir: Path) -> None:
         """Initialize verifier with target directory."""
         self.target_dir = target_dir
-        self.bquat_dir = target_dir / self.BQUAT_DIR
+        self.baqt_dir = target_dir / self.BAQT_DIR
 
     def verify(self) -> VerificationReport:
         """Run all verification checks."""
@@ -84,7 +84,7 @@ class InstallationVerifier:
 
     def _check_manifest_exists(self) -> VerificationCheck:
         """Check that manifest file exists and is valid."""
-        manifest_path = self.bquat_dir / "manifest.json"
+        manifest_path = self.baqt_dir / "manifest.json"
         manifest = read_manifest(manifest_path)
 
         if manifest is None:
@@ -100,13 +100,13 @@ class InstallationVerifier:
             message="Manifest file is valid",
             details={
                 "install_id": manifest.install_id,
-                "version": manifest.bquat_version,
+                "version": manifest.baqt_version,
             },
         )
 
     def _check_bmad_assets(self) -> VerificationCheck:
         """Check that BMAD core assets are present."""
-        bmad_dir = self.bquat_dir / "bmad"
+        bmad_dir = self.baqt_dir / "bmad"
 
         if not bmad_dir.exists():
             return VerificationCheck(
@@ -139,7 +139,7 @@ class InstallationVerifier:
 
     def _check_quint_available(self) -> VerificationCheck:
         """Check that QUINT binary or source is available."""
-        quint_dir = self.bquat_dir / "quint"
+        quint_dir = self.baqt_dir / "quint"
 
         if not quint_dir.exists():
             return VerificationCheck(
@@ -178,7 +178,7 @@ class InstallationVerifier:
 
     def _check_runtime_importable(self) -> VerificationCheck:
         """Check that runtime modules can be imported."""
-        runtime_dir = self.bquat_dir / "runtime"
+        runtime_dir = self.baqt_dir / "runtime"
 
         if not runtime_dir.exists():
             return VerificationCheck(
@@ -217,7 +217,7 @@ class InstallationVerifier:
 
     def _check_telis_registry(self) -> VerificationCheck:
         """Check that TELIS shard registry is valid."""
-        telis_dir = self.bquat_dir / "runtime" / "telis"
+        telis_dir = self.baqt_dir / "runtime" / "telis"
 
         if not telis_dir.exists():
             return VerificationCheck(
@@ -243,7 +243,7 @@ class InstallationVerifier:
 
     def _check_config_valid(self) -> VerificationCheck:
         """Check that configuration file is present and valid."""
-        config_dir = self.bquat_dir / "config"
+        config_dir = self.baqt_dir / "config"
         runtime_yaml = config_dir / "runtime.yaml"
 
         if not config_dir.exists():
@@ -305,10 +305,10 @@ class InstallationVerifier:
                 message="Claude commands directory not found",
             )
 
-        # Check for BQUAT commands
-        bquat_commands = ["bquat-status.md", "bquat-run.md", "bquat-evidence.md"]
-        found = [c for c in bquat_commands if (claude_commands / c).exists()]
-        missing = [c for c in bquat_commands if c not in found]
+        # Check for BAQT commands
+        baqt_commands = ["baqt-status.md", "baqt-run.md", "baqt-evidence.md"]
+        found = [c for c in baqt_commands if (claude_commands / c).exists()]
+        missing = [c for c in baqt_commands if c not in found]
 
         if missing:
             return VerificationCheck(
@@ -325,12 +325,12 @@ class InstallationVerifier:
             name="ide_commands",
             passed=True,
             message=f"IDE commands registered ({len(total_commands)} total)",
-            details={"bquat_commands": found, "total": len(total_commands)},
+            details={"baqt_commands": found, "total": len(total_commands)},
         )
 
     def _check_file_integrity(self) -> VerificationCheck:
         """Check file integrity using checksums from manifest."""
-        manifest_path = self.bquat_dir / "manifest.json"
+        manifest_path = self.baqt_dir / "manifest.json"
         manifest = read_manifest(manifest_path)
 
         if manifest is None:
@@ -346,7 +346,7 @@ class InstallationVerifier:
 
         # Sample check (check first 50 files to avoid long verification)
         for file_record in manifest.files[:50]:
-            file_path = self.bquat_dir / file_record.path
+            file_path = self.baqt_dir / file_record.path
             if not file_path.exists():
                 missing.append(file_record.path)
                 continue
@@ -374,7 +374,7 @@ class InstallationVerifier:
 
     def _check_component_versions(self) -> VerificationCheck:
         """Check that component versions match manifest."""
-        manifest_path = self.bquat_dir / "manifest.json"
+        manifest_path = self.baqt_dir / "manifest.json"
         manifest = read_manifest(manifest_path)
 
         if manifest is None:

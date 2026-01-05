@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional
 
 from runtime.logging.models import EmittedEvent
-from runtime.plugins.base import Plugin
+from runtime.plugins.data_plane import DataContext, DataPlanePlugin
 from runtime.time_provider import get_current_time
 
 
@@ -75,7 +75,7 @@ class EventEmitter:
                 pass
 
 
-class ObservabilityPlugin(Plugin):
+class ObservabilityPlugin(DataPlanePlugin):
     """Plugin that bridges engine events to the EventEmitter and StructuredLogger."""
 
     def __init__(
@@ -86,7 +86,7 @@ class ObservabilityPlugin(Plugin):
         self._emitter = emitter
         self._logger = logger
 
-    def before_run(self, manifest: Dict[str, Any]) -> None:
+    def _emit_run_started(self, manifest: Dict[str, Any]) -> None:
         if self._emitter:
             self._emitter.emit(
                 "run.started",
@@ -96,7 +96,7 @@ class ObservabilityPlugin(Plugin):
         if self._logger:
             self._logger.run("info", "workflow run started")
 
-    def after_run(self, manifest: Dict[str, Any]) -> None:
+    def _emit_run_completed(self, manifest: Dict[str, Any]) -> None:
         if self._emitter:
             self._emitter.emit(
                 "run.completed",
@@ -106,7 +106,7 @@ class ObservabilityPlugin(Plugin):
         if self._logger:
             self._logger.run("info", f"workflow run completed: {manifest.get('status')}")
 
-    def before_step(self, step: Dict[str, Any], manifest: Dict[str, Any]) -> None:
+    def _emit_step_started(self, step: Dict[str, Any]) -> None:
         step_id = step.get("step_id")
         if self._emitter:
             self._emitter.emit(
@@ -118,7 +118,7 @@ class ObservabilityPlugin(Plugin):
         if self._logger:
             self._logger.step("info", f"step started: {step.get('name')}", step_id or "")
 
-    def after_step(self, step: Dict[str, Any], manifest: Dict[str, Any]) -> None:
+    def _emit_step_completed(self, step: Dict[str, Any]) -> None:
         step_id = step.get("step_id")
         if self._emitter:
             self._emitter.emit(
@@ -130,7 +130,7 @@ class ObservabilityPlugin(Plugin):
         if self._logger:
             self._logger.step("info", f"step completed: {step.get('name')}", step_id or "")
 
-    def on_error(self, step: Dict[str, Any], manifest: Dict[str, Any], error: str) -> None:
+    def _emit_step_failed(self, step: Dict[str, Any], error: str) -> None:
         step_id = step.get("step_id")
         if self._emitter:
             self._emitter.emit(
@@ -142,7 +142,7 @@ class ObservabilityPlugin(Plugin):
         if self._logger:
             self._logger.step("error", f"step failed: {error}", step_id or "")
 
-    def on_validation(self, manifest: Dict[str, Any], status: str) -> None:
+    def _emit_validation(self, status: str) -> None:
         if self._emitter:
             self._emitter.emit(
                 "run.validation",
@@ -152,3 +152,45 @@ class ObservabilityPlugin(Plugin):
         if self._logger:
             level = "info" if status == "completed" else "warn"
             self._logger.validation(level, f"run validation: {status}")
+
+    def before_run(self, manifest: Dict[str, Any]) -> None:
+        self._emit_run_started(manifest)
+
+    def after_run(self, manifest: Dict[str, Any]) -> None:
+        self._emit_run_completed(manifest)
+
+    def before_step(self, step: Dict[str, Any], manifest: Dict[str, Any]) -> None:
+        self._emit_step_started(step)
+
+    def after_step(self, step: Dict[str, Any], manifest: Dict[str, Any]) -> None:
+        self._emit_step_completed(step)
+
+    def on_error(self, step: Dict[str, Any], manifest: Dict[str, Any], error: str) -> None:
+        self._emit_step_failed(step, error)
+
+    def on_validation(self, manifest: Dict[str, Any], status: str) -> None:
+        self._emit_validation(status)
+
+    def on_run_started(self, context: DataContext) -> None:
+        self._emit_run_started(context.manifest)
+
+    def on_run_completed(self, context: DataContext) -> None:
+        self._emit_run_completed(context.manifest)
+
+    def on_step_started(self, context: DataContext) -> None:
+        if context.step:
+            self._emit_step_started(context.step)
+
+    def on_step_completed(self, context: DataContext) -> None:
+        if context.step:
+            self._emit_step_completed(context.step)
+
+    def on_step_failed(self, context: DataContext) -> None:
+        if context.step:
+            error = context.payload.get("error", "")
+            self._emit_step_failed(context.step, error)
+
+    def on_validation_result(self, context: DataContext) -> None:
+        status = context.payload.get("status", "")
+        if status:
+            self._emit_validation(status)

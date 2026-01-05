@@ -3,9 +3,34 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
-Last updated: 2026-01-03
+Last updated: 2026-01-05
 
 ## [Unreleased]
+
+### Added
+
+- Event bus for workflow state transitions with pub/sub pattern (REQ-SPEC-001).
+- Plugin pipeline with control plane and data plane separation (REQ-SPEC-005, REQ-SPEC-006).
+- Built-in plugins: GatePolicyPlugin, AuditPlugin for policy enforcement and audit logging.
+- Dynamic tool registry with categories, metadata, and risk levels (REQ-AGENT-002).
+- Per-agent tool bindings and instructions with AgentDefinition and AgentRegistry (REQ-AGENT-001).
+- Context fingerprint tracking linking TELIS resolution to evidence (REQ-SPEC-009).
+- Context snapshot and drift detection for bounded context management (REQ-QUINT-008).
+- Surface vs grounding separation with DrrSummary for stakeholder views (REQ-QUINT-007).
+- Gates recorded as DRRs with full evidence links (REQ-SPEC-010).
+- Concurrent guardrails using asyncio for optimistic execution (REQ-AGENT-008).
+- Failure isolation with tool-level and step-level bounded retries (REQ-SPEC-007).
+- Full workflow orchestrator with dependency graphs and resource scheduling (REQ-BMAD-006).
+- Interactive CLI mode with step executor for guided workflow execution.
+- Command-based installer structure with modular command handlers.
+- IDE integration documentation for VS Code and JetBrains.
+
+### Changed
+
+- Renamed package from bquat to baqt for consistency.
+- Updated traceability audit to reflect all requirements as done.
+- Enhanced plugin manager with two-phase execution (policy then observation).
+- Integrated event bus publishing throughout the workflow engine.
 
 ## [1.0.0] - 2026-01-03
 
@@ -15,8 +40,8 @@ Last updated: 2026-01-03
 - Installer CLI with install, update, verify, and status commands.
 - Installation manifest tracking with component versions and file checksums.
 - Installation verification checklist with 10 integrity checks.
-- Node.js wrapper for npx support (npx bquat install).
-- IDE slash commands generation (bquat-status, bquat-run, bquat-evidence).
+- Node.js wrapper for npx support (npx baqt install).
+- IDE slash commands generation (baqt-status, baqt-run, baqt-evidence).
 - Installation guide and installer integration documentation.
 - Tool execution pipeline with registry, risk gating, HITL metadata, and tool results persistence.
 - Tool adapters for safe file IO, repo operations, time, and LSP (Pyright/TypeScript) queries.

@@ -1,6 +1,6 @@
-# BQUAT Unified Agentic Framework
+# BAQT Unified Agentic Framework
 
-[![CI](https://img.shields.io/github/actions/workflow/status/fabiendostie/BQUAT/ci.yml?branch=development&logo=github&label=CI)](https://github.com/fabiendostie/BQUAT/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/fabiendostie/BAQT/ci.yml?branch=development&logo=github&label=CI)](https://github.com/fabiendostie/BAQT/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-92%25-success?logo=pytest&logoColor=white)](docs/v1-plan.md)
 [![Version](https://img.shields.io/badge/v1.0.0-release-blue?logo=semanticrelease&logoColor=white)](VERSION)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](pyproject.toml)
@@ -12,9 +12,16 @@
 [![Tests](https://img.shields.io/badge/Tests-309%20passing-success?logo=checkmarx&logoColor=white)](tests/)
 [![License](https://img.shields.io/badge/License-MIT-green?logo=opensourceinitiative&logoColor=white)](LICENSE)
 
+**B**MAD Method +
+**A**utonomous Agents +
+**Q**UINT-Code +
+**T**ELIS =
+
+****BAQT: The unified framework****
+
 > Build production-grade agent workflows by unifying **BMAD-METHOD**, **TELIS**, and **QUINT** under one runtime with blocking human-in-the-loop (HITL) gates.
 
-BQUAT preserves the original workflows and artifacts while adding enforceable guardrails, runtime approvals, and a reproducible execution model.
+BAQT preserves the original workflows and artifacts while adding enforceable guardrails, runtime approvals, and a reproducible execution model.
 
 ---
 
@@ -38,15 +45,15 @@ BQUAT preserves the original workflows and artifacts while adding enforceable gu
 
 ```bash
 # Option 1: Using npx (recommended)
-npx bquat install
+npx baqt install
 
 # Option 2: Using Python
 pip install .
-bquat install
+baqt install
 
 # Option 3: From source
-git clone https://github.com/fabiendostie/BQUAT.git
-cd BQUAT
+git clone https://github.com/fabiendostie/BAQT.git
+cd BAQT
 pip install -r requirements-dev.txt
 npm install
 ```
@@ -54,8 +61,8 @@ npm install
 ### Verify Installation
 
 ```bash
-bquat verify
-bquat status
+baqt verify
+baqt status
 ```
 
 ### Run a Workflow
@@ -145,10 +152,10 @@ python -m cli.main export <run-id> --output bundle.json --report
 python -m cli.main validate
 
 # Installer
-bquat install [target] [--force] [--build-quint]
-bquat update [target]
-bquat verify [target]
-bquat status [target]
+baqt install [target] [--force] [--build-quint]
+baqt update [target]
+baqt verify [target]
+baqt status [target]
 ```
 
 ---
@@ -156,7 +163,7 @@ bquat status [target]
 ## Project Structure
 
 ```text
-BQUAT/
+BAQT/
 +-- runtime/           # Engine, gates, providers, tools, guardrails
 |   +-- telis/         # Context management (shards, cache, negotiation)
 |   +-- quint/         # Evidence engine (store, ADI, WLNK, DRR)
@@ -195,8 +202,8 @@ BQUAT/
 ### Setup
 
 ```bash
-git clone https://github.com/fabiendostie/BQUAT.git
-cd BQUAT
+git clone https://github.com/fabiendostie/BAQT.git
+cd BAQT
 pip install -r requirements-dev.txt
 npm install
 npm run prepare
@@ -246,4 +253,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**BQUAT** - BMAD + QUINT + TELIS Unified Autonomous Framework
+**BAQT** - BMAD + QUINT + TELIS Unified Autonomous Framework

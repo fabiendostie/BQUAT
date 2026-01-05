@@ -1,20 +1,20 @@
-"""BQUAT unified installer - BMAD + TELIS + QUINT framework installer."""
+"""BAQT unified installer - BMAD + TELIS + QUINT framework installer."""
 
 from .cli import main
-from .core import BquatInstaller, InstallConfig, InstallResult
+from .core import BaqtInstaller, InstallConfig, InstallResult
 from .manifest import (
     ComponentVersion,
     FileRecord,
     InstallManifest,
     compute_checksum,
-    get_bquat_version,
+    get_baqt_version,
     read_manifest,
     write_manifest,
 )
 from .verify import InstallationVerifier, VerificationCheck, VerificationReport, verify_installation
 
 __all__ = [
-    "BquatInstaller",
+    "BaqtInstaller",
     "ComponentVersion",
     "FileRecord",
     "InstallConfig",
@@ -24,7 +24,7 @@ __all__ = [
     "VerificationCheck",
     "VerificationReport",
     "compute_checksum",
-    "get_bquat_version",
+    "get_baqt_version",
     "main",
     "read_manifest",
     "verify_installation",

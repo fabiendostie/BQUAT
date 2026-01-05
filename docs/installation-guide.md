@@ -1,6 +1,6 @@
-# BQUAT Installation Guide
+# BAQT Installation Guide
 
-This guide covers installing and configuring the BQUAT unified framework, which includes BMAD-METHOD, TELIS context management, and QUINT evidence engine.
+This guide covers installing and configuring the BAQT unified framework, which includes BMAD-METHOD, TELIS context management, and QUINT evidence engine.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ This guide covers installing and configuring the BQUAT unified framework, which 
 ### Option 1: Using npx (Recommended)
 
 ```bash
-npx bquat install
+npx baqt install
 ```
 
 ### Option 2: Using Python
@@ -27,7 +27,7 @@ python -m installer.cli install
 
 ```bash
 pip install .
-bquat install
+baqt install
 ```
 
 ## Installation Options
@@ -37,7 +37,7 @@ bquat install
 Installs all components: BMAD, QUINT, Runtime, and Documentation.
 
 ```bash
-bquat install
+baqt install
 ```
 
 ### Selective Installation
@@ -46,16 +46,16 @@ Skip specific components:
 
 ```bash
 # Skip BMAD assets
-bquat install --no-bmad
+baqt install --no-bmad
 
 # Skip QUINT
-bquat install --no-quint
+baqt install --no-quint
 
 # Skip runtime (not recommended)
-bquat install --no-runtime
+baqt install --no-runtime
 
 # Skip documentation
-bquat install --no-docs
+baqt install --no-docs
 ```
 
 ### Build QUINT Binary
@@ -63,7 +63,7 @@ bquat install --no-docs
 If you have Go installed, you can build the QUINT binary during installation:
 
 ```bash
-bquat install --build-quint
+baqt install --build-quint
 ```
 
 ### Force Reinstall
@@ -71,7 +71,7 @@ bquat install --build-quint
 Overwrite an existing installation:
 
 ```bash
-bquat install --force
+baqt install --force
 ```
 
 ## Installed Structure
@@ -80,7 +80,7 @@ After installation, the following structure is created:
 
 ```text
 your-project/
-├── _bquat/
+├── _baqt/
 │   ├── manifest.json      # Installation manifest
 │   ├── bmad/              # BMAD agents and workflows
 │   │   ├── core/
@@ -89,7 +89,7 @@ your-project/
 │   ├── quint/             # QUINT evidence engine
 │   │   ├── bin/           # Go binary (if built)
 │   │   └── src/           # Go source
-│   ├── runtime/           # BQUAT Python runtime
+│   ├── runtime/           # BAQT Python runtime
 │   │   ├── telis/         # Context management
 │   │   ├── quint/         # Evidence store
 │   │   └── ...
@@ -98,9 +98,9 @@ your-project/
 │   └── docs/              # Documentation
 └── .claude/
     └── commands/          # IDE slash commands
-        ├── bquat-status.md
-        ├── bquat-run.md
-        ├── bquat-evidence.md
+        ├── baqt-status.md
+        ├── baqt-run.md
+        ├── baqt-evidence.md
         └── ...            # BMAD commands
 ```
 
@@ -109,7 +109,7 @@ your-project/
 Verify your installation:
 
 ```bash
-bquat verify
+baqt verify
 ```
 
 This checks:
@@ -129,10 +129,10 @@ This checks:
 
 ### install
 
-Install BQUAT to a target directory.
+Install BAQT to a target directory.
 
 ```bash
-bquat install [target] [options]
+baqt install [target] [options]
 ```
 
 Options:
@@ -150,7 +150,7 @@ Options:
 Update an existing installation with latest versions.
 
 ```bash
-bquat update [target] [options]
+baqt update [target] [options]
 ```
 
 Options:
@@ -162,7 +162,7 @@ Options:
 Verify installation integrity.
 
 ```bash
-bquat verify [target] [options]
+baqt verify [target] [options]
 ```
 
 Options:
@@ -174,7 +174,7 @@ Options:
 Show installation status.
 
 ```bash
-bquat status [target] [options]
+baqt status [target] [options]
 ```
 
 Options:
@@ -183,10 +183,10 @@ Options:
 
 ### version
 
-Show BQUAT version.
+Show BAQT version.
 
 ```bash
-bquat version
+baqt version
 ```
 
 ## Updating Components
@@ -196,12 +196,12 @@ bquat version
 If BMAD-METHOD or quint-code are updated upstream:
 
 ```bash
-# From BQUAT repository
+# From BAQT repository
 git submodule update --remote BMAD-METHOD
 git submodule update --remote quint-code
 
 # Reinstall to target
-bquat update /path/to/project
+baqt update /path/to/project
 ```
 
 ### Update Runtime
@@ -209,7 +209,7 @@ bquat update /path/to/project
 To update only the runtime:
 
 ```bash
-bquat install --no-bmad --no-quint --force
+baqt install --no-bmad --no-quint --force
 ```
 
 ## IDE Integration
@@ -218,19 +218,19 @@ bquat install --no-bmad --no-quint --force
 
 After installation, the following slash commands are available:
 
-- `/bquat-status` - Show installation status and run summary
-- `/bquat-run <workflow>` - Execute a BQUAT workflow
-- `/bquat-evidence [run_id]` - Query QUINT evidence chain
+- `/baqt-status` - Show installation status and run summary
+- `/baqt-run <workflow>` - Execute a BAQT workflow
+- `/baqt-evidence [run_id]` - Query QUINT evidence chain
 
 Plus all BMAD slash commands for workflow execution.
 
 ### VS Code
 
-The BQUAT runtime works with any IDE that supports Python. For VS Code:
+The BAQT runtime works with any IDE that supports Python. For VS Code:
 
 1. Open the project folder
 2. Select Python 3.11+ interpreter
-3. The runtime modules in `_bquat/runtime/` are automatically available
+3. The runtime modules in `_baqt/runtime/` are automatically available
 
 ## Troubleshooting
 
@@ -257,7 +257,7 @@ go version
 If the manifest becomes corrupted, reinstall with force:
 
 ```bash
-bquat install --force
+baqt install --force
 ```
 
 ### Missing Dependencies
@@ -270,7 +270,7 @@ pip install pyyaml
 
 ## Configuration
 
-The runtime is configured via `_bquat/config/runtime.yaml`. Key sections:
+The runtime is configured via `_baqt/config/runtime.yaml`. Key sections:
 
 ```yaml
 runtime:
@@ -290,4 +290,4 @@ observability:
 ## Support
 
 For issues and feedback, visit:
-<https://github.com/anthropics/bquat/issues>
+<https://github.com/anthropics/baqt/issues>

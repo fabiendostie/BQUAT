@@ -228,6 +228,7 @@ def build_timeline(run_dir: Path) -> Dict[str, Any]:
                 "reason": gate.get("reason"),
                 "phase": gate.get("phase"),
                 "workflow": gate.get("workflow"),
+                "drr_id": gate.get("drr_id"),
             }
         )
 
@@ -243,21 +244,67 @@ def build_timeline(run_dir: Path) -> Dict[str, Any]:
                 "source": evidence.get("source", ""),
                 "artifacts": list(evidence.get("artifacts", [])),
                 "carrier_ref": evidence.get("carrier_ref", ""),
+                "context_fingerprint_id": evidence.get("context_fingerprint_id"),
+                "drifted": evidence.get("drifted", False),
             }
         )
 
     drr_payload = read_drrs(run_dir)
     for record in drr_payload.get("drrs", []):
-        entries.append(
-            {
-                "type": "drr",
-                "timestamp": record.get("date", ""),
-                "decision_id": record.get("decision_id", ""),
-                "status": record.get("status", ""),
-                "owner": record.get("owner", ""),
-                "markdown_path": record.get("markdown_path", ""),
-            }
-        )
+        entry = {
+            "type": "drr",
+            "timestamp": record.get("date", ""),
+            "decision_id": record.get("decision_id", ""),
+            "status": record.get("status", ""),
+            "owner": record.get("owner", ""),
+            "markdown_path": record.get("markdown_path", ""),
+        }
+        summary = record.get("summary")
+        if isinstance(summary, dict):
+            entry["summary"] = dict(summary)
+        entries.append(entry)
+
+    fingerprint_path = run_dir / "context-fingerprints.json"
+    if fingerprint_path.exists():
+        fingerprint_payload = read_json(fingerprint_path)
+        for fingerprint in fingerprint_payload.get("fingerprints", []):
+            entries.append(
+                {
+                    "type": "context_fingerprint",
+                    "timestamp": fingerprint.get("created_at", ""),
+                    "fingerprint_id": fingerprint.get("fingerprint_id", ""),
+                    "step_id": fingerprint.get("step_id"),
+                    "shard_ids": list(fingerprint.get("shard_ids", [])),
+                }
+            )
+
+    snapshot_path = run_dir / "context-snapshots.json"
+    if snapshot_path.exists():
+        snapshot_payload = read_json(snapshot_path)
+        for snapshot in snapshot_payload.get("snapshots", []):
+            entries.append(
+                {
+                    "type": "context_snapshot",
+                    "timestamp": snapshot.get("captured_at", ""),
+                    "snapshot_id": snapshot.get("snapshot_id", ""),
+                    "lsp_enabled": snapshot.get("lsp_enabled", False),
+                    "token_budget_total": snapshot.get("token_budget_total", 0),
+                }
+            )
+
+    drift_path = run_dir / "context-drifts.json"
+    if drift_path.exists():
+        drift_payload = read_json(drift_path)
+        for drift in drift_payload.get("drifts", []):
+            entries.append(
+                {
+                    "type": "context_drift",
+                    "timestamp": drift.get("detected_at", ""),
+                    "snapshot_id": drift.get("snapshot_id", ""),
+                    "drift_type": drift.get("drift_type", ""),
+                    "details": drift.get("details", ""),
+                }
+            )
 
     entries.sort(key=_timeline_sort_key)
     return {"run_id": run_id, "generated_at": get_current_time(), "entries": entries}
@@ -276,6 +323,8 @@ def _timeline_sort_key(entry: Dict[str, Any]) -> Tuple[str, str, str]:
         or entry.get("gate_id")
         or entry.get("evidence_id")
         or entry.get("decision_id")
+        or entry.get("fingerprint_id")
+        or entry.get("snapshot_id")
         or ""
     )
     return timestamp, entry_type, entry_id

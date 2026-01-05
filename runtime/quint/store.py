@@ -42,6 +42,7 @@ def build_evidence_link(
     carrier_ref: str,
     artifacts: List[str] | None = None,
     notes: str = "",
+    context_fingerprint_id: str | None = None,
 ) -> models.EvidenceLink:
     timestamp = get_current_time()
     normalized = normalize_level(level)
@@ -56,6 +57,7 @@ def build_evidence_link(
         reliability=0.0,
         wlnk=0.0,
         carrier_ref=carrier_ref,
+        context_fingerprint_id=context_fingerprint_id,
         artifacts=list(artifacts or []),
         notes=notes,
     )

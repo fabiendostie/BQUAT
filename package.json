@@ -1,10 +1,10 @@
 {
-  "name": "bquat",
+  "name": "baqt",
   "private": true,
   "version": "1.0.0",
-  "description": "BQUAT unified installer - BMAD + TELIS + QUINT autonomous framework",
+  "description": "BAQT unified installer - BMAD + TELIS + QUINT autonomous framework",
   "bin": {
-    "bquat": "./bin/bquat.js"
+    "baqt": "./bin/baqt.js"
   },
   "scripts": {
     "prepare": "husky",

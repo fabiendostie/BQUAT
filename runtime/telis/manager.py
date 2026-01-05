@@ -177,19 +177,35 @@ class TelisPolicyEngine:
             if cached:
                 phases_raw = cached.metadata.get("phases", [])
                 phases = list(phases_raw) if isinstance(phases_raw, list) else []
+                cached_metadata = dict(cached.metadata)
+                lsp_calls = cached_metadata.get("lsp_calls")
+                if not lsp_calls:
+                    lsp_calls = _build_lsp_calls(
+                        telis_policy.use_lsp,
+                        method,
+                        language,
+                        line,
+                        character,
+                        doc_path,
+                        doc_text,
+                        cached_metadata.get("source"),
+                    )
+                    if lsp_calls:
+                        cached_metadata["lsp_calls"] = lsp_calls
                 return {
                     "policy": policy_text,
                     "query": query,
                     "language": language,
                     "tiers": telis_policy.tiers,
                     "progressive": telis_policy.progressive,
-                    "source": cached.metadata.get("source", "cache"),
-                    "used_fallback": bool(cached.metadata.get("used_fallback")),
+                    "source": cached_metadata.get("source", "cache"),
+                    "used_fallback": bool(cached_metadata.get("used_fallback")),
                     "context": cached.response,
                     "cached": True,
                     "cache_key": cache_key,
-                    "metadata": dict(cached.metadata),
+                    "metadata": cached_metadata,
                     "phases": phases,
+                    "lsp_calls": list(lsp_calls or []),
                 }
 
         lsp_provider = self.lsp_provider if telis_policy.use_lsp else None
@@ -253,6 +269,19 @@ class TelisPolicyEngine:
             )
             result = _result_from_context(policy_text, telis_policy, ctx)
 
+        lsp_calls = _build_lsp_calls(
+            telis_policy.use_lsp,
+            method,
+            language,
+            line,
+            character,
+            doc_path,
+            doc_text,
+            result.get("source"),
+        )
+        if lsp_calls:
+            result["lsp_calls"] = lsp_calls
+
         if self.cache and self.cache_enabled:
             metadata = dict(result.get("metadata", {}))
             metadata.update(
@@ -263,6 +292,8 @@ class TelisPolicyEngine:
                     "language": language,
                 }
             )
+            if lsp_calls:
+                metadata["lsp_calls"] = lsp_calls
             self.cache.set(cache_key, result.get("context", ""), metadata=metadata)
             result["cache_key"] = cache_key
 
@@ -419,6 +450,35 @@ def _cache_key(
         digest = hashlib.sha256(document_text.encode("utf-8")).hexdigest()[:12]
         basis.append(digest)
     return "::".join(basis)
+
+
+def _build_lsp_calls(
+    use_lsp: bool,
+    method: str,
+    language: str,
+    line: int,
+    character: int,
+    document_path: Optional[Path],
+    document_text: Optional[str],
+    source: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    if not use_lsp:
+        return []
+    if not document_path and not document_text:
+        return []
+    if not language or not method:
+        return []
+    result_type = method if source == "lsp" else ""
+    return [
+        {
+            "method": method,
+            "language": language,
+            "line": int(line),
+            "character": int(character),
+            "document_path": str(document_path) if document_path else None,
+            "result_type": result_type,
+        }
+    ]
 
 
 def _result_from_context(

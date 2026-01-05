@@ -1,4 +1,4 @@
-"""Core installation orchestrator for BQUAT unified installer."""
+"""Core installation orchestrator for BAQT unified installer."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from .manifest import (
     ComponentVersion,
     InstallManifest,
     create_file_record,
-    get_bquat_version,
+    get_baqt_version,
     get_git_commit,
     read_manifest,
     write_manifest,
@@ -45,10 +45,10 @@ class InstallConfig:
     force: bool = False
 
 
-class BquatInstaller:
-    """Unified installer for BQUAT framework."""
+class BaqtInstaller:
+    """Unified installer for BAQT framework."""
 
-    BQUAT_DIR = "_bquat"
+    BAQT_DIR = "_baqt"
     MANIFEST_FILE = "manifest.json"
 
     def __init__(self, source_root: Path | None = None) -> None:
@@ -67,7 +67,7 @@ class BquatInstaller:
         errors: list[str] = []
         warnings: list[str] = []
 
-        target = config.target_dir / self.BQUAT_DIR
+        target = config.target_dir / self.BAQT_DIR
         manifest_path = target / self.MANIFEST_FILE
 
         # Check for existing installation
@@ -89,7 +89,7 @@ class BquatInstaller:
             installed_at=now,
             updated_at=now,
             target_dir=str(config.target_dir),
-            bquat_version=get_bquat_version(),
+            baqt_version=get_baqt_version(),
             config={
                 "include_bmad": config.include_bmad,
                 "include_quint": config.include_quint,
@@ -149,7 +149,7 @@ class BquatInstaller:
 
         return InstallResult(
             success=True,
-            message=f"BQUAT installed successfully to {target}",
+            message=f"BAQT installed successfully to {target}",
             manifest=manifest,
             warnings=warnings,
         )
@@ -281,7 +281,7 @@ class BquatInstaller:
             return {"success": False, "warnings": warnings}
 
     def _install_runtime(self, target: Path, manifest: InstallManifest) -> dict[str, Any]:
-        """Install BQUAT runtime."""
+        """Install BAQT runtime."""
         errors: list[str] = []
         warnings: list[str] = []
 
@@ -303,7 +303,7 @@ class BquatInstaller:
             manifest.add_component(
                 ComponentVersion(
                     name="runtime",
-                    version=get_bquat_version(),
+                    version=get_baqt_version(),
                     commit=get_git_commit(self.source_root),
                     installed_at=datetime.now(timezone.utc).isoformat(),
                     source_path=str(self.runtime_root),
@@ -385,14 +385,22 @@ class BquatInstaller:
             except (OSError, shutil.Error) as e:
                 warnings.append(f"Failed to copy BMAD commands: {e}")
 
-        # Create BQUAT-specific commands
-        bquat_commands = [
-            ("bquat-status.md", self._generate_status_command()),
-            ("bquat-run.md", self._generate_run_command()),
-            ("bquat-evidence.md", self._generate_evidence_command()),
+        # Copy BAQT-enhanced slash commands
+        baqt_commands_src = self.source_root / "installer" / "commands"
+        if baqt_commands_src.exists():
+            try:
+                for cmd_file in baqt_commands_src.glob("*.md"):
+                    shutil.copy2(cmd_file, claude_commands / cmd_file.name)
+            except (OSError, shutil.Error) as e:
+                warnings.append(f"Failed to copy BAQT commands: {e}")
+
+        # Create additional BAQT utility commands
+        utility_commands = [
+            ("baqt-status.md", self._generate_status_command()),
+            ("baqt-evidence.md", self._generate_evidence_command()),
         ]
 
-        for filename, content in bquat_commands:
+        for filename, content in utility_commands:
             cmd_path = claude_commands / filename
             try:
                 with open(cmd_path, "w", encoding="utf-8") as f:
@@ -403,43 +411,22 @@ class BquatInstaller:
         return {"success": True, "errors": errors, "warnings": warnings}
 
     def _generate_status_command(self) -> str:
-        """Generate BQUAT status slash command."""
+        """Generate BAQT status slash command."""
         return """---
-description: Show BQUAT installation status and run summary
+description: Show BAQT installation status and run summary
 ---
 
-Show the current BQUAT installation status including:
+Show the current BAQT installation status including:
 1. Installed component versions (BMAD, QUINT, Runtime)
 2. Active workflow runs and their status
 3. Evidence chain summary
 4. Recent activity log
 
-Use the BQUAT runtime to query this information from _bquat/manifest.json and the runs directory.
-"""
-
-    def _generate_run_command(self) -> str:
-        """Generate BQUAT run slash command."""
-        return """---
-description: Execute a BQUAT workflow
-arguments:
-  - name: workflow
-    description: The workflow to execute (e.g., bmm/prd, core/adr)
-    required: true
----
-
-Execute the specified BQUAT workflow using the runtime engine.
-
-Workflow: $ARGUMENTS.workflow
-
-1. Parse the workflow specification from BMAD assets
-2. Create a new run in the runs directory
-3. Execute steps according to the workflow definition
-4. Record evidence and artifacts
-5. Report completion status
+Use the BAQT runtime to query this information from _baqt/manifest.json and the runs directory.
 """
 
     def _generate_evidence_command(self) -> str:
-        """Generate BQUAT evidence slash command."""
+        """Generate BAQT evidence slash command."""
         return """---
 description: Query QUINT evidence chain
 arguments:
@@ -460,7 +447,7 @@ $ARGUMENTS.run_id
 
     def update(self, target_dir: Path) -> InstallResult:
         """Update an existing installation."""
-        manifest_path = target_dir / self.BQUAT_DIR / self.MANIFEST_FILE
+        manifest_path = target_dir / self.BAQT_DIR / self.MANIFEST_FILE
         existing = read_manifest(manifest_path)
 
         if not existing:
@@ -482,19 +469,19 @@ $ARGUMENTS.run_id
 
         result = self.install(config)
         if result.success:
-            result.message = f"BQUAT updated successfully at {target_dir / self.BQUAT_DIR}"
+            result.message = f"BAQT updated successfully at {target_dir / self.BAQT_DIR}"
 
         return result
 
     def status(self, target_dir: Path) -> dict[str, Any]:
         """Get installation status."""
-        manifest_path = target_dir / self.BQUAT_DIR / self.MANIFEST_FILE
+        manifest_path = target_dir / self.BAQT_DIR / self.MANIFEST_FILE
         manifest = read_manifest(manifest_path)
 
         if not manifest:
             return {
                 "installed": False,
-                "message": "No BQUAT installation found",
+                "message": "No BAQT installation found",
             }
 
         return {
@@ -502,7 +489,7 @@ $ARGUMENTS.run_id
             "install_id": manifest.install_id,
             "installed_at": manifest.installed_at,
             "updated_at": manifest.updated_at,
-            "bquat_version": manifest.bquat_version,
+            "baqt_version": manifest.baqt_version,
             "components": [
                 {
                     "name": c.name,

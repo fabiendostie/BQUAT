@@ -96,7 +96,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(manifest["run_id"], payload["run_id"])
 
     def test_main_validate(self) -> None:
-        with patch.object(sys, "argv", ["bquat", "validate"]):
+        with patch.object(sys, "argv", ["baqt", "validate"]):
             buf = io.StringIO()
             with redirect_stdout(buf):
                 result = cli_main.main()

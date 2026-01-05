@@ -1,4 +1,4 @@
-# BQUAT v1.0.0 Release Checklist
+# BAQT v1.0.0 Release Checklist
 
 Status: Complete
 Date: 2026-01-03
@@ -17,7 +17,7 @@ Date: 2026-01-03
 - [x] pyproject.toml: version = "1.0.0"
 - [x] package.json: version: "1.0.0"
 - [x] installer/**init**.py: **version** = "1.0.0"
-- [x] installer/manifest.py: get_bquat_version() -> "1.0.0"
+- [x] installer/manifest.py: get_baqt_version() -> "1.0.0"
 
 ## Documentation
 

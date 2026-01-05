@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -75,6 +75,26 @@ class DrrDecision:
 
 
 @dataclass(frozen=True)
+class DrrSummary:
+    """Surface layer summary for stakeholder-friendly DRR output."""
+
+    decision_id: str
+    selected_option: str
+    rationale_brief: str
+    confidence: float
+    approval_status: str
+
+    def to_dict(self) -> Dict[str, object]:
+        return {
+            "decision_id": self.decision_id,
+            "selected_option": self.selected_option,
+            "rationale_brief": self.rationale_brief,
+            "confidence": self.confidence,
+            "approval_status": self.approval_status,
+        }
+
+
+@dataclass(frozen=True)
 class DrrSignoff:
     approver: str
     date: str
@@ -94,9 +114,11 @@ class DrrRecord:
     evidence: DrrEvidence
     decision: DrrDecision
     signoff: DrrSignoff
+    evidence_links: List[Dict[str, object]] = field(default_factory=list)
+    summary: Optional[DrrSummary] = None
 
     def to_dict(self) -> Dict[str, object]:
-        return {
+        payload: Dict[str, object] = {
             "decision_id": self.decision_id,
             "date": self.date,
             "owner": self.owner,
@@ -106,7 +128,11 @@ class DrrRecord:
             "evidence": self.evidence.to_dict(),
             "decision": self.decision.to_dict(),
             "signoff": self.signoff.to_dict(),
+            "evidence_links": [dict(item) for item in self.evidence_links],
         }
+        if self.summary:
+            payload["summary"] = self.summary.to_dict()
+        return payload
 
 
 def build_drr(
@@ -118,6 +144,8 @@ def build_drr(
     evidence: DrrEvidence,
     decision: DrrDecision,
     signoff: Optional[DrrSignoff] = None,
+    evidence_links: Optional[List[Dict[str, object]]] = None,
+    summary: Optional[DrrSummary] = None,
 ) -> DrrRecord:
     timestamp = get_current_time()
     return DrrRecord(
@@ -130,6 +158,8 @@ def build_drr(
         evidence=evidence,
         decision=decision,
         signoff=signoff or DrrSignoff(approver="", date=""),
+        evidence_links=list(evidence_links or []),
+        summary=summary,
     )
 
 
@@ -149,13 +179,16 @@ class DrrStore:
         drrs = payload.get("drrs", [])
         if not isinstance(drrs, list):
             drrs = []
+        summary = record.summary or build_summary(record)
         rendered = record.to_dict()
+        rendered["summary"] = summary.to_dict()
         if write_markdown:
             markdown_path = self._write_markdown(record)
             rendered["markdown_path"] = markdown_path
         drrs.append(rendered)
         payload["drrs"] = drrs
         storage.write_drrs(self.run_dir, payload)
+        self._record_summary(summary)
         storage.update_timeline(self.run_dir)
         return rendered
 
@@ -165,6 +198,38 @@ class DrrStore:
         path = directory / filename
         path.write_text(render_drr_markdown(record), encoding="ascii")
         return str(path)
+
+    def _record_summary(self, summary: DrrSummary) -> None:
+        path = self.run_dir / "drr-summaries.json"
+        if path.exists():
+            payload = storage.read_json(path)
+        else:
+            payload = {"summaries": []}
+        summaries = payload.get("summaries", [])
+        if not isinstance(summaries, list):
+            summaries = []
+        summaries.append(summary.to_dict())
+        payload["summaries"] = summaries
+        payload["updated_at"] = get_current_time()
+        storage.write_json(path, payload)
+
+
+def build_summary(record: DrrRecord) -> DrrSummary:
+    rationale = record.decision.rationale.strip()
+    if len(rationale) > 160:
+        rationale = f"{rationale[:157]}..."
+    confidence = 0.0
+    try:
+        confidence = float(record.evidence.wlnk.replace("WLNK=", ""))
+    except (ValueError, AttributeError):
+        confidence = 0.0
+    return DrrSummary(
+        decision_id=record.decision_id,
+        selected_option=record.decision.selected_option,
+        rationale_brief=rationale,
+        confidence=confidence,
+        approval_status=record.status,
+    )
 
 
 def render_drr_markdown(record: DrrRecord) -> str:

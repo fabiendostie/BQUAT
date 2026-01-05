@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from runtime import models
+from runtime.quint import drr as quint_drr
+from runtime.quint.drr import DrrDecision, DrrEvidence, DrrOption, DrrSignoff
+from runtime.time_provider import get_current_time
 
 
 @dataclass(frozen=True)
@@ -91,6 +97,7 @@ def record_gate(
     approved_by: str | None = None,
     approved_at: str | None = None,
     notes: str = "",
+    drr_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     entry = {
         "gate_id": gate_id,
@@ -103,6 +110,7 @@ def record_gate(
         "phase": phase,
         "workflow": workflow,
         "recorded_at": recorded_at,
+        "drr_id": drr_id,
     }
     entries: List[Dict[str, Any]] = gates_payload.get("gates", [])
     for existing in entries:
@@ -113,6 +121,73 @@ def record_gate(
     entries.append(entry)
     gates_payload["gates"] = entries
     return gates_payload
+
+
+def record_gate_as_drr(
+    run_dir: Path,
+    gate_id: str,
+    phase: str,
+    workflow: str,
+    policy_reason: str,
+    supporting_evidence: List[models.EvidenceLink],
+    approved_by: Optional[str] = None,
+    approval_notes: str = "",
+) -> quint_drr.DrrRecord:
+    decision_id = f"gate-{gate_id}"
+    owner = approved_by or "system"
+    status = "approved" if approved_by else "proposed"
+    context = quint_drr.DrrContext(
+        problem_statement=f"Gate {gate_id} required for {workflow}.",
+        constraints="HITL policy enforcement",
+        dependencies="runtime/gates.py",
+        assumptions="Manual approval required before execution continues",
+    )
+    options = [
+        DrrOption(
+            name="Require human approval",
+            pros=["Policy compliance", "Auditability"],
+            cons=["Blocks automation until approved"],
+        ),
+        DrrOption(
+            name="Auto-approve gate",
+            pros=["Faster automation"],
+            cons=["Violates HITL policy"],
+        ),
+    ]
+    evidence_links = [link.to_dict() for link in supporting_evidence]
+    evidence = DrrEvidence(
+        l0=policy_reason or "Gate policy evaluated",
+        l1="HITL policy requires explicit approval",
+        l2=f"Supporting evidence links: {', '.join(link.id for link in supporting_evidence) or 'none'}",
+        wlnk="0.0",
+        congruence="CL0",
+        validity_window="until approved",
+    )
+    decision = DrrDecision(
+        selected_option="Require human approval",
+        rationale=policy_reason or "Gate enforced by policy",
+        reversibility="Reversible upon approval",
+        follow_ups=approval_notes or "Await approval",
+    )
+    signoff = DrrSignoff(
+        approver=approved_by or "",
+        date=get_current_time() if approved_by else "",
+    )
+    record = quint_drr.build_drr(
+        decision_id=decision_id,
+        owner=owner,
+        status=status,
+        context=context,
+        options=options,
+        evidence=evidence,
+        decision=decision,
+        signoff=signoff,
+        evidence_links=evidence_links,
+        summary=None,
+    )
+    store = quint_drr.DrrStore(run_dir)
+    store.record(record)
+    return record
 
 
 def _normalize_list(values: Any) -> List[str]:

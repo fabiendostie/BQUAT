@@ -1,16 +1,16 @@
-# BQUAT Installer Integration (WS15)
+# BAQT Installer Integration (WS15)
 
-This document describes the technical architecture of the BQUAT unified installer and its integration with BMAD-METHOD, TELIS, and QUINT components.
+This document describes the technical architecture of the BAQT unified installer and its integration with BMAD-METHOD, TELIS, and QUINT components.
 
 ## Architecture Overview
 
 ```text
-BQUAT Repository
+BAQT Repository
 ├── BMAD-METHOD/         (git submodule)
 │   └── src/             (BMAD assets to install)
 ├── quint-code/          (git submodule)
 │   └── src/             (QUINT Go source)
-├── runtime/             (BQUAT Python runtime)
+├── runtime/             (BAQT Python runtime)
 │   ├── telis/           (TELIS context management)
 │   └── quint/           (QUINT evidence store)
 ├── installer/           (Unified installer module)
@@ -20,7 +20,7 @@ BQUAT Repository
 │   ├── manifest.py      (Installation tracking)
 │   └── verify.py        (Verification checks)
 ├── bin/
-│   └── bquat.js         (Node.js wrapper for npx)
+│   └── baqt.js         (Node.js wrapper for npx)
 └── config/
     └── runtime.yaml     (Default configuration)
 ```
@@ -46,7 +46,7 @@ Key functions:
 
 Main installation orchestrator:
 
-- `BquatInstaller` - Primary installer class
+- `BaqtInstaller` - Primary installer class
 - `InstallConfig` - Installation configuration
 - `InstallResult` - Installation outcome
 
@@ -108,9 +108,9 @@ BMAD assets are copied from `BMAD-METHOD/src/`:
 
 ```text
 BMAD-METHOD/src/
-├── core/          -> _bquat/bmad/core/
-├── modules/       -> _bquat/bmad/modules/
-└── utility/       -> _bquat/bmad/utility/
+├── core/          -> _baqt/bmad/core/
+├── modules/       -> _baqt/bmad/modules/
+└── utility/       -> _baqt/bmad/utility/
 ```
 
 BMAD slash commands are copied from:
@@ -124,7 +124,7 @@ QUINT can be installed as:
 2. **Binary** - Pre-built Go binary (if `--build-quint` specified)
 
 Source location: `quint-code/src/`
-Binary location: `_bquat/quint/bin/quint`
+Binary location: `_baqt/quint/bin/quint`
 
 ### Runtime Integration
 
@@ -148,7 +148,7 @@ Key runtime modules:
   "installed_at": "2025-01-02T12:00:00Z",
   "updated_at": "2025-01-02T12:00:00Z",
   "target_dir": "/path/to/project",
-  "bquat_version": "0.2.0",
+  "baqt_version": "0.2.0",
   "components": [
     {
       "name": "bmad",
@@ -179,7 +179,7 @@ Key runtime modules:
 
 ### Submodule Updates
 
-1. Update submodules in BQUAT repository:
+1. Update submodules in BAQT repository:
 
    ```bash
    git submodule update --remote BMAD-METHOD quint-code
@@ -188,7 +188,7 @@ Key runtime modules:
 2. Reinstall to target projects:
 
    ```bash
-   bquat update /path/to/project
+   baqt update /path/to/project
    ```
 
 The update process:
@@ -214,9 +214,9 @@ This enables:
 
 ## IDE Command Generation
 
-BQUAT generates slash commands for Claude Code:
+BAQT generates slash commands for Claude Code:
 
-### bquat-status.md
+### baqt-status.md
 
 Shows installation status and run summary:
 
@@ -225,16 +225,16 @@ Shows installation status and run summary:
 - Evidence chain summary
 - Recent activity log
 
-### bquat-run.md
+### baqt-run.md
 
-Executes a BQUAT workflow:
+Executes a BAQT workflow:
 
 - Parses workflow specification
 - Creates run in runs directory
 - Executes steps
 - Records evidence
 
-### bquat-evidence.md
+### baqt-evidence.md
 
 Queries QUINT evidence chain:
 
@@ -247,10 +247,10 @@ Queries QUINT evidence chain:
 
 ### Custom Components
 
-Add new components by extending `BquatInstaller`:
+Add new components by extending `BaqtInstaller`:
 
 ```python
-class CustomInstaller(BquatInstaller):
+class CustomInstaller(BaqtInstaller):
     def _install_custom(self, target, manifest):
         # Custom installation logic
         pass
@@ -272,9 +272,9 @@ class CustomVerifier(InstallationVerifier):
 Add IDE commands by modifying `_install_ide_commands()`:
 
 ```python
-bquat_commands = [
-    ("bquat-status.md", self._generate_status_command()),
-    ("bquat-custom.md", self._generate_custom_command()),
+baqt_commands = [
+    ("baqt-status.md", self._generate_status_command()),
+    ("baqt-custom.md", self._generate_custom_command()),
 ]
 ```
 

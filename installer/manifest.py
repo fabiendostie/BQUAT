@@ -1,4 +1,4 @@
-"""Installation manifest tracking for BQUAT unified installer."""
+"""Installation manifest tracking for BAQT unified installer."""
 
 from __future__ import annotations
 
@@ -33,13 +33,13 @@ class FileRecord:
 
 @dataclass
 class InstallManifest:
-    """Tracks the state of a BQUAT installation."""
+    """Tracks the state of a BAQT installation."""
 
     install_id: str
     installed_at: str
     updated_at: str
     target_dir: str
-    bquat_version: str
+    baqt_version: str
     components: list[ComponentVersion] = field(default_factory=list)
     files: list[FileRecord] = field(default_factory=list)
     config: dict[str, Any] = field(default_factory=dict)
@@ -58,7 +58,7 @@ class InstallManifest:
             installed_at=data["installed_at"],
             updated_at=data["updated_at"],
             target_dir=data["target_dir"],
-            bquat_version=data["bquat_version"],
+            baqt_version=data["baqt_version"],
             components=components,
             files=files,
             config=data.get("config", {}),
@@ -131,8 +131,8 @@ def write_manifest(manifest_path: Path, manifest: InstallManifest) -> None:
         json.dump(manifest.to_dict(), f, indent=2)
 
 
-def get_bquat_version() -> str:
-    """Get the current BQUAT version."""
+def get_baqt_version() -> str:
+    """Get the current BAQT version."""
     return "1.0.0"
 
 
