@@ -1,5 +1,7 @@
 # Traceability Audit (v1.0)
 
+<!-- markdownlint-disable MD060 -->
+
 Status: Complete
 Owner: Core maintainers
 Last updated: 2026-01-05
@@ -24,15 +26,15 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## BMAD Coverage
 
-| ID       | Requirement                                                | Status  | Evidence                                                  | Gap Notes                                  |
-| -------- | ---------------------------------------------------------- | ------- | --------------------------------------------------------- | ------------------------------------------ |
-| BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | done    | tests/test_runtime_bmad_execution.py                      | None                                       |
-| BMAD-002 | Exclude sample/reference workflows from production mapping | done    | tests/test_mapping.py                                     | None                                       |
-| BMAD-003 | Only explicit outputs/templates listed in mapping          | done    | tests/test_mapping.py                                     | None                                       |
-| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done    | runtime/workflow_parser.py, tests/test_workflow_parser.py | None                                       |
-| BMAD-005 | Enforce BMAD output folder/layout conventions              | done    | runtime/engine.py, tests/test_runtime_engine.py           | None                                       |
-| BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | done    | runtime/orchestrator/engine.py, runtime/orchestrator/router.py, tests/test_orchestrator_engine.py | None |
-| BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | done    | tests/test_runtime_bmad_execution.py                      | None                                       |
+| ID       | Requirement                                                | Status | Evidence                                                                                          | Gap Notes |
+| -------- | ---------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------- | --------- |
+| BMAD-001 | Preserve BMAD workflows and naming without rewriting logic | done   | tests/test_runtime_bmad_execution.py                                                              | None      |
+| BMAD-002 | Exclude sample/reference workflows from production mapping | done   | tests/test_mapping.py                                                                             | None      |
+| BMAD-003 | Only explicit outputs/templates listed in mapping          | done   | tests/test_mapping.py                                                                             | None      |
+| BMAD-004 | Parse workflow definitions (md/yaml/xml) into steps        | done   | runtime/workflow_parser.py, tests/test_workflow_parser.py                                         | None      |
+| BMAD-005 | Enforce BMAD output folder/layout conventions              | done   | runtime/engine.py, tests/test_runtime_engine.py                                                   | None      |
+| BMAD-006 | Orchestrator (BMAD Master) routes workflows and agents     | done   | runtime/orchestrator/engine.py, runtime/orchestrator/router.py, tests/test_orchestrator_engine.py | None      |
+| BMAD-007 | Support all BMAD modules (core, BMM, BMB, CIS, BMGD)       | done   | tests/test_runtime_bmad_execution.py                                                              | None      |
 
 ## Distribution Coverage
 
@@ -54,45 +56,45 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## QUINT Coverage
 
-| ID        | Requirement                                  | Status  | Evidence                                                          | Gap Notes                         |
-| --------- | -------------------------------------------- | ------- | ----------------------------------------------------------------- | --------------------------------- |
-| QUINT-001 | Evidence store for L0/L1/L2 and invalid      | done    | runtime/quint/store.py, tests/test_runtime_quint_evidence.py      | None                              |
-| QUINT-002 | ADI cycle with promotion rules               | done    | runtime/quint/adi.py, tests/test_runtime_quint_adi.py             | None                              |
-| QUINT-003 | WLNK assurance scoring                       | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py | None                              |
-| QUINT-004 | Congruence scoring for external evidence     | done    | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py | None                              |
-| QUINT-005 | Evidence decay with valid_until checks       | done    | runtime/quint/decay.py, tests/test_runtime_quint_decay.py         | None                              |
-| QUINT-006 | DRR generation for major decisions           | done    | runtime/quint/drr.py, tests/test_runtime_quint_drr.py             | None                              |
-| QUINT-007 | Surface vs grounding separation              | done    | runtime/quint/drr.py (DrrSummary), tests/test_quint_surface_grounding.py | None |
-| QUINT-008 | Bounded context snapshot and drift detection | done    | runtime/quint/snapshot.py, runtime/quint/drift.py, tests/test_quint_snapshot_drift.py | None |
+| ID        | Requirement                                  | Status | Evidence                                                                              | Gap Notes |
+| --------- | -------------------------------------------- | ------ | ------------------------------------------------------------------------------------- | --------- |
+| QUINT-001 | Evidence store for L0/L1/L2 and invalid      | done   | runtime/quint/store.py, tests/test_runtime_quint_evidence.py                          | None      |
+| QUINT-002 | ADI cycle with promotion rules               | done   | runtime/quint/adi.py, tests/test_runtime_quint_adi.py                                 | None      |
+| QUINT-003 | WLNK assurance scoring                       | done   | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py                     | None      |
+| QUINT-004 | Congruence scoring for external evidence     | done   | runtime/quint/assurance.py, tests/test_runtime_quint_assurance.py                     | None      |
+| QUINT-005 | Evidence decay with valid_until checks       | done   | runtime/quint/decay.py, tests/test_runtime_quint_decay.py                             | None      |
+| QUINT-006 | DRR generation for major decisions           | done   | runtime/quint/drr.py, tests/test_runtime_quint_drr.py                                 | None      |
+| QUINT-007 | Surface vs grounding separation              | done   | runtime/quint/drr.py (DrrSummary), tests/test_quint_surface_grounding.py              | None      |
+| QUINT-008 | Bounded context snapshot and drift detection | done   | runtime/quint/snapshot.py, runtime/quint/drift.py, tests/test_quint_snapshot_drift.py | None      |
 
 ## Practical Guide Coverage
 
-| ID        | Requirement                                     | Status  | Evidence                                                                                                                                     | Gap Notes                                 |
-| --------- | ----------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| GUIDE-001 | Model, tools, instructions triad per agent      | done    | runtime/agents.py (AgentDefinition, AgentRegistry), runtime/execution.py, tests/test_agents_registry.py | None |
-| GUIDE-002 | Standardized tool definitions and reuse         | done    | runtime/tools/registry.py (ToolRegistry, ToolMetadata), runtime/tools/pipeline.py, tests/test_tools_registry.py | None |
-| GUIDE-003 | Tool risk ratings and safeguards                | done    | runtime/tools/base.py, runtime/tools/pipeline.py, runtime/engine.py, runtime/guardrails/checks.py, tests/test_runtime_guardrails.py          | None                                      |
-| GUIDE-004 | PII filter and data privacy guardrails          | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py, tests/test_runtime_engine.py                              | None                                      |
-| GUIDE-005 | Moderation filters for unsafe inputs            | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                            | None                                      |
-| GUIDE-006 | Rules-based protections (blocklists/regex)      | done    | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                            | None                                      |
-| GUIDE-007 | HITL on high-risk actions and retry thresholds  | done    | runtime/gates.py, runtime/engine.py, config/runtime.yaml, tests/test_runtime_gates.py                                                        | None                                      |
-| GUIDE-008 | Optimistic execution with concurrent guardrails | done    | runtime/guardrails/concurrent.py, tests/test_guardrails_concurrent.py | None |
+| ID        | Requirement                                     | Status | Evidence                                                                                                                            | Gap Notes |
+| --------- | ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| GUIDE-001 | Model, tools, instructions triad per agent      | done   | runtime/agents.py (AgentDefinition, AgentRegistry), runtime/execution.py, tests/test_agents_registry.py                             | None      |
+| GUIDE-002 | Standardized tool definitions and reuse         | done   | runtime/tools/registry.py (ToolRegistry, ToolMetadata), runtime/tools/pipeline.py, tests/test_tools_registry.py                     | None      |
+| GUIDE-003 | Tool risk ratings and safeguards                | done   | runtime/tools/base.py, runtime/tools/pipeline.py, runtime/engine.py, runtime/guardrails/checks.py, tests/test_runtime_guardrails.py | None      |
+| GUIDE-004 | PII filter and data privacy guardrails          | done   | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py, tests/test_runtime_engine.py                     | None      |
+| GUIDE-005 | Moderation filters for unsafe inputs            | done   | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                   | None      |
+| GUIDE-006 | Rules-based protections (blocklists/regex)      | done   | runtime/guardrails/checks.py, runtime/engine.py, tests/test_runtime_guardrails.py                                                   | None      |
+| GUIDE-007 | HITL on high-risk actions and retry thresholds  | done   | runtime/gates.py, runtime/engine.py, config/runtime.yaml, tests/test_runtime_gates.py                                               | None      |
+| GUIDE-008 | Optimistic execution with concurrent guardrails | done   | runtime/guardrails/concurrent.py, tests/test_guardrails_concurrent.py                                                               | None      |
 
 ## Unified Spec Coverage
 
-| ID       | Requirement                                         | Status  | Evidence                                                                                                                   | Gap Notes                                                        |
-| -------- | --------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| SPEC-001 | Event bus for workflow state transitions            | done    | runtime/events/bus.py, runtime/events/types.py, runtime/events/handlers.py, runtime/engine.py, tests/test_events_bus.py | None |
-| SPEC-002 | State store for workflow progress and artifacts     | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                              | None                                                             |
-| SPEC-003 | TELIS policy engine and context manager             | done    | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                           | None                                                             |
-| SPEC-004 | Evidence store for Quint claims and DRRs            | done    | runtime/quint/store.py, runtime/quint/drr.py, tests/test_runtime_quint_evidence.py, tests/test_runtime_quint_drr.py        | None                                                             |
-| SPEC-005 | Control plane/data plane split                      | done    | runtime/plugins/control_plane.py, runtime/plugins/data_plane.py, runtime/plugins/manager.py, tests/test_plugins_control_data.py | None |
-| SPEC-006 | Plugin pipeline for policy/adapters/observability   | done    | runtime/plugins/implementations/gate_policy.py, runtime/plugins/implementations/audit.py, runtime/plugins/ordering.py | None |
-| SPEC-007 | Failure isolation with bounded retries              | done    | runtime/failure/isolation.py, runtime/engine.py, tests/test_failure_isolation.py | None |
-| SPEC-008 | Artifact index with checksum and provenance         | done    | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                              | None                                                             |
-| SPEC-009 | Context fingerprint tracking                        | done    | runtime/quint/fingerprint.py, runtime/telis/manager.py, tests/test_quint_fingerprint.py | None |
-| SPEC-010 | Gates recorded as DRRs with evidence links          | done    | runtime/gates.py, runtime/quint/drr.py, tests/test_gates_as_drrs.py | None |
-| SPEC-011 | Tool execution pipeline (registry, gating, results) | done    | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py            | None                                                             |
+| ID       | Requirement                                         | Status | Evidence                                                                                                                        | Gap Notes |
+| -------- | --------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| SPEC-001 | Event bus for workflow state transitions            | done   | runtime/events/bus.py, runtime/events/types.py, runtime/events/handlers.py, runtime/engine.py, tests/test_events_bus.py         | None      |
+| SPEC-002 | State store for workflow progress and artifacts     | done   | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                   | None      |
+| SPEC-003 | TELIS policy engine and context manager             | done   | runtime/telis/manager.py, runtime/engine.py, tests/test_runtime_telis_manager.py                                                | None      |
+| SPEC-004 | Evidence store for Quint claims and DRRs            | done   | runtime/quint/store.py, runtime/quint/drr.py, tests/test_runtime_quint_evidence.py, tests/test_runtime_quint_drr.py             | None      |
+| SPEC-005 | Control plane/data plane split                      | done   | runtime/plugins/control_plane.py, runtime/plugins/data_plane.py, runtime/plugins/manager.py, tests/test_plugins_control_data.py | None      |
+| SPEC-006 | Plugin pipeline for policy/adapters/observability   | done   | runtime/plugins/implementations/gate_policy.py, runtime/plugins/implementations/audit.py, runtime/plugins/ordering.py           | None      |
+| SPEC-007 | Failure isolation with bounded retries              | done   | runtime/failure/isolation.py, runtime/engine.py, tests/test_failure_isolation.py                                                | None      |
+| SPEC-008 | Artifact index with checksum and provenance         | done   | runtime/engine.py, runtime/storage.py, tests/test_runtime_artifacts_events.py                                                   | None      |
+| SPEC-009 | Context fingerprint tracking                        | done   | runtime/quint/fingerprint.py, runtime/telis/manager.py, tests/test_quint_fingerprint.py                                         | None      |
+| SPEC-010 | Gates recorded as DRRs with evidence links          | done   | runtime/gates.py, runtime/quint/drr.py, tests/test_gates_as_drrs.py                                                             | None      |
+| SPEC-011 | Tool execution pipeline (registry, gating, results) | done   | runtime/tools/pipeline.py, runtime/engine.py, tests/test_runtime_tool_pipeline.py, tests/test_runtime_engine.py                 | None      |
 
 ## Governance Coverage
 

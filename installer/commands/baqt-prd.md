@@ -2,6 +2,8 @@
 description: "Create a Product Requirements Document with BAQT evidence tracking and TELIS context"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT PRD Creation
 
 You are creating a Product Requirements Document enhanced with BAQT capabilities.

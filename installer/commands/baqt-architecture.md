@@ -2,6 +2,8 @@
 description: "Create Architecture Document with BAQT evidence tracking and TELIS context"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT Architecture Design
 
 You are creating an Architecture Document enhanced with BAQT capabilities.

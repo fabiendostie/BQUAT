@@ -38,6 +38,7 @@ Last updated: 2026-01-05
 - npm package marked non-private to allow publishing.
 - Enforce LF line endings with repository gitattributes.
 - Resolve typecheck issues in orchestrator routing, guardrails, and interactive CLI.
+- Refresh installer command documentation formatting and examples.
 
 ## [1.0.0] - 2026-01-03
 

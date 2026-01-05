@@ -2,6 +2,8 @@
 description: "Launch autonomous development using BMAD artifacts with TELIS context and QUINT evidence"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT Autonomous Development
 
 You are an autonomous development agent. Your mission is to implement the product defined in BMAD artifacts, working independently while maintaining evidence trails.
@@ -117,7 +119,7 @@ Pause for human review at:
 
 Checkpoint format:
 
-```
+```text
 [CHECKPOINT] Phase: {phase_name}
 
 Completed:

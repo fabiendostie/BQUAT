@@ -1,12 +1,12 @@
 # BAQT v1.0.0 Release Checklist
 
 Status: Complete
-Date: 2026-01-03
+Date: 2026-01-05
 
 ## Pre-Release Verification
 
-- [x] All tests pass (309 tests)
-- [x] Coverage gate met (92.10% >= 85%)
+- [x] All tests pass (495 tests as of 2026-01-05)
+- [x] Coverage gate met (88.87% - above 85% threshold)
 - [x] Lint passes (ruff, markdownlint, eslint)
 - [x] Type checking passes (mypy, pyright)
 - [x] Integration tests pass for all BMAD modules
@@ -56,15 +56,22 @@ Date: 2026-01-03
 - **Runtime**: Engine, providers, guardrails, observability
 - **Installer**: Unified CLI with install/update/verify/status
 
-## Known Gaps (Post-v1.0)
+## Previously Known Gaps (Now Implemented)
 
-These items are documented as out-of-scope for v1.0:
+The following items were previously documented as post-v1.0 gaps but have since been implemented:
 
-- BMAD-006: Full orchestrator routing (basic engine exists)
-- QUINT-007/008: Surface vs grounding separation, context drift
-- GUIDE-008: Optimistic execution with concurrent guardrails
-- SPEC-001/009/010: Event bus, context fingerprint, gates as DRRs
-- SPEC-005/006: Full plugin pipeline (minimal manager exists)
+- [x] BMAD-006: Full orchestrator routing - `runtime/orchestrator/engine.py`, `router.py`, `graph.py`, `scheduler.py`
+- [x] QUINT-007: Surface vs grounding separation - `runtime/quint/drr.py` (DrrSummary)
+- [x] QUINT-008: Bounded context snapshot and drift detection - `runtime/quint/snapshot.py`, `drift.py`
+- [x] GUIDE-008: Optimistic execution with concurrent guardrails - `runtime/guardrails/concurrent.py`
+- [x] SPEC-001: Event bus for workflow state transitions - `runtime/events/bus.py`, `types.py`, `handlers.py`
+- [x] SPEC-005/006: Control/data plane split and plugin pipeline - `runtime/plugins/control_plane.py`, `data_plane.py`, `implementations/`
+- [x] SPEC-009: Context fingerprint tracking - `runtime/quint/fingerprint.py`
+- [x] SPEC-010: Gates recorded as DRRs with evidence links - `runtime/gates.py`, `runtime/quint/drr.py`
+
+## Remaining Gaps
+
+- Non-technical user journey requires CLI knowledge and manual provider configuration
 
 ## Release Steps
 

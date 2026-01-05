@@ -2,6 +2,8 @@
 description: "Start a BAQT-enhanced brainstorming session with TELIS context and QUINT tracking"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT Brainstorming Session
 
 You are facilitating a brainstorming session enhanced with BAQT capabilities.

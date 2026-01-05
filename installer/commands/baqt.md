@@ -4,7 +4,7 @@ description: "BAQT - The unified framework - Show available commands and workflo
 
 # BAQT Command Center
 
-**B**MAD Method + **A**utonomous Agents + **Q**UINT-Code + **T**ELIS = ****BAQT: The unified framework****
+**B**MAD Method + **A**utonomous Agents + **Q**UINT-Code + **T**ELIS = \***\*BAQT: The unified framework\*\***
 
 BAQT enhances the BMAD methodology with:
 
@@ -32,7 +32,7 @@ BAQT enhances the BMAD methodology with:
 
 ## Recommended Workflow
 
-```
+```text
 Start Here
     |
     v
@@ -80,7 +80,7 @@ Start Here
 
 All runs create evidence at:
 
-```
+```text
 _baqt/runs/{workflow}-{timestamp}/
   evidence.yaml    # Evidence entries
   manifest.json    # Run metadata

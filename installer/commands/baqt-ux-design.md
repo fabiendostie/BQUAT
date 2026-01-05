@@ -2,6 +2,8 @@
 description: "Create UX/UI Design Document with BAQT evidence tracking and TELIS context"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT UX Design
 
 You are creating a UX/UI Design Document enhanced with BAQT capabilities.

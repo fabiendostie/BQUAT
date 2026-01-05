@@ -1,7 +1,7 @@
 # BAQT Unified Agentic Framework
 
 [![CI](https://img.shields.io/github/actions/workflow/status/fabiendostie/BAQT/ci.yml?branch=development&logo=github&label=CI)](https://github.com/fabiendostie/BAQT/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-92%25-success?logo=pytest&logoColor=white)](docs/v1-plan.md)
+[![Coverage](https://img.shields.io/badge/coverage-88.87%25-success?logo=pytest&logoColor=white)](docs/v1-plan.md)
 [![Version](https://img.shields.io/badge/v1.0.0-release-blue?logo=semanticrelease&logoColor=white)](VERSION)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)](package.json)
@@ -9,7 +9,7 @@
 
 [![HITL](https://img.shields.io/badge/HITL-blocking%20gates-orange?logo=shield&logoColor=white)](docs/v1-plan.md)
 [![Providers](https://img.shields.io/badge/Providers-7%20LLMs-blueviolet?logo=openai&logoColor=white)](config/runtime.yaml)
-[![Tests](https://img.shields.io/badge/Tests-309%20passing-success?logo=checkmarx&logoColor=white)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-495%20passing-success?logo=checkmarx&logoColor=white)](tests/)
 [![License](https://img.shields.io/badge/License-MIT-green?logo=opensourceinitiative&logoColor=white)](LICENSE)
 
 **B**MAD Method +
@@ -17,7 +17,7 @@
 **Q**UINT-Code +
 **T**ELIS =
 
-****BAQT: The unified framework****
+\***\*BAQT: The unified framework\*\***
 
 > Build production-grade agent workflows by unifying **BMAD-METHOD**, **TELIS**, and **QUINT** under one runtime with blocking human-in-the-loop (HITL) gates.
 
@@ -220,7 +220,7 @@ npm test              # pytest with coverage
 
 ### Test Coverage
 
-- **309 tests** with **92.10% coverage**
+- **495 tests** with **88.87% coverage**
 - Unit tests for all runtime modules
 - Integration tests for BMAD workflows
 - E2E tests for gates, artifacts, and evidence

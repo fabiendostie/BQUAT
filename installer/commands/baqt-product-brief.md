@@ -2,6 +2,8 @@
 description: "Create a Product Brief with BAQT evidence tracking and TELIS context"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT Product Brief
 
 You are creating a Product Brief enhanced with BAQT capabilities.

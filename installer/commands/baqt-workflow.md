@@ -2,6 +2,8 @@
 description: "Execute a BAQT-enhanced BMAD workflow with TELIS context and QUINT evidence tracking"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT Workflow Executor
 
 You are executing a BMAD workflow enhanced with BAQT capabilities:

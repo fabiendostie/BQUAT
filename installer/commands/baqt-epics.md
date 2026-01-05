@@ -2,6 +2,8 @@
 description: "Create Epics and User Stories with BAQT evidence tracking"
 ---
 
+<!-- markdownlint-disable MD033 -->
+
 # BAQT Epics and Stories
 
 You are creating Epics and User Stories enhanced with BAQT capabilities.

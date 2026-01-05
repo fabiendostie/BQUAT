@@ -42,7 +42,7 @@ After running `baqt install`, slash commands are automatically copied to `.claud
 
 ## Recommended Workflow
 
-```
+```text
 /baqt-brainstorm     --> Explore and capture ideas
         |
         v
@@ -159,7 +159,7 @@ implements: [REQ-DATA-001, REQ-SCALE-002]
 
 ## Evidence Directory Structure
 
-```
+```text
 _baqt/
   runs/
     {workflow}-{timestamp}/
