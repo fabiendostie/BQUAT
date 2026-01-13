@@ -44,12 +44,50 @@ class RuntimeQuintAssuranceTests(unittest.TestCase):
             _link(0.8, "CL3"),
         ]
         result = assurance.wlnk_score(records)
-        self.assertAlmostEqual(result.score, 0.48, places=2)
+        self.assertAlmostEqual(result.reliability, 0.48, places=2)
         self.assertEqual(result.weakest_id, records[1].id)
+
+    def test_wlnk_score_f_g_propagation(self) -> None:
+        records = [
+            models.EvidenceLink(
+                id="ev1",
+                claim="c1",
+                level="L1",
+                source="s",
+                date="d",
+                valid_until="v",
+                congruence="CL3",
+                reliability=0.9,
+                wlnk=0.0,
+                carrier_ref="r",
+                formality="F2",
+                scope=["A", "B"],
+            ),
+            models.EvidenceLink(
+                id="ev2",
+                claim="c2",
+                level="L1",
+                source="s",
+                date="d",
+                valid_until="v",
+                congruence="CL3",
+                reliability=0.8,
+                wlnk=0.0,
+                carrier_ref="r",
+                formality="F1",
+                scope=["B", "C"],
+            ),
+        ]
+        result = assurance.wlnk_score(records)
+        self.assertEqual(result.formality, "F1")
+        self.assertEqual(result.scope, ["B"])
+        self.assertAlmostEqual(result.reliability, 0.8)
 
     def test_wlnk_empty_returns_zero(self) -> None:
         result = assurance.wlnk_score([])
-        self.assertEqual(result.score, 0.0)
+        self.assertEqual(result.reliability, 0.0)
+        self.assertEqual(result.formality, "F0")
+        self.assertEqual(result.scope, [])
         self.assertIsNone(result.weakest_id)
 
 

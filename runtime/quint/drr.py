@@ -64,13 +64,15 @@ class DrrDecision:
     rationale: str
     reversibility: str
     follow_ups: str
+    justification_matrix: Dict[str, str] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> Dict[str, object]:
         return {
             "selected_option": self.selected_option,
             "rationale": self.rationale,
             "reversibility": self.reversibility,
             "follow_ups": self.follow_ups,
+            "justification_matrix": dict(self.justification_matrix),
         }
 
 
@@ -273,6 +275,20 @@ def render_drr_markdown(record: DrrRecord) -> str:
             "",
             f"- Selected option: {record.decision.selected_option}",
             f"- Rationale: {record.decision.rationale}",
+            "",
+            "### Characteristic Space (Justification Matrix)",
+            "",
+        ]
+    )
+    if record.decision.justification_matrix:
+        for char, just in record.decision.justification_matrix.items():
+            lines.append(f"- **{char}**: {just}")
+    else:
+        lines.append("- *No structured characteristics provided*")
+
+    lines.extend(
+        [
+            "",
             f"- Reversibility: {record.decision.reversibility}",
             f"- Follow-ups: {record.decision.follow_ups}",
             "",

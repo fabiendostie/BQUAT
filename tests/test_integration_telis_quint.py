@@ -285,7 +285,7 @@ class TelisQuintIntegrationTests(unittest.TestCase):
         # CL1 with 0.8 reliability = 0.8 * 0.5 = 0.4 (weakest)
         # CL2 with 0.6 reliability = 0.6 * 0.8 = 0.48
         # CL3 with 0.9 reliability = 0.9 * 1.0 = 0.9
-        self.assertAlmostEqual(result.score, 0.4, places=2)
+        self.assertAlmostEqual(result.reliability, 0.4, places=2)
         self.assertEqual(result.weakest_id, "ev-3")
 
     def test_evidence_links_to_artifacts(self) -> None:

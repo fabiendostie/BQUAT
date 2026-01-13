@@ -27,15 +27,17 @@ BAQT preserves the original workflows and artifacts while adding enforceable gua
 
 ## Key Features
 
-| Feature                | Description                                                             |
-| ---------------------- | ----------------------------------------------------------------------- |
-| **Unified Workflows**  | Execute BMAD workflows with consistent outputs and artifact conventions |
-| **HITL Gates**         | Blocking approval gates at planning, architecture, and release stages   |
-| **Evidence Engine**    | QUINT-powered evidence store with ADI promotion, WLNK scoring, and DRRs |
-| **Context Management** | TELIS LSP symbiosis, tiered shards, and progressive negotiation         |
-| **Multi-Provider**     | Route to Ollama, OpenAI, Anthropic, Gemini, Groq, or LiteLLM            |
-| **Guardrails**         | PII filtering, moderation, and rules-based protections                  |
-| **Single Install**     | One command installs BMAD + TELIS + QUINT together                      |
+| Feature                | Description                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| **Unified Workflows**  | Execute BMAD workflows with consistent outputs and artifact conventions        |
+| **HITL Gates**         | Blocking approval gates at planning, architecture, and release stages          |
+| **Evidence Engine**    | QUINT-powered evidence store with ADI promotion, WLNK scoring, and DRRs        |
+| **FPF Integration**    | Deepened First Principles Framework with Formality (F), ClaimScope (G), Φ(CL)  |
+| **Decision Logic**     | Structured Characteristic Space (Justification Matrix) for auditable tradeoffs |
+| **Context Management** | TELIS LSP symbiosis, tiered shards, and progressive negotiation                |
+| **Multi-Provider**     | Route to Ollama, OpenAI, Anthropic, Gemini, Groq, or LiteLLM                   |
+| **Guardrails**         | PII filtering, moderation, and rules-based protections                         |
+| **Single Install**     | One command installs BMAD + TELIS + QUINT together                             |
 
 ---
 
@@ -224,6 +226,44 @@ npm test              # pytest with coverage
 - Unit tests for all runtime modules
 - Integration tests for BMAD workflows
 - E2E tests for gates, artifacts, and evidence
+
+### Optional Live Provider Smoke Test
+
+Run a single-step workflow against a real provider (skipped unless configured):
+
+```bash
+# Example (OpenAI)
+export BAQT_LIVE_PROVIDER=openai
+export OPENAI_API_KEY=...
+python -m pytest tests/test_integration_live_provider.py
+```
+
+Optional overrides:
+
+- `BAQT_LIVE_MODEL` to select a model
+- `BAQT_LIVE_BASE_URL` for Ollama or LiteLLM
+
+Gemini helper script (uses DPAPI-encrypted secret):
+
+```powershell
+.\scripts\run-live-gemini.ps1
+```
+
+### Optional Live Full Lifecycle Test
+
+Runs analysis -> planning -> solutioning -> implementation using BMAD templates plus TELIS/QUINT with a dev-story QA loop:
+
+```bash
+export BAQT_LIVE_PROVIDER=gemini
+export BAQT_LIVE_E2E=1
+python -m pytest tests/test_integration_full_lifecycle_live.py
+```
+
+Gemini helper script:
+
+```powershell
+.\scripts\run-live-gemini.ps1 -Lifecycle
+```
 
 ---
 

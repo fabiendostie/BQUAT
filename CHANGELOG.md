@@ -9,6 +9,25 @@ Last updated: 2026-01-05
 
 ### Added
 
+- Installer `__main__.py` for `python -m installer` module execution.
+- `baqt-run` command documentation in installer/commands.
+- Integration tests for live providers, greenfield pipeline, and full lifecycle.
+- PowerShell script for running live Gemini tests.
+
+### Changed
+
+- Updated runtime quint/assurance module with enhanced validation.
+- Updated runtime quint/drr module with expanded DRR handling.
+- Updated runtime telis/context with improved context management.
+- Enhanced provider registry with additional capabilities.
+- Fixed husky pre-commit hook for WSL Python compatibility.
+
+### Fixed
+
+- Installer module now executable via `python -m installer` command.
+
+### Added (continued)
+
 - Event bus for workflow state transitions with pub/sub pattern (REQ-SPEC-001).
 - Plugin pipeline with control plane and data plane separation (REQ-SPEC-005, REQ-SPEC-006).
 - Built-in plugins: GatePolicyPlugin, AuditPlugin for policy enforcement and audit logging.
@@ -28,7 +47,7 @@ Last updated: 2026-01-05
 - CD workflow for release publishing to PyPI, npm, and GitHub.
 - Comprehensive coverage tests for CLI, agents, plugin manager, and packaging.
 
-### Changed
+### Changed (continued)
 
 - Renamed package from bquat to baqt for consistency.
 - Updated traceability audit to reflect all requirements as done.

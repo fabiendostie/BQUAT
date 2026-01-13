@@ -120,13 +120,17 @@ def _temp_document_path(root: Optional[Path], language: str) -> Path:
 
 
 def _compress_lsp_payload(method: str, payload: Dict[str, Any]) -> str:
-    result = payload.get("result", {})
+    result = payload.get("result")
+    if result is None:
+        return ""
     if method == "signatureHelp":
         return _compress_signature_help(result)
     return _compress_hover(result)
 
 
 def _compress_hover(result: Dict[str, Any]) -> str:
+    if not isinstance(result, dict):
+        return ""
     contents = result.get("contents")
     if isinstance(contents, str):
         return contents.strip()

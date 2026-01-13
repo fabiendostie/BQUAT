@@ -40,7 +40,7 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 | ID          | Requirement                                            | Status | Evidence                       | Gap Notes |
 | ----------- | ------------------------------------------------------ | ------ | ------------------------------ | --------- |
-| INSTALL-001 | Single-command install for full framework distribution | done   | installer/\*, tests/installer/ | None      |
+| INSTALL-001 | Single-command install for full framework distribution | done   | installer/core.py, installer/cli.py, installer/verify.py, bin/baqt.js, docs/installation-guide.md | None      |
 
 ## TELIS Coverage
 
@@ -110,7 +110,9 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 - Verified coverage of mapping/registry exclusions and explicit output/template extraction.
 - WS1-WS3 tasks are complete; BMAD-001/007 and SPEC-002 are now covered by integration tests and runtime persistence.
-- BMAD workflow execution verified via integration tests in tests/integration/.
+- BMAD workflow execution verified via integration tests in tests/test_integration_e2e_workflow.py and tests/test_integration_telis_quint.py.
+- Idea-to-product CLI flow validated via tests/test_integration_idea_to_product.py and tests/test_cli_interactive_subprocess.py.
+- Optional live provider smoke test available in tests/test_integration_live_provider.py (env-gated).
 - Full orchestrator implemented with workflow routing, dependency graphs, and resource scheduling.
 - QUINT evidence store, ADI promotion, WLNK, congruence, decay, DRR, surface/grounding, context snapshots, and drift detection implemented.
 - Context fingerprint tracking links TELIS context resolution to evidence records.

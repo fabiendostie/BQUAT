@@ -1,6 +1,10 @@
 set -e
 
-python - <<'PY'
+# Use Windows Python if 'python' not in PATH (WSL compatibility)
+PYTHON_CMD="${PYTHON_CMD:-python}"
+command -v python >/dev/null 2>&1 || PYTHON_CMD="/mnt/c/Users/lefab/AppData/Local/Programs/Python/Python311/python.exe"
+
+$PYTHON_CMD - <<'PY'
 import subprocess
 import sys
 

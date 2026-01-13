@@ -113,8 +113,10 @@ BMAD-METHOD/src/
 └── utility/       -> _baqt/bmad/utility/
 ```
 
-BMAD slash commands are copied from:
-`BMAD-METHOD/tools/cli/installers/claude-code/commands/`
+BMAD slash command templates are maintained in `BMAD-METHOD/tools/cli/installers/lib/ide/templates/`
+and module injections under `BMAD-METHOD/src/modules/*/sub-modules/claude-code/injections.yaml`.
+BAQT installs its own slash commands from `installer/commands/` and does not currently regenerate BMAD
+commands from templates.
 
 ### QUINT Integration
 
@@ -289,15 +291,13 @@ Both are collected in `InstallResult` and reported to the user.
 
 ## Testing
 
-Test the installer module:
+Smoke test the installer module:
 
 ```bash
-# Run installer tests
-pytest tests/test_installer*.py
-
 # Test CLI
 python -m installer.cli --help
 python -m installer.cli install --help
+python -m installer.cli verify --help
 ```
 
 ## Related Documents

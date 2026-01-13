@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import replace
 from typing import Any, Dict, List, Optional
@@ -319,9 +320,25 @@ class GeminiProvider(Provider):
             if isinstance(first, dict):
                 parts = first.get("content", {}).get("parts", [])
                 if isinstance(parts, list) and parts:
-                    part = parts[0]
-                    if isinstance(part, dict):
-                        content = part.get("text", "")
+                    texts = []
+                    for part in parts:
+                        if isinstance(part, dict):
+                            text = part.get("text")
+                            if text:
+                                texts.append(text)
+                            elif part.get("functionCall"):
+                                call = part.get("functionCall", {})
+                                name = call.get("name", "unknown")
+                                args = call.get("args", {})
+                                if isinstance(args, dict):
+                                    args_text = json.dumps(args, sort_keys=True, ensure_ascii=True)
+                                else:
+                                    args_text = str(args)
+                                texts.append(f"[functionCall] {name} {args_text}")
+                    if texts:
+                        content = "\n".join(texts)
+                if not content:
+                    content = first.get("content", {}).get("text", "") or first.get("output", "")
         return ProviderResponse(content=content, raw=data)
 
 
