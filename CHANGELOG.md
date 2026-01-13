@@ -13,6 +13,7 @@ Last updated: 2026-01-05
 - `baqt-run` command documentation in installer/commands.
 - Integration tests for live providers, greenfield pipeline, and full lifecycle.
 - PowerShell script for running live Gemini tests.
+- WSL Python wrapper (`bin/python-wrapper.sh`) for cross-platform hook compatibility.
 
 ### Changed
 

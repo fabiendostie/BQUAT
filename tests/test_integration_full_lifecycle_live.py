@@ -119,7 +119,9 @@ class WorkflowArtifact:
 class BmadTemplateExecutor(engine.StepExecutor):
     """Executor that fills BMAD templates once per workflow."""
 
-    def __init__(self, provider: Provider | None, idea: str, artifacts: dict[str, WorkflowArtifact]) -> None:
+    def __init__(
+        self, provider: Provider | None, idea: str, artifacts: dict[str, WorkflowArtifact]
+    ) -> None:
         self.provider = provider
         self.idea = idea
         self.artifacts = artifacts
@@ -224,12 +226,12 @@ class DevStoryExecutor(engine.StepExecutor):
                         "def test_weekly_summary():",
                         "    tmp_dir = tempfile.mkdtemp()",
                         "    try:",
-                        "        data_path = tmp_dir + \"/habits.json\"",
-                        "        add_habit(data_path, \"read\")",
-                        "        log_completion(data_path, \"read\", \"2026-01-05\")",
-                        "        log_completion(data_path, \"read\", \"2026-01-07\")",
-                        "        summary = weekly_summary(data_path, \"2026-01-05\")",
-                        "        assert summary[\"read\"] == 2",
+                        '        data_path = tmp_dir + "/habits.json"',
+                        '        add_habit(data_path, "read")',
+                        '        log_completion(data_path, "read", "2026-01-05")',
+                        '        log_completion(data_path, "read", "2026-01-07")',
+                        '        summary = weekly_summary(data_path, "2026-01-05")',
+                        '        assert summary["read"] == 2',
                         "    finally:",
                         "        shutil.rmtree(tmp_dir, ignore_errors=True)",
                         "",
@@ -237,10 +239,10 @@ class DevStoryExecutor(engine.StepExecutor):
                         "def test_summary_empty():",
                         "    tmp_dir = tempfile.mkdtemp()",
                         "    try:",
-                        "        data_path = tmp_dir + \"/habits.json\"",
-                        "        add_habit(data_path, \"exercise\")",
-                        "        summary = weekly_summary(data_path, \"2026-01-05\")",
-                        "        assert summary.get(\"exercise\", 0) == 0",
+                        '        data_path = tmp_dir + "/habits.json"',
+                        '        add_habit(data_path, "exercise")',
+                        '        summary = weekly_summary(data_path, "2026-01-05")',
+                        '        assert summary.get("exercise", 0) == 0',
                         "    finally:",
                         "        shutil.rmtree(tmp_dir, ignore_errors=True)",
                     ]
@@ -264,41 +266,41 @@ class DevStoryExecutor(engine.StepExecutor):
                         "",
                         "def _load(path):",
                         "    try:",
-                        "        with open(path, \"r\", encoding=\"utf-8\") as handle:",
+                        '        with open(path, "r", encoding="utf-8") as handle:',
                         "            return json.load(handle)",
                         "    except FileNotFoundError:",
-                        "        return {\"habits\": [], \"logs\": []}",
+                        '        return {"habits": [], "logs": []}',
                         "",
                         "",
                         "def _save(path, payload):",
-                        "    with open(path, \"w\", encoding=\"utf-8\") as handle:",
+                        '    with open(path, "w", encoding="utf-8") as handle:',
                         "        json.dump(payload, handle, indent=2, sort_keys=True)",
                         "",
                         "",
                         "def add_habit(path, name):",
                         "    payload = _load(path)",
-                        "    if name not in payload[\"habits\"]:",
-                        "        payload[\"habits\"].append(name)",
+                        '    if name not in payload["habits"]:',
+                        '        payload["habits"].append(name)',
                         "    _save(path, payload)",
                         "",
                         "",
                         "def log_completion(path, name, date_str):",
                         "    payload = _load(path)",
-                        "    if name not in payload[\"habits\"]:",
-                        "        payload[\"habits\"].append(name)",
-                        "    payload[\"logs\"].append({\"habit\": name, \"date\": date_str})",
+                        '    if name not in payload["habits"]:',
+                        '        payload["habits"].append(name)',
+                        '    payload["logs"].append({"habit": name, "date": date_str})',
                         "    _save(path, payload)",
                         "",
                         "",
                         "def weekly_summary(path, week_start):",
                         "    payload = _load(path)",
-                        "    start = datetime.strptime(week_start, \"%Y-%m-%d\").date()",
+                        '    start = datetime.strptime(week_start, "%Y-%m-%d").date()',
                         "    end = start + timedelta(days=7)",
-                        "    summary = {name: 0 for name in payload[\"habits\"]}",
-                        "    for log in payload[\"logs\"]:",
-                        "        logged = datetime.strptime(log[\"date\"], \"%Y-%m-%d\").date()",
+                        '    summary = {name: 0 for name in payload["habits"]}',
+                        '    for log in payload["logs"]:',
+                        '        logged = datetime.strptime(log["date"], "%Y-%m-%d").date()',
                         "        if start <= logged < end:",
-                        "            summary[log[\"habit\"]] = summary.get(log[\"habit\"], 0) + 1",
+                        '            summary[log["habit"]] = summary.get(log["habit"], 0) + 1',
                         "    return summary",
                     ]
                 )
@@ -308,7 +310,9 @@ class DevStoryExecutor(engine.StepExecutor):
 
         green_run = _run_pytest(self.project_dir)
         if green_run.returncode != 0:
-            raise AssertionError(f"Tests still failing after implementation:\n{green_run.stdout}\n{green_run.stderr}")
+            raise AssertionError(
+                f"Tests still failing after implementation:\n{green_run.stdout}\n{green_run.stderr}"
+            )
 
         qa_log = output_dir / "qa-log.txt"
         qa_log.write_text(
@@ -506,7 +510,9 @@ class FullLifecycleLiveTests(unittest.TestCase):
                 content="Write pytest tests first, then implement minimal code to pass.",
             )
         )
-        telis_engine = TelisPolicyEngine(registry=telis_registry, cache=BehavioralCache(ttl_seconds=60))
+        telis_engine = TelisPolicyEngine(
+            registry=telis_registry, cache=BehavioralCache(ttl_seconds=60)
+        )
 
         mapping = engine.load_mapping_records()
         self.engine = engine.WorkflowEngine(
@@ -525,7 +531,13 @@ class FullLifecycleLiveTests(unittest.TestCase):
     def test_full_lifecycle(self) -> None:
         templates = {
             "core/brainstorming": WorkflowArtifact(
-                ROOT / "BMAD-METHOD" / "src" / "core" / "workflows" / "brainstorming" / "template.md",
+                ROOT
+                / "BMAD-METHOD"
+                / "src"
+                / "core"
+                / "workflows"
+                / "brainstorming"
+                / "template.md",
                 "analysis/brainstorming.md",
             ),
             "bmm/create-product-brief": WorkflowArtifact(

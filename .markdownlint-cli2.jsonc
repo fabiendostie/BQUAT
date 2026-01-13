@@ -11,6 +11,9 @@
     "node_modules/**",
     "runs/**",
     ".pytest_cache/**",
-    "coverage/**"
+    "coverage/**",
+    "_baqt/**",
+    ".claude/**",
+    "baqt.egg-info/**"
   ]
 }

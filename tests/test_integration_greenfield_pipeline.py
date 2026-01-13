@@ -280,7 +280,7 @@ class DevStoryExecutor(engine.StepExecutor):
                         "",
                         "",
                         "def test_weekly_summary():",
-                        '    tmp_dir = tempfile.mkdtemp()',
+                        "    tmp_dir = tempfile.mkdtemp()",
                         "    try:",
                         '        data_path = tmp_dir + "/habits.json"',
                         '        add_habit(data_path, "read")',
@@ -293,7 +293,7 @@ class DevStoryExecutor(engine.StepExecutor):
                         "",
                         "",
                         "def test_summary_empty():",
-                        '    tmp_dir = tempfile.mkdtemp()',
+                        "    tmp_dir = tempfile.mkdtemp()",
                         "    try:",
                         '        data_path = tmp_dir + "/habits.json"',
                         '        add_habit(data_path, "exercise")',
@@ -623,7 +623,13 @@ class GreenfieldPipelineTests(unittest.TestCase):
         """Get workflow artifact templates."""
         return {
             "core/brainstorming": WorkflowArtifact(
-                ROOT / "BMAD-METHOD" / "src" / "core" / "workflows" / "brainstorming" / "template.md",
+                ROOT
+                / "BMAD-METHOD"
+                / "src"
+                / "core"
+                / "workflows"
+                / "brainstorming"
+                / "template.md",
                 "analysis/brainstorming.md",
             ),
             "bmm/create-product-brief": WorkflowArtifact(
@@ -812,9 +818,10 @@ class GreenfieldPipelineTests(unittest.TestCase):
             content.outputs = []
             return content
 
-        with patch.object(
-            step_executor, "parse_step_file", side_effect=_parse_without_outputs
-        ), patch.object(cli_interactive, "parse_step_file", side_effect=_parse_without_outputs):
+        with (
+            patch.object(step_executor, "parse_step_file", side_effect=_parse_without_outputs),
+            patch.object(cli_interactive, "parse_step_file", side_effect=_parse_without_outputs),
+        ):
             for module, workflow in interactive_workflows:
                 # Reset input callback for each workflow
                 self.input_callback = InteractiveInputProvider(self.idea)
@@ -909,9 +916,10 @@ class GreenfieldPipelineTests(unittest.TestCase):
             return content
 
         interactive_run_ids = []
-        with patch.object(
-            step_executor, "parse_step_file", side_effect=_parse_without_outputs
-        ), patch.object(cli_interactive, "parse_step_file", side_effect=_parse_without_outputs):
+        with (
+            patch.object(step_executor, "parse_step_file", side_effect=_parse_without_outputs),
+            patch.object(cli_interactive, "parse_step_file", side_effect=_parse_without_outputs),
+        ):
             for module, workflow in interactive_workflows:
                 self.input_callback = InteractiveInputProvider(self.idea)
                 self.cli.input = self.input_callback

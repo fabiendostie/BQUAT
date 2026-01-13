@@ -8,16 +8,16 @@
   },
   "scripts": {
     "prepare": "husky",
-    "format": "python -m ruff format . && prettier --write \"**/*.{md,json,yml,yaml}\"",
-    "format:check": "python -m ruff format --check . && prettier --check \"**/*.{md,json,yml,yaml}\"",
+    "format": "./bin/python-wrapper.sh -m ruff format . && prettier --write \"**/*.{md,json,yml,yaml}\"",
+    "format:check": "./bin/python-wrapper.sh -m ruff format --check . && prettier --check \"**/*.{md,json,yml,yaml}\"",
     "lint": "npm run lint:py && npm run lint:md && npm run lint:json",
     "lint:json": "eslint \"**/*.json\" \"**/*.jsonc\" --max-warnings=0",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
-    "lint:py": "python -m ruff check .",
-    "typecheck": "python -m mypy runtime cli methodology/tools installer && pyright",
-    "test": "python tests/run_tests.py && pytest",
-    "test:python": "python tests/run_tests.py",
-    "test:pytest": "pytest"
+    "lint:py": "./bin/python-wrapper.sh -m ruff check .",
+    "typecheck": "./bin/python-wrapper.sh -m mypy runtime cli methodology/tools installer && pyright",
+    "test": "./bin/python-wrapper.sh tests/run_tests.py && ./bin/python-wrapper.sh -m pytest",
+    "test:python": "./bin/python-wrapper.sh tests/run_tests.py",
+    "test:pytest": "./bin/python-wrapper.sh -m pytest"
   },
   "devDependencies": {
     "@eslint/json": "^0.14.0",

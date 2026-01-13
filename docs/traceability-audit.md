@@ -38,8 +38,8 @@ This audit verifies that the v1.0 plan covers all requirements from BMAD, TELIS,
 
 ## Distribution Coverage
 
-| ID          | Requirement                                            | Status | Evidence                       | Gap Notes |
-| ----------- | ------------------------------------------------------ | ------ | ------------------------------ | --------- |
+| ID          | Requirement                                            | Status | Evidence                                                                                          | Gap Notes |
+| ----------- | ------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------- | --------- |
 | INSTALL-001 | Single-command install for full framework distribution | done   | installer/core.py, installer/cli.py, installer/verify.py, bin/baqt.js, docs/installation-guide.md | None      |
 
 ## TELIS Coverage

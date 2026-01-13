@@ -6,3 +6,7 @@ runs/
 .pytest_cache/
 coverage/
 WARP.md
+_baqt/
+.claude/
+baqt.egg-info/
+GEMINI.md

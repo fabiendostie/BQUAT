@@ -5,8 +5,8 @@ from __future__ import annotations
 import shutil
 import sys
 import unittest
-from unittest.mock import patch
 from pathlib import Path
+from unittest.mock import patch
 from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,8 +14,12 @@ sys.path.insert(0, str(ROOT))
 
 from cli import interactive as cli_interactive  # noqa: E402
 from cli.interactive import InteractiveCLI  # noqa: E402
-from runtime import engine, execution, storage  # noqa: E402
-from runtime import step_executor  # noqa: E402
+from runtime import (  # noqa: E402
+    engine,
+    execution,
+    step_executor,  # noqa: E402
+    storage,
+)
 from runtime.providers.base import Provider, ProviderRequest, ProviderResponse  # noqa: E402
 
 
@@ -113,8 +117,9 @@ class IdeaToProductIntegrationTests(unittest.TestCase):
             content.outputs = []
             return content
 
-        with patch.object(step_executor, "parse_step_file", side_effect=_parse_without_outputs), patch.object(
-            cli_interactive, "parse_step_file", side_effect=_parse_without_outputs
+        with (
+            patch.object(step_executor, "parse_step_file", side_effect=_parse_without_outputs),
+            patch.object(cli_interactive, "parse_step_file", side_effect=_parse_without_outputs),
         ):
             for module, workflow in workflows:
                 run_id = self.cli.run_workflow(module, workflow)
@@ -149,9 +154,7 @@ class IdeaToProductIntegrationTests(unittest.TestCase):
             str(item.get("path", "")).replace("\\", "/")
             for item in artifact_index.get("artifacts", [])
         ]
-        self.assertTrue(
-            any(path.endswith("outputs/final-product.txt") for path in artifact_paths)
-        )
+        self.assertTrue(any(path.endswith("outputs/final-product.txt") for path in artifact_paths))
 
 
 if __name__ == "__main__":
