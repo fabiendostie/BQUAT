@@ -1,0 +1,176 @@
+# TELIS Knowledge Shards Configuration
+# =====================================
+# This file defines pre-compressed knowledge shards for TELIS context management.
+# Copy this file to telis-shards.yaml and customize for your project.
+#
+# See docs/Token-Efficient_Language_Intelligence_System_TELIS.md for details
+#
+# Tier Budget Reference:
+#   tier_1_nano:  ~50 tokens   - Quick facts, cheat sheets
+#   tier_2_micro: ~500 tokens  - Common patterns, API summaries
+#   tier_3_full:  ~2000 tokens - Complete documentation, tutorials
+
+shards:
+  # =============================================================================
+  # Python Shards
+  # =============================================================================
+
+  - id: "python.async"
+    language: "python"
+    version: "3.11+"
+    tier: "tier_2_micro"
+    topics: [async, await, asyncio, coroutines]
+    tokens: 180
+    content: |
+      ## Python Async Patterns
+      - async def: define coroutine function
+      - await expr: suspend until result ready
+      - asyncio.gather(*coros): run concurrently
+      - asyncio.create_task(coro): schedule execution
+      - async for: iterate async iterator
+      - async with: async context manager
+      ## Gotchas
+      - Can't use await outside async function
+      - asyncio.run() creates new event loop
+
+  - id: "python.typing"
+    language: "python"
+    version: "3.11+"
+    tier: "tier_1_nano"
+    topics: [types, annotations, generics]
+    tokens: 80
+    content: |
+      def f(x: int) -> str: ...
+      list[int], dict[str, Any], tuple[int, ...]
+      T = TypeVar('T'); Generic[T]
+      Optional[X] = X | None
+      Callable[[Args], Return]
+
+  - id: "python.pathlib"
+    language: "python"
+    version: "3.11+"
+    tier: "tier_1_nano"
+    topics: [path, files, pathlib]
+    tokens: 60
+    content: |
+      from pathlib import Path
+      p = Path("dir") / "file.txt"
+      p.exists(), p.is_file(), p.is_dir()
+      p.read_text(), p.write_text(s)
+      p.parent, p.name, p.stem, p.suffix
+      p.mkdir(parents=True, exist_ok=True)
+
+  # =============================================================================
+  # JavaScript/TypeScript Shards
+  # =============================================================================
+
+  - id: "js.async"
+    language: "javascript"
+    version: "ES2024"
+    tier: "tier_2_micro"
+    topics: [promises, async, await, fetch]
+    tokens: 200
+    content: |
+      ## JS Async Patterns
+      - Promise.all([]): parallel, fail-fast
+      - Promise.allSettled([]): parallel, all results
+      - Promise.race([]): first to settle wins
+      - for await (x of asyncIter): sequential
+      ## Gotchas
+      - forEach doesn't await
+      - map returns Promise[], use Promise.all(arr.map(...))
+      - Unhandled rejection crashes Node.js
+
+  - id: "js.array"
+    language: "javascript"
+    version: "ES2024"
+    tier: "tier_1_nano"
+    topics: [array, map, filter, reduce]
+    tokens: 60
+    content: |
+      arr.map(x => f(x))
+      arr.filter(x => bool)
+      arr.reduce((acc, x) => acc + x, init)
+      arr.flatMap(x => [x, x])
+      arr.find(x => bool) // first match or undefined
+
+  - id: "ts.utility"
+    language: "typescript"
+    version: "5.x"
+    tier: "tier_1_nano"
+    topics: [types, utility, generics]
+    tokens: 70
+    content: |
+      Partial<T>, Required<T>, Readonly<T>
+      Pick<T, K>, Omit<T, K>
+      Record<K, V>, Extract<T, U>, Exclude<T, U>
+      NonNullable<T>, ReturnType<F>
+      Parameters<F>, Awaited<T>
+
+  # =============================================================================
+  # JSON/YAML Shards
+  # =============================================================================
+
+  - id: "json.schema"
+    language: "json"
+    version: "draft-07"
+    tier: "tier_2_micro"
+    topics: [schema, validation, types]
+    tokens: 150
+    content: |
+      ## JSON Schema Basics
+      - type: string|number|boolean|object|array|null
+      - properties: {name: {type: "string"}}
+      - required: ["field1", "field2"]
+      - additionalProperties: false
+      - $ref: "#/definitions/Name"
+      - oneOf/anyOf/allOf: schema composition
+
+  # =============================================================================
+  # BAQT-Specific Shards
+  # =============================================================================
+
+  - id: "baqt.workflow"
+    language: "yaml"
+    version: "1.0"
+    tier: "tier_2_micro"
+    topics: [baqt, workflow, bmad]
+    tokens: 200
+    content: |
+      ## BAQT Workflow Commands
+      baqt list                    # List available workflows
+      baqt run <module> <workflow> # Run a workflow
+      baqt status <run_id>         # Check run status
+      baqt approve <run_id> --by X # Approve human gate
+      baqt resume <run_id>         # Resume blocked run
+      ## Common Workflows
+      - core/brainstorming: Initial ideation
+      - core/prd: Product requirements
+      - core/architecture: System design
+      - core/story: User story creation
+
+  - id: "baqt.telis"
+    language: "yaml"
+    version: "1.0"
+    tier: "tier_1_nano"
+    topics: [baqt, telis, context]
+    tokens: 80
+    content: |
+      ## TELIS Commands
+      baqt telis status  # Config overview
+      baqt telis list    # Show loaded shards
+      baqt telis init    # Create sample config
+      ## Tiers: nano(50), micro(500), full(2000)
+
+  - id: "baqt.quint"
+    language: "yaml"
+    version: "1.0"
+    tier: "tier_1_nano"
+    topics: [baqt, quint, evidence]
+    tokens: 80
+    content: |
+      ## QUINT Commands
+      baqt quint status <run>    # Evidence summary
+      baqt quint evidence <run>  # List records
+      baqt quint drr <run>       # Decision records
+      ## Levels: L1(asserted), L2(validated), L3(proven)

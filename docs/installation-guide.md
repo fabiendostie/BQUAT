@@ -287,6 +287,96 @@ observability:
   log_level: info
 ```
 
+## TELIS Context Management
+
+TELIS manages context efficiently using tiered knowledge shards. After installation:
+
+### Check TELIS Status
+
+```bash
+python -m cli.main telis status
+```
+
+Shows current configuration including tier budgets and loaded shards.
+
+### Initialize Sample Shards
+
+```bash
+python -m cli.main telis init --output config/telis-shards.yaml
+```
+
+Creates a sample configuration with Python, JavaScript, and JSON shards.
+
+### Configure Shards
+
+Add to `_baqt/config/runtime.yaml`:
+
+```yaml
+telis:
+  policy: default
+  use_lsp: true
+  progressive: true
+  shards_path: "config/telis-shards.yaml"
+  tier_budgets:
+    tier_1_nano: 50
+    tier_2_micro: 500
+    tier_3_full: 2000
+```
+
+### List and Manage Shards
+
+```bash
+# List all loaded shards
+python -m cli.main telis list
+
+# Filter by language
+python -m cli.main telis list --language python
+
+# Filter by tier
+python -m cli.main telis list --tier tier_1_nano
+
+# Add shards from external file
+python -m cli.main telis add my-shards.yaml
+```
+
+## QUINT Evidence Tracking
+
+QUINT provides evidence-based validation and decision tracking for workflow runs.
+
+### Check Evidence Status
+
+```bash
+python -m cli.main quint status <run_id>
+```
+
+Shows evidence records count, DRRs, fingerprints, and drift detection.
+
+### List Evidence Records
+
+```bash
+# List all evidence for a run
+python -m cli.main quint evidence <run_id>
+
+# Filter by level (L1=Asserted, L2=Validated, L3=Proven)
+python -m cli.main quint evidence <run_id> --level L2
+```
+
+### View Decision Review Records
+
+```bash
+python -m cli.main quint drr <run_id>
+```
+
+Shows DRRs with options evaluated, evidence linked, and final decisions.
+
+### Evidence Levels
+
+| Level | Name      | Description                            |
+| ----- | --------- | -------------------------------------- |
+| L1    | Asserted  | Claim made without external validation |
+| L2    | Validated | Claim verified by tool or test         |
+| L3    | Proven    | Claim confirmed by multiple sources    |
+
 ## Support
 
 For issues and feedback, visit:

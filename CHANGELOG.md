@@ -9,6 +9,10 @@ Last updated: 2026-01-05
 
 ### Added
 
+- TELIS CLI commands for shard management (status, list, add, init).
+- QUINT CLI commands for evidence tracking (status, evidence, drr).
+- Sample TELIS shards configuration file with Python, JavaScript, and JSON shards.
+- Comprehensive BMAD/TELIS/QUINT usage guide in README.md.
 - Post-install quickstart guide showing provider setup and workflow commands.
 - Installer `__main__.py` for `python -m installer` module execution.
 - `baqt-run` command documentation in installer/commands.
