@@ -9,6 +9,7 @@ Last updated: 2026-01-05
 
 ### Added
 
+- Comprehensive tests for cli/main.py achieving 85%+ coverage (98 test cases).
 - TELIS CLI commands for shard management (status, list, add, init).
 - QUINT CLI commands for evidence tracking (status, evidence, drr).
 - Sample TELIS shards configuration file with Python, JavaScript, and JSON shards.
