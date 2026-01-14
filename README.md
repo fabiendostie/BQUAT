@@ -17,7 +17,7 @@
 **Q**UINT-Code +
 **T**ELIS =
 
-\***\*BAQT: The unified framework\*\***
+\*BAQT: The unified framework\*
 
 > Build production-grade agent workflows by unifying **BMAD-METHOD**, **TELIS**, and **QUINT** under one runtime with blocking human-in-the-loop (HITL) gates.
 
