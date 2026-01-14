@@ -9,6 +9,7 @@ Last updated: 2026-01-05
 
 ### Added
 
+- Post-install quickstart guide showing provider setup and workflow commands.
 - Installer `__main__.py` for `python -m installer` module execution.
 - `baqt-run` command documentation in installer/commands.
 - Integration tests for live providers, greenfield pipeline, and full lifecycle.

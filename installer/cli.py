@@ -104,6 +104,35 @@ def cmd_version() -> int:
     return 0
 
 
+def _print_quickstart(target: Path) -> None:
+    """Print post-install quickstart guide."""
+    print()
+    print("=" * 60)
+    print("  BAQT Quick Start")
+    print("=" * 60)
+    print()
+    print("  1. VERIFY INSTALLATION")
+    print(f"     baqt verify {target}")
+    print()
+    print("  2. CONFIGURE PROVIDER (choose one)")
+    print("     export OLLAMA_HOST=http://localhost:11434  # Local")
+    print("     export OPENAI_API_KEY=sk-...              # OpenAI")
+    print("     export ANTHROPIC_API_KEY=sk-ant-...       # Claude")
+    print()
+    print("  3. RUN A WORKFLOW")
+    print(f"     cd {target}")
+    print("     baqt run brainstorming    # Start ideation")
+    print("     baqt run prd              # Create product spec")
+    print("     baqt run architecture     # Design system")
+    print()
+    print("  4. USE WITH CLAUDE CODE / CURSOR")
+    print(f"     Open {target} in your IDE")
+    print("     BAQT commands available via /_baqt/commands/")
+    print()
+    print("  DOCS: https://github.com/fabiendostie/BQUAT#readme")
+    print("=" * 60)
+
+
 def cmd_install(args: argparse.Namespace) -> int:
     """Execute install command."""
     target = Path(args.target).resolve()
@@ -143,6 +172,7 @@ def cmd_install(args: argparse.Namespace) -> int:
                 print(f"     Install ID: {result.manifest.install_id}")
                 print(f"     Components: {len(result.manifest.components)}")
                 print(f"     Files: {len(result.manifest.files)}")
+            _print_quickstart(target)
         else:
             print(f"[FAIL] {result.message}")
             for error in result.errors:
